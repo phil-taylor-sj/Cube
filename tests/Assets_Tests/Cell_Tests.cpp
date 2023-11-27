@@ -1,5 +1,5 @@
-#include "pch.h"
-#include "../src/Assets/Cell.cpp"
+#include "../pch.h"
+#include "../../src/Assets/Cell.cpp"
 
 namespace Cell_Tests
 {

@@ -46,6 +46,7 @@ $(TEST_TARGET): $(TEST_OBJS)
 
 # Rule to build test object files
 $(OBJ_DIR)/%.o: $(TEST_DIR)/%.cpp
+	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(TEST_INCLUDES) -c -o $@ $<
 
 # Ensure the obj and bin directories exist before compilation

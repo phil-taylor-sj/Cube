@@ -1,5 +1,5 @@
-#include "pch.h"
-#include "../src/Collision/Rectangle.cpp"
+#include "../pch.h"
+#include "../../src/Collision/Rectangle.cpp"
 
 namespace Coll = Collision;
 

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "../src/Utilities/GridGen.cpp"
+#include "../../src/Utilities/GridGen.cpp"
 
 namespace GridGen_Tests
 { 
