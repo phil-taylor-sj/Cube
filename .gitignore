@@ -1,3 +1,7 @@
+# cmake directories
+build
+lib/*
+!lib/requirements.txt
 # Prerequisites
 *.d
 

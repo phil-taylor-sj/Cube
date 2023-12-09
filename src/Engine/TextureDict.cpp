@@ -27,21 +27,23 @@ sf::Texture& TextureDict::getTexture(std::string name)
 
 void TextureDict::loadTexture(std::string name)
 {
-	 
-		
+
     // Specify the relative path to your image file
    
-
     // Create the full path by concatenating the executable path and the relative image path
 	_textures[name].loadFromFile(
-		_exePath + "/../Resources/Graphics/" + name + ".png");
+		_exePath + "/" + _relativePath + "resources/graphics/" + name + ".png");
 }
 
-void TextureDict::setFilepath(char* argv[])
+void TextureDict::setExeFilepath(char* argv[])
 {
 	std::filesystem::path exeFilepath = std::filesystem::canonical(
 			std::filesystem::path(argv[0])
 			).parent_path();
 	_exePath = exeFilepath.string();
-	
+}
+
+void TextureDict::setRelativeFilepath(std::string relativePath)
+{
+	_relativePath = relativePath;
 }

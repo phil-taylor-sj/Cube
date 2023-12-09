@@ -6,7 +6,7 @@ void Inputs::getInputs()
 	while (_window->pollEvent(event))
 	{
 		if (event.type == sf::Event::KeyPressed
-			or event.type == sf::Event::KeyReleased)
+			|| event.type == sf::Event::KeyReleased)
 		{
 			_getKeyInputs();
 		}

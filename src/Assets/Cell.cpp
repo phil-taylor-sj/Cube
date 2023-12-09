@@ -11,8 +11,8 @@ void Cell::setTexture(const sf::Texture& texture)
 	if (_sprite.getLocalBounds().width != _cellWidth)
 	{
 		_sprite.scale(
-			_cellWidth / _sprite.getLocalBounds().width,
-			_cellWidth / _sprite.getLocalBounds().height
+				_cellWidth / _sprite.getLocalBounds().width,
+				_cellWidth / _sprite.getLocalBounds().height
 		);
 	}
 }
