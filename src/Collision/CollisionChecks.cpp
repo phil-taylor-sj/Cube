@@ -20,7 +20,7 @@ namespace Collision
         RectParams paramsOne = rectangleOne.getRectangle();
         RectParams paramsTwo = rectangleTwo.getRectangle();
 
-        if (paramsOne.angle == 0.0)
+        if (paramsOne.angle == 0. && paramsTwo.angle == 0.)
         {    
             float leftSideOne = paramsOne.x - paramsOne.halfWidth;
             float leftSideTwo = paramsTwo.x - paramsTwo.halfWidth;
@@ -44,5 +44,15 @@ namespace Collision
             }
             return true;
         }
+        else
+        {
+            return false;
+
+        }
+    }
+
+    bool checkIntersection(Rectangle rectangle, Circle circle)
+    {
+        return false;
     }
 }
