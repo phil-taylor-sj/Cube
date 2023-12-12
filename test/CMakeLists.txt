@@ -10,6 +10,8 @@ include(Engine_Test/Engine_Test.cmake)
 include(Utilities_Test/Utilities_Test.cmake)
 
 set(TEST_SRCS
+  pch.cpp
+  pch.h
   ${ASSETS_TEST}
   ${COLLISION_TEST}
   ${ENGINE_TEST}
@@ -26,7 +28,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 add_executable(${TEST_TARGET} ${TEST_SRCS})
-target_link_libraries(${TEST_TARGET} gtest gtest_main sfml-graphics sfml-window sfml-system)
+target_link_libraries(${TEST_TARGET} gtest gtest_main gmock_main sfml-graphics sfml-window sfml-system)
 set_target_properties(${TEST_TARGET} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${BIN_DIR}
 )

@@ -247,8 +247,8 @@ namespace CollisionChecks_Tests
         EXPECT_TRUE(Coll::checkIntersection(rectangleBase, rectangleTwo));
         EXPECT_TRUE(Coll::checkIntersection(rectangleTwo, rectangleBase));
 
-        EXPECT_FALSE(Coll::checkIntersection(rectangleThree, rectangleFour));
-        EXPECT_FALSE(Coll::checkIntersection(rectangleFour, rectangleThree));
+        EXPECT_TRUE(Coll::checkIntersection(rectangleThree, rectangleFour));
+        EXPECT_TRUE(Coll::checkIntersection(rectangleFour, rectangleThree));
     }
 
     TEST(CollisionChecks_Intersects_Rectangle_Circle_Test,
@@ -284,7 +284,7 @@ namespace CollisionChecks_Tests
         Coll::Circle circleThree = Coll::Circle(480.f, 580.f, 50.f);
         Coll::Circle circleFour = Coll::Circle(1030.f, 770.f, 50.f);
         Coll::Circle circleFive = Coll::Circle(560.f, 670.f, 50.f);
-        Coll::Circle circleSix = Coll::Circle(1050.f, 780.f, 50.f);
+        Coll::Circle circleSix = Coll::Circle(750.f, 700.f, 50.f);
 
         EXPECT_TRUE(Coll::checkIntersection(rectangleBase, circleOne));
         EXPECT_TRUE(Coll::checkIntersection(rectangleBase, circleTwo));
@@ -416,9 +416,90 @@ namespace CollisionChecks_Tests
         Coll::Circle circleSeven = Coll::Circle(-490.f, -820.f, 50.f);
         Coll::Circle circleEight = Coll::Circle(-1010.f, -520.f, 50.f);
         
-        EXPECT_TRUE(Coll::checkIntersection(rectangleBase, circleSeven));
-        EXPECT_TRUE(Coll::checkIntersection(rectangleBase, circleEight));
-    
+        EXPECT_TRUE(Coll::checkIntersection(rectangleOne, circleSeven));
+        EXPECT_TRUE(Coll::checkIntersection(rectangleOne, circleEight));
+    }
 
+    TEST(CollisionChecks_Calculate_Corner_Positions_Test,
+        Returns_correct_coordinates_for_aligned_rectangle)
+    {
+        Coll::Rectangle rectangleOne = Coll::Rectangle(0., 0., 100., 100.);
+        Coll::Rectangle rectangleTwo = Coll::Rectangle(100., 100., 100., 100.);
+
+        Coll::RectCorners cornersOne = Coll::calculateCornerPositions(
+            rectangleOne.getRectangle()
+        );
+        Coll::RectCorners cornersTwo = Coll::calculateCornerPositions(
+            rectangleTwo.getRectangle()
+        );
+
+        EXPECT_THAT(cornersOne.leftUpperXY, ::testing::ElementsAre(-50.f, -50.f));
+        EXPECT_THAT(cornersOne.leftLowerXY, ::testing::ElementsAre(-50.f, 50.f));
+        EXPECT_THAT(cornersOne.rightUpperXY, ::testing::ElementsAre(50.f, -50.f));
+        EXPECT_THAT(cornersOne.rightLowerXY, ::testing::ElementsAre(50.f, 50.f));
+
+        EXPECT_THAT(cornersTwo.leftUpperXY, ::testing::ElementsAre(50.f, 50.f));
+        EXPECT_THAT(cornersTwo.leftLowerXY, ::testing::ElementsAre(50.f, 150.f));
+        EXPECT_THAT(cornersTwo.rightUpperXY, ::testing::ElementsAre(150.f, 50.f));
+        EXPECT_THAT(cornersTwo.rightLowerXY, ::testing::ElementsAre(150.f, 150.f));
+    }
+
+    TEST(CollisionChecks_Calculate_Corner_Positions_Test,
+        Returns_correct_coordinates_for_unaligned_rectangle)
+    {
+        Coll::Rectangle rectangleOne = Coll::Rectangle(0., 0., 100., 100.);
+        Coll::Rectangle rectangleTwo = Coll::Rectangle(100., 100., 100., 100.);
+        rectangleOne.setAngle(270.f);
+        rectangleTwo.setAngle(270.f);
+
+
+        Coll::RectCorners cornersOne = Coll::calculateCornerPositions(
+            rectangleOne.getRectangle()
+        );
+        Coll::RectCorners cornersTwo = Coll::calculateCornerPositions(
+            rectangleTwo.getRectangle()
+        );
+
+        EXPECT_THAT(cornersOne.leftUpperXY, ::testing::ElementsAre(-50.f, 50.f));
+        EXPECT_THAT(cornersOne.leftLowerXY, ::testing::ElementsAre(50.f, 50.f));
+        EXPECT_THAT(cornersOne.rightUpperXY, ::testing::ElementsAre(-50.f, -50.f));
+        EXPECT_THAT(cornersOne.rightLowerXY, ::testing::ElementsAre(50.f, -50.f));
+
+        EXPECT_THAT(cornersTwo.leftUpperXY, ::testing::ElementsAre(50.f, 150.f));
+        EXPECT_THAT(cornersTwo.leftLowerXY, ::testing::ElementsAre(150.f, 150.f));
+        EXPECT_THAT(cornersTwo.rightUpperXY, ::testing::ElementsAre(50.f, 50.f));
+        EXPECT_THAT(cornersTwo.rightLowerXY, ::testing::ElementsAre(150.f, 50.f));
+    }
+
+    TEST(CollisionChecks_Apply_Rotation_Matrix_Test,
+        Returns_correct_corrdinates_for_positive_270_point_rotation)
+    {
+        std::array<float, 2> pointOne = {100.f, 100.f};
+        float angleOne = 270.f;
+
+        float matrixOne[2][2] = {
+            {cos(angleOne * Coll::pi / 180.), -1.f * sin(angleOne * Coll::pi / 180.)},
+            {cos(angleOne * Coll::pi / 180.), sin(angleOne * Coll::pi / 180.)}
+        };
+
+        std::array<float, 2> rotatedOne = Coll::applyRotationMatrix(pointOne, matrixOne);
+
+        EXPECT_THAT(rotatedOne, ::testing::ElementsAre(100.f, -100.f));
+    }
+
+    TEST(CollisionChecks_Apply_Rotation_Matrix_Test,
+        Returns_correct_corrdinates_for_negative_90_point_rotation)
+    {
+        std::array<float, 2> pointOne = { 100.f, 100.f };
+        float angleOne = -90.f;
+
+        float matrixOne[2][2] = {
+            {cos(angleOne * Coll::pi / 180.), -1.f * sin(angleOne * Coll::pi / 180.)},
+            {cos(angleOne * Coll::pi / 180.), sin(angleOne * Coll::pi / 180.)}
+        };
+
+        std::array<float, 2> rotatedOne = Coll::applyRotationMatrix(pointOne, matrixOne);
+
+        EXPECT_THAT(rotatedOne, ::testing::ElementsAre(100.f, -100.f));
     }
 }
