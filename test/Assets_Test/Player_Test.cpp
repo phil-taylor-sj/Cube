@@ -1,5 +1,5 @@
 #include "../pch.h"
-#include "../../src/Assets/Player.cpp"
+#include "Assets/Player.h"
 
 namespace Player_Tests
 {

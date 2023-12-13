@@ -1,8 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 
-#include "./Engine/GameEngine.h"
-#include "./Engine/TextureDict.h"
+#include "Engine/GameEngine.h"
+#include "Engine/TextureDict.h"
 
 int main(int argc, char* argv[])
 {

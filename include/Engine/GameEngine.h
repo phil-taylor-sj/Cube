@@ -1,9 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <memory>
-#include "Level.h"
-#include "Inputs.h"
-#include "TextureDict.h"
+#include "Engine/Level.h"
+#include "Engine/Inputs.h"
+#include "Engine/TextureDict.h"
 
 class GameEngine
 {

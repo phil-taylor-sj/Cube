@@ -1,4 +1,4 @@
-#include "GridGen.h"
+#include "Utilities/GridGen.h"
 
 
 std::vector<std::vector<std::string>> GridGen::randomiseGridColours(

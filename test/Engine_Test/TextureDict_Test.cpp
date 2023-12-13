@@ -1,5 +1,5 @@
 #include "../pch.h"
-#include "../../src/Engine/TextureDict.cpp"
+#include "Engine/TextureDict.h"
 
 namespace TextureDict_Tests
 {

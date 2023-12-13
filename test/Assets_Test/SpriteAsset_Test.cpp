@@ -1,5 +1,5 @@
 #include "../pch.h"
-#include "../../src/Assets/SpriteAsset.cpp"
+#include "Assets/SpriteAsset.h"
 
 namespace SpriteAsset_Tests
 {

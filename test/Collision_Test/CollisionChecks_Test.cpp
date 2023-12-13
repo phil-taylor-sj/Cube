@@ -1,6 +1,5 @@
 #include "../pch.h"
-//#include "../src/Collision/Circle.cpp"
-#include "../../src/Collision/CollisionChecks.cpp"
+#include "Collision/CollisionChecks.h"
 
 namespace Coll = Collision;
 
