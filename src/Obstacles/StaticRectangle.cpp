@@ -61,7 +61,7 @@ StaticRectangle::~StaticRectangle()
 }
 
 void StaticRectangle::_updateRectangle()
-{;
+{
 	_rectangle.setPosition(
 		_cellPosition.x + _relativePosition.x * _cellWidth,
 		_cellPosition.y + _relativePosition.y * _cellWidth

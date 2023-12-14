@@ -6,6 +6,7 @@ namespace Coll = Collision;
 
 namespace Room_Tests
 {
+
     TEST(Room_Constructor_Test,
         Initalises_eight_walls_at_correct_relative_position)
     {
@@ -25,7 +26,15 @@ namespace Room_Tests
         Coll::RectParams wallUpper_2 = wallsMap.at("wallUpper2")->getRectangle();
         Coll::RectParams wallLower_2 = wallsMap.at("wallLower2")->getRectangle();
 
-        EXPECT_EQ(wallLeft_1.x, 3.90625f);
-        EXPECT_EQ(wallLeft_1.y, 17.1875f);
+        EXPECT_EQ(wallLeft_1.x,  3.90625f);   EXPECT_EQ(wallLeft_1.y, 17.1875f);
+        EXPECT_EQ(wallLeft_2.x,  3.90625f);   EXPECT_EQ(wallLeft_2.y, 82.8125f);
+        EXPECT_EQ(wallRight_1.x, 96.09375f);  EXPECT_EQ(wallRight_1.y, 17.1875f);
+        EXPECT_EQ(wallRight_2.x, 96.09375f);  EXPECT_EQ(wallRight_2.y, 82.8125f);
+
+        EXPECT_EQ(wallUpper_1.x, 17.1875f);  EXPECT_EQ(wallUpper_1.y, 3.90625f);
+        EXPECT_EQ(wallUpper_2.x, 82.8125f);  EXPECT_EQ(wallUpper_2.y, 3.90625f);
+        EXPECT_EQ(wallLower_1.x, 17.1875f);  EXPECT_EQ(wallLower_1.y, 96.09375f);
+        EXPECT_EQ(wallLower_2.x, 82.8125f);  EXPECT_EQ(wallLower_2.y, 96.09375f);
+    
     }
 }
