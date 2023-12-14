@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <memory>
-#include "../Assets/Player.h"
+#include "Assets/Player.h"
 
 
 class Inputs

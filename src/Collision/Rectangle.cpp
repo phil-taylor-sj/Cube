@@ -1,4 +1,4 @@
-#include "Rectangle.h"
+#include "Collision/Rectangle.h"
 
 
 namespace Collision
@@ -36,8 +36,8 @@ namespace Collision
 	{
 		_params.width = _params.width * scale;
 		_params.height = _params.height * scale;
-		_params.halfWidth = 0.5 * _params.width;
-		_params.halfHeight = 0.5 * _params.height;
+		_params.halfWidth = 0.5f * _params.width;
+		_params.halfHeight = 0.5f * _params.height;
 	}
 
 	sf::Vector2f Rectangle::getPosition()

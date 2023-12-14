@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.10)
+
+add_library(Engine OBJECT
+    GameEngine.cpp
+    Inputs.cpp
+    Level.cpp
+    TextureDict.cpp
+)
+
+target_include_directories(Engine PUBLIC 
+    ${PUBLIC_INCLUDE_DIR}
+    ${SFML_INCLUDE_DIR}
+    )

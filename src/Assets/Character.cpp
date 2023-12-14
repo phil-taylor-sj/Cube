@@ -1,4 +1,4 @@
-#include "Character.h"
+#include "Assets/Character.h"
 
 
 void Character::setTexture(const sf::Texture& texture)

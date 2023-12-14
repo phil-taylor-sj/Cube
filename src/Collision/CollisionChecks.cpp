@@ -1,15 +1,7 @@
-#include "CollisionChecks.h"
+#include "Collision/CollisionChecks.h"
 
 namespace Collision
 {
-    const double pi = 3.141592653589793;
-
-    struct RectCorners {
-        float leftUpperXY[2];
-        float leftLowerXY[2];
-        float rightUpperXY[2];
-        float rightLowerXY[2];
-    };
 
     bool checkIntersection(Circle circleOne, Circle circleTwo)
     {

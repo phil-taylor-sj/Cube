@@ -1,4 +1,4 @@
-#include "SpriteAsset.h"
+#include "Assets/SpriteAsset.h"
 
 
 sf::Vector2f SpriteAsset::getPosition()

@@ -1,4 +1,4 @@
-#include "Cell.h"
+#include "Assets/Cell.h"
 #include <iostream>
 
 void Cell::setTexture(const sf::Texture& texture)
@@ -17,12 +17,14 @@ void Cell::setTexture(const sf::Texture& texture)
 	}
 }
 
+
 void Cell::updatePosition()
 {
 	_nodePosition.x = _cellWidth * _cellIndices.x;
 	_nodePosition.y = _cellWidth * _cellIndices.y;
 	_position.x = _nodePosition.x + 0.5f * _cellWidth;
 	_position.y = _nodePosition.y + 0.5f * _cellWidth;
+	_updateObstaclePositions();
 	_sprite.setPosition(_position);
 }
 
@@ -45,6 +47,8 @@ void Cell::setRotation(float angle)
 void Cell::setCellWidth(float cellWidth)
 {
 	_cellWidth = cellWidth;
+	_updateObstaclePositions();
+	_updateObstacleDimensions();
 }
 
 Cell::Cell() 
@@ -59,4 +63,13 @@ Cell::Cell()
 Cell::~Cell()
 {
 
+}
+
+void Cell::_updateObstaclePositions()
+{
+}
+
+
+void Cell::_updateObstacleDimensions()
+{
 }

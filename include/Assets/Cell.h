@@ -1,7 +1,7 @@
 #pragma once
 #include <array>
-#include "SpriteAsset.h"
-#include "ISpriteAsset.h"
+#include "Assets/SpriteAsset.h"
+#include "Assets/ISpriteAsset.h"
 
 class Cell : public SpriteAsset, ISpriteAsset
 {
@@ -22,5 +22,6 @@ protected:
 	float _cellWidth;
 	sf::Vector2f _nodePosition;
 	sf::Vector2i _cellIndices;
-
+	virtual void _updateObstaclePositions();
+	virtual void _updateObstacleDimensions();
 };

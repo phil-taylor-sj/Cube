@@ -1,5 +1,5 @@
 #include "../pch.h"
-#include "../../src/Assets/Character.cpp"
+#include "Assets/Character.h"
 
 namespace Character_Tests
 {

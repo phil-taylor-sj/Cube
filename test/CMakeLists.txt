@@ -28,7 +28,16 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 add_executable(${TEST_TARGET} ${TEST_SRCS})
-target_link_libraries(${TEST_TARGET} gtest gtest_main gmock_main sfml-graphics sfml-window sfml-system)
+target_link_libraries(${TEST_TARGET} 
+  gtest gtest_main gmock_main 
+  Assets Collision Engine Obstacles Utilities
+  sfml-graphics sfml-window sfml-system)
+
+target_include_directories(${TEST_TARGET} PUBLIC 
+  ${PUBLIC_INCLUDE_DIR}
+  ${SFML_INCLUDE_DIR}
+  ) 
+
 set_target_properties(${TEST_TARGET} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${BIN_DIR}
 )

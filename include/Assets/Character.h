@@ -1,6 +1,6 @@
 #pragma once
-#include "SpriteAsset.h"
-#include "ISpriteAsset.h"
+#include "Assets/SpriteAsset.h"
+#include "Assets/ISpriteAsset.h"
 #include <math.h>
 
 class Character : public SpriteAsset, ISpriteAsset
