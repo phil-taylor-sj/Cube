@@ -30,7 +30,7 @@ FetchContent_MakeAvailable(googletest)
 add_executable(${TEST_TARGET} ${TEST_SRCS})
 target_link_libraries(${TEST_TARGET} 
   gtest gtest_main gmock_main 
-  Assets Collision Engine Obstacles Utilities
+  Assets Collision Engine Obstacles States Utilities
   sfml-graphics sfml-window sfml-system)
 
 target_include_directories(${TEST_TARGET} PUBLIC 

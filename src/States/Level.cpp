@@ -1,4 +1,4 @@
-#include "Engine/Level.h"
+#include "States/Level.h"
 
 void Level::setCommonCellWidth(float commonCellWidth)
 {
@@ -116,7 +116,7 @@ Level::Level(int xNumberOfRooms, int yNumberOfRooms)
 	_loadAllTextures();
 }
 
-void Level::displayGrid(sf::RenderWindow &window)
+void Level::displayGrid(sf::RenderWindow& window)
 {
 	for (std::vector<std::shared_ptr<Cell>> &row : _grid) {
 		for (std::shared_ptr<Cell> &cell : row) {

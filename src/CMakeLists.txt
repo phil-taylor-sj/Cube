@@ -26,12 +26,13 @@ add_subdirectory(Assets)
 add_subdirectory(Collision)
 add_subdirectory(Engine)
 add_subdirectory(Obstacles)
+add_subdirectory(States)
 add_subdirectory(Utilities)
 
 set(TARGET Cube)
 add_executable(${TARGET} Cube.cpp)
 target_link_libraries(${TARGET} PRIVATE 
-    Assets Collision Engine Obstacles Utilities 
+    Assets Collision Engine Obstacles States Utilities 
     sfml-graphics sfml-window sfml-system
     )
 

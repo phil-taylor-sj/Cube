@@ -51,7 +51,7 @@ class Level
 public:
 	void setCommonCellWidth(float comonCellWidth);
 	void constructCells();
-	void displayGrid(sf::RenderWindow &window);
+	void displayGrid(sf::RenderWindow& window);
 
 	Level(int xNumberOfRooms, int yNumberOfRooms);
 

@@ -1,6 +1,6 @@
 #include "Engine/Inputs.h"
 
-void Inputs::getInputs()
+void Inputs::getInputs(bool isPaused)
 {
 	sf::Event event;
 	while (_window->pollEvent(event))
@@ -9,6 +9,7 @@ void Inputs::getInputs()
 			|| event.type == sf::Event::KeyReleased)
 		{
 			_getKeyInputs();
+		
 		}
 
 		if (event.type == sf::Event::Resized)
@@ -28,11 +29,6 @@ void Inputs::setPlayerView(std::shared_ptr<sf::View> playerView)
 	_playerView = playerView;
 }
 
-void Inputs::setPlayer(std::shared_ptr<Player> player)
-{
-	_player = player;
-}
-
 Inputs* Inputs::_instance = nullptr;
 
 Inputs* Inputs::getInstance()
@@ -46,19 +42,6 @@ Inputs* Inputs::getInstance()
 
 void Inputs::_getKeyInputs()
 {
-	_player->setUpMovement(
-		sf::Keyboard::isKeyPressed(sf::Keyboard::W)
-	);
-	_player->setDownMovement(
-		sf::Keyboard::isKeyPressed(sf::Keyboard::S)
-	);
-	_player->setLeftMovement(
-		sf::Keyboard::isKeyPressed(sf::Keyboard::A)
-	);
-	_player->setRightMovement(
-		sf::Keyboard::isKeyPressed(sf::Keyboard::D)
-	);
-
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 	{
 		_window->close();

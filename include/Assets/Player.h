@@ -5,5 +5,7 @@
 class Player : public Character
 {
 public:
+	void handleInput();
+
 	Player();
 };
