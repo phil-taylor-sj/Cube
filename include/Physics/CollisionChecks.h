@@ -1,12 +1,12 @@
 #pragma once
-#include "Collision/Circle.h"
-#include "Collision/Rectangle.h"
+#include "Physics/Circle.h"
+#include "Physics/Rectangle.h"
 #include <cmath>
 #include <memory>
 #include <array>
 #include <algorithm>
 
-namespace Collision
+namespace Physics
 {   
     struct RectCorners {
         float leftUpperXY[2] = {0.f, 0.f};

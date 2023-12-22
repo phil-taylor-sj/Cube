@@ -22,17 +22,17 @@ set(MAIN_SRC Cube.cpp)
 # add_library(Obstacles ${OBSTACLES_SRCS})
 # add_library(Utilities ${UTILITIES_SRCS})
 
-add_subdirectory(Assets)
-add_subdirectory(Collision)
-add_subdirectory(Engine)
-add_subdirectory(Obstacles)
-add_subdirectory(States)
-add_subdirectory(Utilities)
+#add_subdirectory(Assets)
+add_subdirectory(Physics)
+#add_subdirectory(Engine)
+#add_subdirectory(Obstacles)
+#add_subdirectory(States)
+#add_subdirectory(Utilities)
 
 set(TARGET Cube)
 add_executable(${TARGET} Cube.cpp)
 target_link_libraries(${TARGET} PRIVATE 
-    Assets Collision Engine Obstacles States Utilities 
+    Physics  
     sfml-graphics sfml-window sfml-system
     )
 

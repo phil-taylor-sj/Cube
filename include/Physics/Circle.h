@@ -1,12 +1,11 @@
 #pragma once
-#include <SFML/System.hpp>
 #include <math.h>
+#include "Physics/Vec2.h"
 
-namespace Collision
+namespace Physics
 {
 	struct CircleParams {
-		float x;
-		float y;
+		Vec2f position;
 		float radius;
 		float radiusSquared;
 	};
@@ -14,23 +13,19 @@ namespace Collision
 	class Circle
 	{
 	public:
-		void setPosition(sf::Vector2f position);
+		void setPosition(Vec2f position);
 		void setPosition(float xPosition, float yPosition);
 		void setRadius(float radius);
 		void scaleRadius(float scale);
-		
-		float getRadius();
-		float getRadiusSquared();
-		sf::Vector2f getPosition();
 
 		struct CircleParams getCircle();
 
 		Circle();
-		Circle(sf::Vector2f position, float radius);
+		Circle(Vec2f position, float radius);
 		Circle(float xPosition, float yPosition, float radius);
 		~Circle();
 
 	private:
-		CircleParams _params;
+		CircleParams m_params;
 	};
 }
