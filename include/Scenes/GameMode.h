@@ -2,18 +2,18 @@
 #include <SFML/Graphics.hpp>
 #include "Assets/Player.h"
 #include "States/Level.h"
-#include "States/BaseState.h"
+#include "Scenes/BaseScene.h"
 #include "Engine/TextureDict.h"
 
 
 
-class GameMode : public BaseState
+class GameScene : public BaseScene
 {
 public:
-	void updateState() override;
-	void displayState(sf::RenderWindow& window,
+	void updateScene() override;
+	void displayScene(sf::RenderWindow& window,
 					sf::View& playerVide) override;
-	GameMode();
+	GameScene();
 
 private:
 	std::shared_ptr<Level> _currentLevel;

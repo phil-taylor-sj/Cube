@@ -156,69 +156,69 @@ namespace Collision
         }
     }
 
-    RectCorners calculateCornerPositions(RectParams params)
+    RectCorners calculateCornerPositions(RectComponent rectCompare)
     {
-        float cosAngle = cos(params.angle * pi / 180.);
-        float sinAngle = sin(params.angle * pi / 180.);
+        float cosAngle = cos(rectCompare.angle * pi / 180.);
+        float sinAngle = sin(rectCompare.angle * pi / 180.);
 
-        float cosX = params.halfWidth * cosAngle;
-        float sinX = params.halfWidth * sinAngle;
-        float cosY = params.halfHeight * cosAngle;
-        float sinY = params.halfHeight * sinAngle;
+        float cosX = rectCompare.halfWidth * cosAngle;
+        float sinX = rectCompare.halfWidth * sinAngle;
+        float cosY = rectCompare.halfHeight * cosAngle;
+        float sinY = rectCompare.halfHeight * sinAngle;
 
         RectCorners corners = RectCorners();
-        corners.leftUpperXY[0] = (-1.f * cosX) - (-1.f * sinY) + params.x,
-        corners.leftUpperXY[1] = (-1.f * sinX) + (-1.f * cosY) + params.y;
+        corners.leftUpperXY[0] = (-1.f * cosX) - (-1.f * sinY) + rectCompare.x,
+        corners.leftUpperXY[1] = (-1.f * sinX) + (-1.f * cosY) + rectCompare.y;
         
-        corners.leftLowerXY[0] = (-1.f * cosX) - sinY + params.x,
-        corners.leftLowerXY[1] = (-1.f * sinX) + cosY + params.y;
+        corners.leftLowerXY[0] = (-1.f * cosX) - sinY + rectCompare.x,
+        corners.leftLowerXY[1] = (-1.f * sinX) + cosY + rectCompare.y;
         
-        corners.rightUpperXY[0] = cosX - (-1.f * sinY) + params.x,
-        corners.rightUpperXY[1] = sinX + (-1.f * cosY) + params.y;
+        corners.rightUpperXY[0] = cosX - (-1.f * sinY) + rectCompare.x,
+        corners.rightUpperXY[1] = sinX + (-1.f * cosY) + rectCompare.y;
 
-        corners.rightLowerXY[0] = cosX - sinY + params.x;
-        corners.rightLowerXY[1] = sinX + cosY + params.y;
+        corners.rightLowerXY[0] = cosX - sinY + rectCompare.x;
+        corners.rightLowerXY[1] = sinX + cosY + rectCompare.y;
 
         return corners;
     }
 
-    bool compareUnalignedRectangles(RectParams paramsBase, RectCorners params)
+    bool compareUnalignedRectangles(RectComponent rectBase, RectCorners rectCompare)
     {
         float rotationMatrix[2][2] = {
-            {cos(-1.f * paramsBase.angle * pi / 180.),
-            -1.f * sin(-1.f * paramsBase.angle * pi / 180.)},
-            {sin(-1.f * paramsBase.angle * pi / 180.),
-            cos(-1.f * paramsBase.angle * pi / 180.)}
+            {cos(-1.f * rectBase.angle * pi / 180.),
+            -1.f * sin(-1.f * rectBase.angle * pi / 180.)},
+            {sin(-1.f * rectBase.angle * pi / 180.),
+            cos(-1.f * rectBase.angle * pi / 180.)}
         };
 
         std::array<float, 2> leftUpperXY = applyRotationMatrix(
             std::array<float, 2> {
-                params.leftUpperXY[0] - paramsBase.x,
-                params.leftUpperXY[1] - paramsBase.y
+                rectCompare.leftUpperXY[0] - rectBase.x,
+                rectCompare.leftUpperXY[1] - rectBase.y
             },
             rotationMatrix
         );
 
         std::array<float, 2> leftLowerXY = applyRotationMatrix(
             std::array<float, 2> {
-                params.leftLowerXY[0] - paramsBase.x,
-                params.leftLowerXY[1] - paramsBase.y
+                rectCompare.leftLowerXY[0] - rectBase.x,
+                rectCompare.leftLowerXY[1] - rectBase.y
             },
             rotationMatrix
         );
 
         std::array<float, 2> rightUpperXY = applyRotationMatrix(
             std::array<float, 2> {
-                params.rightUpperXY[0] - paramsBase.x,
-                params.rightUpperXY[1] - paramsBase.y
+                rectCompare.rightUpperXY[0] - rectBase.x,
+                rectCompare.rightUpperXY[1] - rectBase.y
             },
             rotationMatrix
         );
 
         std::array<float, 2> rightLowerXY = applyRotationMatrix(
             std::array<float, 2> {
-                params.rightLowerXY[0] - paramsBase.x,
-                params.rightLowerXY[1] - paramsBase.y
+                rectCompare.rightLowerXY[0] - rectBase.x,
+                rectCompare.rightLowerXY[1] - rectBase.y
             },
             rotationMatrix
         );
@@ -238,10 +238,10 @@ namespace Collision
         float minY = *std::min_element(cornersY.begin(), cornersY.end());
         float maxY = *std::max_element(cornersY.begin(), cornersY.end());
 
-        return ( minX >= paramsBase.halfWidth ||
-                 maxX <= -1.f * paramsBase.halfWidth ||
-                 minY >= paramsBase.halfHeight ||
-                 maxY <= -1.f * paramsBase.halfHeight
+        return ( minX >= rectBase.halfWidth ||
+                 maxX <= -1.f * rectBase.halfWidth ||
+                 minY >= rectBase.halfHeight ||
+                 maxY <= -1.f * rectBase.halfHeight
             );
     }
 

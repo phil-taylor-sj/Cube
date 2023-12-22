@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.10)
 
 add_library(Assets OBJECT 
-    Cell.cpp
+    "../../Legacy/Cell.cpp"
     Character.cpp
     Player.cpp
-    Room.cpp
+    "../../Legacy/Room.cpp"
     SpriteAsset.cpp
-    Void.cpp
-    Walls.cpp
+    "../../Legacy/Void.cpp"
+    "../../Legacy/Walls.cpp"
 )
 
 target_include_directories(Assets PUBLIC 

@@ -38,9 +38,7 @@ Methods:
 #include <array>
 #include <memory>
 
-#include "Assets/Cell.h"
-#include "Assets/Room.h"
-#include "Assets/Void.h"
+#include "Levels/CellComponents.h"
 #include "Utilities/GridGen.h"
 #include "Engine/TextureDict.h"
 
