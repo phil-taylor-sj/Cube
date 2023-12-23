@@ -20,6 +20,11 @@ namespace Physics
 			return Vec2<T>(this->x + vector.x, this->y + vector.y);
 		}
 
+		Vec2<T> operator - (Vec2<T> vector)
+		{
+			return Vec2<T>(this->x - vector.x, this->y - vector.y);
+		}
+
 		bool operator == (const Vec2<T>& vector) const
 		{
 			return this->x == vector.x &&

@@ -15,9 +15,10 @@ namespace Physics
         float rightLowerXY[2] = {0.f, 0.f};
     };
     const double pi = 3.141592653589793;
-    bool checkIntersection(Circle circleOne, Circle circleTwo);
-    bool checkIntersection(Rectangle rectangleOne, Rectangle rectangleTwo);
-    bool checkIntersection(Rectangle rectangle, Circle circle);
+    bool checkIntersection(const Circle& circleSetterOne, const Circle& circleSetterTwo);
+    bool checkIntersection(const Rectangle& rectangleSetter, const Circle& circleSetter);
+    bool checkIntersection(const Rectangle& rectSetterOne, const Rectangle& rectSetterTwo);
+
 
     RectCorners calculateCornerPositions(RectParams params);
     bool compareUnalignedRectangles(RectParams paramsBase, RectCorners params);

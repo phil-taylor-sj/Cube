@@ -37,7 +37,7 @@ namespace Physics
 		m_params.halfHeight = 0.5f * m_params.height;
 	}
 
-	RectParams Rectangle::getRectangle()
+	RectParams Rectangle::getRectangle() const
 	{
 		return m_params;
 	}

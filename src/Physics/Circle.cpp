@@ -24,7 +24,7 @@ namespace Physics
 		m_params.radiusSquared = pow(m_params.radius, 2);
 	}
 
-	CircleParams Circle::getCircle()
+	CircleParams Circle::getCircle() const
 	{
 		return m_params;
 	}

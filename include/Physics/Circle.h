@@ -18,7 +18,7 @@ namespace Physics
 		void setRadius(float radius);
 		void scaleRadius(float scale);
 
-		struct CircleParams getCircle();
+		struct CircleParams getCircle() const;
 
 		Circle();
 		Circle(Vec2f position, float radius);

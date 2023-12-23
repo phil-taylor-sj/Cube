@@ -3,8 +3,11 @@
 namespace Physics
 {
 
-    bool checkIntersection(CircleParams circleOne, CircleParams circleTwo)
+    bool checkIntersection(const Circle& circleSetterOne, const Circle& circleSetterTwo)
     {
+        CircleParams circleOne = circleSetterOne.getCircle();
+        CircleParams circleTwo = circleSetterTwo.getCircle();
+
         float centreSpacing = circleOne.position.distance(
             circleTwo.position
         );
@@ -13,18 +16,23 @@ namespace Physics
         return centreSpacing <= totalRadius;
     }
 
-    bool checkIntersection(RectParams rectangle, CircleParams circle)
+    bool checkIntersection(const Rectangle& rectangleSetter, const Circle& circleSetter)
     {
+        RectParams rectangle = rectangleSetter.getRectangle();
+        CircleParams circle = circleSetter.getCircle();
 
         if (rectangle.angle > 0.f)
         {
-            circle.position;
+            circle.position = circle.position - rectangle.position;
 
             float cosAngle = cos(-1.f * rectangle.angle * pi / 180.);
             float sinAngle = sin(-1.f * rectangle.angle * pi / 180.);
-            circle.position.x = circle.position.x * cosAngle - circle.position.y * sinAngle;
-            circle.position.y = circle.position.x * sinAngle + circle.position.y * cosAngle;
-
+            
+            float newX = circle.position.x* cosAngle - circle.position.y * sinAngle;
+            float newY = circle.position.x * sinAngle + circle.position.y * cosAngle;
+            
+            circle.position.x = newX;
+            circle.position.y = newY;
             rectangle.position.x = 0.f;
             rectangle.position.y = 0.f;
         }
@@ -99,8 +107,10 @@ namespace Physics
         return true;
     }
 
-    bool checkIntersection(RectParams rectOne, RectParams rectTwo)
+    bool checkIntersection(const Rectangle& rectSetterOne, const Rectangle& rectSetterTwo)
     {
+        RectParams rectOne = rectSetterOne.getRectangle();
+        RectParams rectTwo = rectSetterTwo.getRectangle();
 
         if (rectOne.angle == 0. && rectTwo.angle == 0.)
         {

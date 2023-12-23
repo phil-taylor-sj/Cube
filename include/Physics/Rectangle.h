@@ -22,7 +22,7 @@ namespace Physics
 		void setAngle(float angle);
 		void scaleWidthHeight(float scale);
 
-		struct RectParams getRectangle();
+		struct RectParams getRectangle() const;
 
 		Rectangle();
 		Rectangle(Vec2f position);
