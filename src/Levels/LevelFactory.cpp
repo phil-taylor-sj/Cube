@@ -4,58 +4,31 @@ namespace Levels
 {
 	void LevelFactory::addTexture(const CellEntity& entity, CellGraphicsComponent& graphics)
 	{
-		if (entity.type = "Room")
+		std::map<std::string, float> voidConfig;
+		voidConfig.insert({"UpperEdge", 180.f});
+		voidConfig.insert({"LowerEdge", 0.f });
+		voidConfig.insert({"LeftEdge", 90.f });
+		voidConfig.insert({"RightEdge", 270.f});
+		voidConfig.insert({"UpperLeft", 90.f });
+		voidConfig.insert({"UpperRight", 180.f });
+		voidConfig.insert({"LowerLeft", 0.f });
+		voidConfig.insert({"LowerRight", 270.f });
+
+
+		if (entity.type == "Room")
+		{
 			graphics.sprite.setTexture(
 				Engine::TextureDict::getInstance()->getTexture(entity.subtype)
 			);
-		if (entity.type == "EdgeVoid")
-		{
-			graphics.sprite.setTexture(
-				Engine::TextureDict::getInstance()->getTexture("EdgeVoid")
-			);
-			if (entity.subtype == "UpperEdge")
-			{
-				graphics.textureRotation = 180.f;
-			}
-			else if(entity.subtype == "LowerEdge")
-			{
-				graphics.textureRotation = 0.f;
-			}
-			else if (entity.subtpye == "LeftEdge")
-			{
-				graphics.textureRotation = 90.f;
-			}
-			else if (entity.subtype == "RightEdge")
-			{
-				graphics.textureRotation = 270.f;
-			}
 		}
 
-		if (entity.type == "CornerVoid")
+		if (voidConfig.count(entity.subtype) > 0)
 		{
 			graphics.sprite.setTexture(
-				Engine::TextureDict::getInstance()->getTexture("CornerVoid")
+				Engine::TextureDict::getInstance()->getTexture(entity.type)
 			);
-
-			if (entity.subtype == "UpperLeft")
-			{
-				graphics.textureRotation = 90.f;
-			}
-			else if (entity.subtype == "UpperRight")
-			{
-				graphics.textureRotation = 180.f;
-			}
-			else if (entity.subtype == "LowerLeft")
-			{
-				graphics.textureRotation = 0.f;
-			}
-			else if (entity.subtype == "LowerRight")
-			{
-				graphics.textureRotation = 270.f;
-			}
+			graphics.textureRotation = voidConfig.find(entity.subtype);
+			graphics.sprite.setRotation(graphics.textureRotation);
 		}
-
-		graphics.sprite.setRotation(graphics.textureRotation);
-
 	}
 }

@@ -17,22 +17,25 @@ Methods:
 #include <iostream>
 #include <filesystem>
 
-class TextureDict
+namespace Engine
 {
-public:
-	static TextureDict* getInstance();
-	sf::Texture& getTexture(std::string name);
-	void loadTexture(std::string name);
-	void setExeFilepath( char* argv[]);
-	void setRelativeFilepath(std::string relativePath);
+	class TextureDict
+	{
+	public:
+		static TextureDict* getInstance();
+		sf::Texture& getTexture(std::string name);
+		void loadTexture(std::string name);
+		void setExeFilepath( char* argv[]);
+		void setRelativeFilepath(std::string relativePath);
 
-protected:
-	TextureDict() = default;
+	protected:
+		TextureDict() = default;
 
-private:
-	static TextureDict* _instance;
-	std::map<std::string, sf::Texture> _textures;
-	std::string _exePath = "./";
-	std::string _relativePath = "./";
+	private:
+		static TextureDict* _instance;
+		std::map<std::string, sf::Texture> _textures;
+		std::string _exePath = "./";
+		std::string _relativePath = "./";
 
-};
+	};
+}

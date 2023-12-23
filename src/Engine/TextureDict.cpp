@@ -1,49 +1,51 @@
 #include "Engine/TextureDict.h"
 #include <stdexcept>
 
-
-TextureDict* TextureDict::_instance = nullptr;
-
-TextureDict* TextureDict::getInstance()
+namespace Engine
 {
-	if (_instance == nullptr)
-	{
-		_instance = new TextureDict;
-	}
-	return _instance;
-}
+	TextureDict* TextureDict::_instance = nullptr;
 
-sf::Texture& TextureDict::getTexture(std::string name)
-{
-	if (_textures.find(name) == _textures.end())
+	TextureDict* TextureDict::getInstance()
 	{
-		throw std::invalid_argument(
-			"Key '" + name + "' not found in _textures map of TextureDict."
-		);
+		if (_instance == nullptr)
+		{
+			_instance = new TextureDict;
+		}
+		return _instance;
 	}
 
-	return _textures[name];
-}
+	sf::Texture& TextureDict::getTexture(std::string name)
+	{
+		if (_textures.find(name) == _textures.end())
+		{
+			throw std::invalid_argument(
+				"Key '" + name + "' not found in _textures map of TextureDict."
+			);
+		}
 
-void TextureDict::loadTexture(std::string name)
-{
+		return _textures[name];
+	}
 
-    // Specify the relative path to your image file
+	void TextureDict::loadTexture(std::string name)
+	{
+
+		// Specify the relative path to your image file
    
-    // Create the full path by concatenating the executable path and the relative image path
-	_textures[name].loadFromFile(
-		_exePath + "/" + _relativePath + "resources/graphics/" + name + ".png");
-}
+		// Create the full path by concatenating the executable path and the relative image path
+		_textures[name].loadFromFile(
+			_exePath + "/" + _relativePath + "resources/graphics/" + name + ".png");
+	}
 
-void TextureDict::setExeFilepath(char* argv[])
-{
-	std::filesystem::path exeFilepath = std::filesystem::canonical(
-			std::filesystem::path(argv[0])
-			).parent_path();
-	_exePath = exeFilepath.string();
-}
+	void TextureDict::setExeFilepath(char* argv[])
+	{
+		std::filesystem::path exeFilepath = std::filesystem::canonical(
+				std::filesystem::path(argv[0])
+				).parent_path();
+		_exePath = exeFilepath.string();
+	}
 
-void TextureDict::setRelativeFilepath(std::string relativePath)
-{
-	_relativePath = relativePath;
+	void TextureDict::setRelativeFilepath(std::string relativePath)
+	{
+		_relativePath = relativePath;
+	}
 }
