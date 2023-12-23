@@ -30,7 +30,7 @@ add_subdirectory(Physics)
 #add_subdirectory(Utilities)
 
 set(TARGET Cube)
-add_executable(${TARGET} Cube.cpp)
+add_executable(${TARGET} Cube.cpp "Levels/LevelFactory.cpp")
 target_link_libraries(${TARGET} PRIVATE 
     Physics  
     sfml-graphics sfml-window sfml-system

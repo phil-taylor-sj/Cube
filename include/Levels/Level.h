@@ -37,26 +37,31 @@ Methods:
 #include <vector>
 #include <array>
 #include <memory>
+#include <bitset>
 
 #include "Levels/CellComponents.h"
 #include "Utilities/GridGen.h"
 #include "Engine/TextureDict.h"
 
-
-
-class Level
+namespace Levels
 {
-public:
-	void setCommonCellWidth(float comonCellWidth);
-	void constructCells();
-	void displayGrid(sf::RenderWindow& window);
+	class LevelEntityManager
+	{
+	public:
+		void setCommonCellWidth(float comonCellWidth);
+		void constructCells();
+		void displayGrid(sf::RenderWindow& window);
 
-	Level(int xNumberOfRooms, int yNumberOfRooms);
+		LevelEntityManager(int xNumberOfRooms, int yNumberOfRooms);
 
-private:
-	std::vector<std::vector<std::shared_ptr<Cell>>> _grid;
-	int _xGridSize;
-	int _yGridSize;
-	float _commonCellWidth;
-	void _loadAllTextures();
-};
+	private:
+		std::vector<std::vector<CellEntity>>> m_cellEntities;
+		std::vector<CellGraphicsComponent> m_cellGraphicsComponents;
+		std::vector<CellTransformComponent> m_cellTransformComponents;
+		std::vector<CellWallsComponent> m_cellWallsComponents;
+		int m_xGridSize;
+		int m_yGridSize;
+		float m_commonCellWidth;
+		void m_loadAllTextures();
+	};
+}
