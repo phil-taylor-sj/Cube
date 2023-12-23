@@ -25,14 +25,8 @@ namespace Physics
         {
             circle.position = circle.position - rectangle.position;
 
-            float cosAngle = cos(-1.f * rectangle.angle * pi / 180.);
-            float sinAngle = sin(-1.f * rectangle.angle * pi / 180.);
+            circle.position.applyRotation(-1.f * rectangle.angle);
             
-            float newX = circle.position.x* cosAngle - circle.position.y * sinAngle;
-            float newY = circle.position.x * sinAngle + circle.position.y * cosAngle;
-            
-            circle.position.x = newX;
-            circle.position.y = newY;
             rectangle.position.x = 0.f;
             rectangle.position.y = 0.f;
         }

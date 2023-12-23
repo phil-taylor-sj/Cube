@@ -19,6 +19,44 @@ namespace Physics
 	}
 
 	template <typename T>
+	void Vec2<T>::applyRotation(T angle)
+	{
+		T cosAngle = cos(angle * this->m_pi / 180.);
+		T sinAngle = sin(angle * this->m_pi / 180.);
+		T newX = this->x * cosAngle - this->y * sinAngle;
+		T newY = this->x * sinAngle + this->y * cosAngle;
+		this->x = newX;
+		this->y = newY;
+	}
+	
+	template <typename T>
+	Vec2<T> Vec2<T>::operator + (const Vec2<T>& vector)
+	{
+		return Vec2<T>(this->x + vector.x, this->y + vector.y);
+	}
+
+	template <typename T>
+	Vec2<T> Vec2<T>::operator - (const Vec2<T>& vector)
+	{
+		return Vec2<T>(this->x - vector.x, this->y - vector.y);
+	}
+
+	template <typename T>
+	void Vec2<T>::operator += (const Vec2<T>& vector)
+	{
+		this->x = this->x + vector.x;
+		this->y = this->y + vector.y;
+	}
+
+	template <typename T>
+	void Vec2<T>::operator -= (const Vec2<T>& vector)
+	{
+		this->x = this->x - vector.x;
+		this->y = this->y - vector.y;
+	}
+
+
+	template <typename T>
 	Vec2<T>::Vec2(T xin, T yin)
 	{
 		this->x = xin;

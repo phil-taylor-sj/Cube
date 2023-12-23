@@ -15,15 +15,15 @@ namespace Physics
 
 		T distance(const Vec2<T>& vector) const;
 
-		Vec2<T> operator + (Vec2<T> vector)
-		{
-			return Vec2<T>(this->x + vector.x, this->y + vector.y);
-		}
+		void applyRotation(T angle);
 
-		Vec2<T> operator - (Vec2<T> vector)
-		{
-			return Vec2<T>(this->x - vector.x, this->y - vector.y);
-		}
+		Vec2<T> operator + (const Vec2<T>& vector);
+
+		Vec2<T> operator - (const Vec2<T>& vector);
+
+		void operator += (const Vec2<T>& vector);
+
+		void operator -= (const Vec2<T>& vector);
 
 		bool operator == (const Vec2<T>& vector) const
 		{
@@ -34,6 +34,8 @@ namespace Physics
 		Vec2();
 		Vec2(T xin, T yin);
 
+	private:
+		double m_pi = 3.141592653589793;
 	};
 
 	using Vec2f = Vec2<float>;
