@@ -40,8 +40,10 @@ Methods:
 #include <bitset>
 
 #include "Levels/CellComponents.h"
+#include "Levels/CellEntity.h"
 #include "Utilities/GridGen.h"
-#include "Engine/TextureDict.h"
+#include "Assets/TextureDict.h"
+#include "Levels/LevelFactory.h"
 
 namespace Levels
 {
@@ -49,19 +51,21 @@ namespace Levels
 	{
 	public:
 		void setCommonCellWidth(float comonCellWidth);
-		void constructCells();
-		void displayGrid(sf::RenderWindow& window);
+		void renderLevel(sf::RenderWindow& window);
+		void updateAllCellScaling();
+		void updateAllCellPositions();
 
 		LevelEntityManager(int xNumberOfRooms, int yNumberOfRooms);
 
 	private:
-		std::vector<std::vector<CellEntity>>> m_cellEntities;
+		std::vector<std::vector<CellEntity>> m_cellEntities;
+		std::vector<CellTypeComponent> m_cellTypeComponents;
 		std::vector<CellGraphicsComponent> m_cellGraphicsComponents;
 		std::vector<CellTransformComponent> m_cellTransformComponents;
-		std::vector<CellWallsComponent> m_cellWallsComponents;
+		std::vector<CellCollisionComponent> m_cellCollisionComponents;
 		int m_xGridSize;
 		int m_yGridSize;
+		int m_totalCells;
 		float m_commonCellWidth;
-		void m_loadAllTextures();
 	};
 }

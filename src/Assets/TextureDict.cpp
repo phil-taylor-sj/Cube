@@ -1,7 +1,7 @@
-#include "Engine/TextureDict.h"
+#include "Assets/TextureDict.h"
 #include <stdexcept>
 
-namespace Engine
+namespace Assets
 {
 	TextureDict* TextureDict::_instance = nullptr;
 

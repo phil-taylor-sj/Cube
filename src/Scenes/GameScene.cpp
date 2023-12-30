@@ -1,42 +1,37 @@
-#include "States/GameMode.h"
+#include "Scenes/GameScene.h"
 
-void GameMode::displayState(sf::RenderWindow& window,
-							sf::View& playerView)
+namespace Scenes
 {
-	playerView.setCenter(_player->getPosition());
+	void GameScene::renderScene()
+	{
+		m_view->setCenter(
+			m_actors->transformComponents[0].position.x,
+			m_actors->transformComponents[0].position.y
+		);
+		m_level->renderLevel(*m_window);
+		m_actors->renderActors(*m_window);
+	}
 
-	_currentLevel->displayGrid(window);
-	_player->drawSprite(window);
-}
+	void GameScene::updateScene()
+	{
 
-void GameMode::updateState()
-{
-	_player->handleInput();
-	_player->move(1.f);
-}
+	}
 
-GameMode::GameMode()
-{
-	_createLevel(5, 512.f);
-	_createPlayer();
-}
+	GameScene::GameScene()
+	{
+		m_level = std::make_unique<Levels::LevelEntityManager>(5, 5);
+		m_level->setCommonCellWidth(512.f);
+		m_level->updateAllCellScaling();
 
-void GameMode::_createLevel(int widthOfCube, float commonCellWidth)
-{
-	_currentLevel = std::make_shared<Level>(widthOfCube, widthOfCube);
-	_currentLevel->setCommonCellWidth(commonCellWidth);
-	_currentLevel->constructCells();
-}
+		m_actors = std::make_unique<Actors::ActorEntityManager>();
 
-void GameMode::_createPlayer()
-{
-	_player = std::make_shared<Player>();
+		m_actors->assignActor("Player", "None");
+		Assets::TextureDict::getInstance()->loadTexture("PlayerPlaceholder");
+		m_actors->graphicsComponents[0].sprite.setTexture(
+			Assets::TextureDict::getInstance()->getTexture("PlayerPlaceholder")
+		);
 
-	TextureDict::getInstance()->loadTexture("PlayerPlaceholder");
-	_player->setTexture(
-		TextureDict::getInstance()->getTexture("PlayerPlaceholder")
-	);
+		m_actors->transformComponents[0].position = Physics::Vec2f(64.f * 2.5f, 64.f * 2.5f);
+	}
 
-	_player->setMovementSpeed(5.f);
-	_player->setPosition(64.f * 2.5f, 64.f * 2.5f);
 }

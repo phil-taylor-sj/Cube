@@ -9,6 +9,7 @@ void Character::setTexture(const sf::Texture& texture)
 		_sprite.getLocalBounds().height*0.5
 	);
 }
+
 void Character::move(float timePeriod)
 {
 	sf::Vector2f delta = _calculateMovement(timePeriod);

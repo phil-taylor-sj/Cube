@@ -2,27 +2,26 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include "Engine/Inputs.h"
-#include "Engine/TextureDict.h"
+#include "Assets/TextureDict.h"
+#include "Scenes/GameScene.h"
 
-enum GameState {
-		TITLE_SCREEN,
-		LEVEL_LOADING,
-		LEVEL,
-		PAUSED
-};
-
-class GameEngine
+namespace Engine
 {
-public:
-	std::shared_ptr<sf::RenderWindow> window;
-	sf::Vector2f resolution;
-	sf::VideoMode video;
+	class GameEngine
+	{
+	public:
+		std::shared_ptr<sf::RenderWindow> window;
+		sf::Vector2f resolution;
+		sf::VideoMode video;
 
-	std::shared_ptr<sf::View> playerView;
+		std::shared_ptr<sf::View> playerView;
 
-	GameState currentGameState;
+		void runEngine();
 
-	void runEngine();
-	
-	GameEngine();
-};
+		GameEngine();
+
+	private:
+		std::unique_ptr<Scenes::Scene> m_currentScene;
+
+	};
+}

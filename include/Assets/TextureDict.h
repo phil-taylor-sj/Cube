@@ -17,7 +17,7 @@ Methods:
 #include <iostream>
 #include <filesystem>
 
-namespace Engine
+namespace Assets
 {
 	class TextureDict
 	{

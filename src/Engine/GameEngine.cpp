@@ -1,53 +1,41 @@
 #include "Engine/GameEngine.h"
-#include "States/GameMode.h"
 
-void GameEngine::runEngine()
+namespace Engine
 {
-
-	Inputs::getInstance()->setWindow(window);
-	Inputs::getInstance()->setPlayerView(playerView);
-
-
-	bool isPaused = false;
-
-	GameMode newGame = GameMode();
-
-	while (window->isOpen())
+	void GameEngine::runEngine()
 	{
-		Inputs::getInstance()->getInputs(isPaused);
+		Inputs::getInstance()->setWindow(window);
+		Inputs::getInstance()->setPlayerView(playerView);
 
-		newGame.updateState();
-		window->clear();
-		//switch(currentGameState) {
-		//	case TITLE_SCREEN:
-		//		break;
-		//	case LEVEL:
-		//		break;
-		//	default:
-		//}
-
-		newGame.displayState(*window, *playerView);
-		window->setView(*playerView);
-		window->display();
+		while (window->isOpen())
+		{
+			Inputs::getInstance()->getInputs();
+			m_currentScene->updateScene();
+			window->clear();
+			m_currentScene->renderScene();
+			window->setView(*playerView);
+			window->display();
+		}
 	}
-}
 
-GameEngine::GameEngine()
-{
-	currentGameState = TITLE_SCREEN;
-	
-	resolution = sf::Vector2f(1000.f, 750.f);
-	video = sf::VideoMode(resolution.x, resolution.y);
+	GameEngine::GameEngine()
+	{
 
-	// Create render window and set framerate.
-	window = std::make_shared<sf::RenderWindow>(video, "Cube");
-	window->setFramerateLimit(60);
+		resolution = sf::Vector2f(1000.f, 750.f);
+		video = sf::VideoMode(resolution.x, resolution.y);
 
-	playerView = std::make_shared<sf::View>(
+		// Create render window and set framerate.
+		window = std::make_shared<sf::RenderWindow>(video, "Cube");
+		window->setFramerateLimit(60);
+
+		playerView = std::make_shared<sf::View>(
 			sf::Vector2f(0.5 * resolution.x, 0.5 * resolution.y),
 			sf::Vector2f(resolution.x, resolution.y)
 		);
-	playerView->setViewport(sf::FloatRect(-0.f, -0.f, 1.f, 1.f));
+		playerView->setViewport(sf::FloatRect(-0.f, -0.f, 1.f, 1.f));
+	
+		m_currentScene = std::make_unique<Scenes::GameScene>();
+		m_currentScene->setRenderWindow(window);
+		m_currentScene->setView(playerView);
+	}
 }
-
-
