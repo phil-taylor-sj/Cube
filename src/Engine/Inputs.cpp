@@ -2,59 +2,44 @@
 
 namespace Engine
 {
-	void Inputs::getInputs()
+	void Inputs::getInputs(GameEngine& engine)
 	{
 		sf::Event event;
-		while (_window->pollEvent(event))
+		while (m_window->pollEvent(event))
 		{
 			if (event.type == sf::Event::KeyPressed
 				|| event.type == sf::Event::KeyReleased)
 			{
-				_getKeyInputs();
-
+				engine.checkInput(event.key.code, event.type);
 			}
 
 			if (event.type == sf::Event::Resized)
 			{
-				_getResizeInputs(event);
+				m_getResizeInputs(event);
 			}
 		}
 	}
 
 	void Inputs::setWindow(std::shared_ptr<sf::RenderWindow> window)
 	{
-		_window = window;
+		m_window = window;
 	}
 
 	void Inputs::setPlayerView(std::shared_ptr<sf::View> playerView)
 	{
-		_playerView = playerView;
+		m_playerView = playerView;
 	}
 
-	Inputs* Inputs::_instance = nullptr;
-
-	Inputs* Inputs::getInstance()
+	Inputs::Inputs()
 	{
-		if (_instance == nullptr)
-		{
-			_instance = new Inputs;
-		}
-		return _instance;
+
 	}
 
-	void Inputs::_getKeyInputs()
-	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-		{
-			_window->close();
-		}
-	};
-
-	void Inputs::_getResizeInputs(
+	void Inputs::m_getResizeInputs(
 		sf::Event& event
 	)
 	{
-		_playerView->setSize(
+		m_playerView->setSize(
 			event.size.width,
 			event.size.height
 		);

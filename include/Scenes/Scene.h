@@ -1,11 +1,15 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Engine/Action.h"
 
 namespace Scenes
 {
+    template <typename T>
     class Scene
     {
     public:
+        T virtual checkInput(sf::Keyboard::Key) = 0;
+        void virtual processAction(Engine::Action<T> action) = 0;
         void virtual updateScene() = 0;
         void virtual renderScene() = 0;
 

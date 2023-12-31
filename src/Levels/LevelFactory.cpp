@@ -43,9 +43,9 @@ namespace Levels
 			CellTypeComponent& typeLeft = cellTypes[cellEntities[0][i].cellId];
 			CellTypeComponent& typeRight = cellTypes[cellEntities[xGridSize - 1][i].cellId];
 			typeLeft.type = "EdgeVoid";
-			typeLeft.subtype = "Left";
+			typeLeft.subtype = "LeftEdge";
 			typeRight.type = "EdgeVoid";
-			typeRight.subtype =  "Right";
+			typeRight.subtype =  "RightEdge";
 		}
 
 		for (int i = 0; i < xGridSize; i++)
@@ -53,9 +53,9 @@ namespace Levels
 			CellTypeComponent& typeUpper = cellTypes[cellEntities[i][0].cellId];
 			CellTypeComponent& typeLower = cellTypes[cellEntities[yGridSize - 1][i].cellId];
 			typeUpper.type = "EdgeVoid";
-			typeUpper.subtype = "Left";
+			typeUpper.subtype = "UpperEdge";
 			typeLower.type = "EdgeVoid";
-			typeLower.subtype = "Right";
+			typeLower.subtype = "LowerEdge";
 		}
 
 		CellTypeComponent& upperLeft = cellTypes[cellEntities[0][0].cellId];

@@ -2,18 +2,23 @@
 
 namespace Scenes
 {
-	void Scene::setRenderWindow(std::shared_ptr<sf::RenderWindow> window)
+	template <typename T>
+	void Scene<T>::setRenderWindow(std::shared_ptr<sf::RenderWindow> window)
 	{
 		m_window = window;
 	}
 
-	void Scene::setView(std::shared_ptr<sf::View> view)
+	template <typename T>
+	void Scene<T>::setView(std::shared_ptr<sf::View> view)
 	{
 		m_view = view;
 	}
 
-	Scene::Scene()
+	template <typename T>
+	Scene<T>::Scene<T>()
 	{
 
 	}
 }
+
+template class Scenes::Scene<Scenes::GameSceneActionNames>;

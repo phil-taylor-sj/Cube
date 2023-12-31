@@ -23,8 +23,8 @@ namespace Actors
 				ActorTransformComponent& transform = transformComponents[actor.id];
 				ActorGraphicsComponent& graphics = graphicsComponents[actor.id];
 
-				transform.position.x += deltaTime * (forces.netForce.x * forces.movement);
-				transform.position.y += deltaTime * (forces.netForce.y * forces.movement);
+				transform.position.x += deltaTime * forces.netForce.x;
+				transform.position.y += deltaTime * forces.netForce.y;
 
 				forces.netForce = Physics::Vec2f(0.f, 0.f);
 

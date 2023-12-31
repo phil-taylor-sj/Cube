@@ -1,15 +1,17 @@
 #include "Engine/GameEngine.h"
 
+
 namespace Engine
 {
 	void GameEngine::runEngine()
 	{
-		Inputs::getInstance()->setWindow(window);
-		Inputs::getInstance()->setPlayerView(playerView);
+		Engine::Inputs inputs = Engine::Inputs();
+		inputs.setWindow(window);
+		inputs.setPlayerView(playerView);
 
 		while (window->isOpen())
 		{
-			Inputs::getInstance()->getInputs();
+			inputs.getInputs(*this);
 			m_currentScene->updateScene();
 			window->clear();
 			m_currentScene->renderScene();
@@ -18,9 +20,20 @@ namespace Engine
 		}
 	}
 
+	void GameEngine::checkInput(sf::Keyboard::Key key, sf::Event::EventType eventType)
+	{
+		if (typeid(*m_currentScene) == typeid(Scenes::GameScene))
+		{
+			Scenes::GameSceneActionNames sceneAction = m_currentScene->checkInput(key);
+			ActionType type = (eventType == sf::Event::KeyPressed) ? PRESS : RELEASE;
+
+			Action newAction = Action<Scenes::GameSceneActionNames>(sceneAction, type);
+			m_currentScene->processAction(newAction);
+		}
+	}
+
 	GameEngine::GameEngine()
 	{
-
 		resolution = sf::Vector2f(1000.f, 750.f);
 		video = sf::VideoMode(resolution.x, resolution.y);
 
