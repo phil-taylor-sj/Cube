@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.10)
 add_library(Actors OBJECT 
     ActorEntityManager.cpp
     ActorEntitySystem.cpp
+    ActorFactory.cpp
 )
 
 target_include_directories(Actors PUBLIC 

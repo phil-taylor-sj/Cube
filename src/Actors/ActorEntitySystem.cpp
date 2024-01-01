@@ -6,8 +6,12 @@ namespace Actors
 	{
 		for (ActorForceComponent& force : forceComponents)
 		{
-			force.netForce.x += force.movement * cos(force.movementAngle * 3.14159f / 180.f);
-			force.netForce.y += force.movement * sin(force.movementAngle * 3.14159f / 180.f);
+			if (force.isMoving)
+			{
+				force.netForce.x += force.movement * cos(force.movementAngle * 3.14159f / 180.f);
+				force.netForce.y += force.movement * sin(force.movementAngle * 3.14159f / 180.f);
+		
+			}
 		}
 		
 	}

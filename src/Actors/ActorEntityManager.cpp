@@ -36,22 +36,18 @@ namespace Actors
 		}
 	}
 
-	void ActorEntityManager::assignActor(std::string type, std::string subtype)
+	void ActorEntityManager::assignActor(ActorTypes type, ActorSubtypes subtype)
 	{
-		int id = 0;
-		while (id < entities.size())
+		int id = m_findFreeEntity();
+		if (id >= 0)
 		{
-			if (!entities[id].isAssigned)
-			{
-				entities[id].isAssigned = true;
-				typeComponents[id].type = type;
-				typeComponents[id].subtype = subtype;
-				graphicsComponents[id].isVisible = true;
-				
-				m_totalActors += 1;
-				id += 1;
-				break;
-			}
+			entities[id].isAssigned = true;
+			typeComponents[id].type = type;
+			typeComponents[id].subtype = subtype;
+			graphicsComponents[id].isVisible = true;
+			
+			ActorFactory::buildGraphicsComponent(typeComponents[id], graphicsComponents[id]);
+			m_totalActors += 1;			
 		}
 	}
 
@@ -66,11 +62,37 @@ namespace Actors
 	{
 		m_totalActors = 0;
 		m_resizeVectors(10);
+		m_loadAllTextures();
 	}
 
 	ActorEntityManager::~ActorEntityManager()
 	{
 		
+	}
+
+	int ActorEntityManager::m_findFreeEntity()
+	{
+		int id = 0;
+		while (id < entities.size())
+		{
+			if (!entities[id].isAssigned)
+			{
+				return id;
+			}
+		}
+
+		if (entities.size() < m_maxActors)
+		{
+			int currentSize = entities.size();
+
+			int newSize = std::min(currentSize * 2, m_maxActors);
+			m_resizeVectors(newSize);
+			return currentSize;
+		}
+		else
+		{
+			return -1;
+		}
 	}
 
 	void ActorEntityManager::m_resizeVectors(int newSize)
@@ -81,5 +103,18 @@ namespace Actors
 		transformComponents.resize(newSize);
 		collisionComponents.resize(newSize);
 		forceComponents.resize(newSize);
+	}
+
+	void ActorEntityManager::m_loadAllTextures()
+	{
+		std::array<std::string, 1> texturesToLoad
+		{
+			"PlayerPlaceholder"
+		};
+
+		for (std::string name : texturesToLoad)
+		{
+			Assets::TextureDict::getInstance()->loadTexture(name);
+		}
 	}
 }

@@ -2,31 +2,33 @@
 
 namespace Scenes
 {
-	 GameSceneActionNames GameScene::checkInput(sf::Keyboard::Key key)
+	 GameSceneActions GameScene::checkInput(sf::Keyboard::Key key)
 	 {
-		 if (m_actions.count(key) > 0)
+		 if (m_availableKeyActions.count(key) > 0)
 		 {
-			 return m_actions[key];
+			 return m_availableKeyActions[key];
 		 }
 		 else
 		 {
-			 return NONE;
+			 return GameSceneActions::NONE;
 		 }
 	 }
 
-	 void GameScene::processAction(Engine::Action<GameSceneActionNames> action)
+	 void GameScene::processAction(Engine::Action<GameSceneActions> action)
 	 {
-		 if (action.getName() == MOVE_UP ||
-			 action.getName() == MOVE_DOWN ||
-			 action.getName() == MOVE_LEFT ||
-			 action.getName() == MOVE_RIGHT)
+		 switch (action.getName())
 		 {
-			 m_setPlayerMovement(action);
-		 }
-
-		 if (action.getName() == EXIT)
-		 {
-			 m_window->close();
+			case GameSceneActions::MOVE_UP:
+			case GameSceneActions::MOVE_DOWN:
+			case GameSceneActions::MOVE_LEFT:
+			case GameSceneActions::MOVE_RIGHT:
+				m_setPlayerMovement(action);
+				break;
+			case GameSceneActions::EXIT:
+				m_window->close();
+				break;
+			default:
+				break;
 		 }
 	 }
 
@@ -36,14 +38,16 @@ namespace Scenes
 			m_actors->transformComponents[0].position.x,
 			m_actors->transformComponents[0].position.y
 		);
+		m_window->setView(*m_view);
 		m_level->renderLevel(*m_window);
 		m_actors->renderActors(*m_window);
 	}
 
 	void GameScene::updateScene()
 	{
-		
-		m_actors->updateActors(10.f);
+		this->m_setPlayerAngle();
+		Actors::ActorEntitySystem::applyMovementForce(m_actors->forceComponents);
+		m_actors->updateActors(0.1f);
 	}
 
 	GameScene::GameScene()
@@ -54,54 +58,56 @@ namespace Scenes
 
 		m_actors = std::make_unique<Actors::ActorEntityManager>();
 
-		m_actors->assignActor("Player", "None");
-		Assets::TextureDict::getInstance()->loadTexture("PlayerPlaceholder");
-		m_actors->graphicsComponents[0].sprite.setTexture(
-			Assets::TextureDict::getInstance()->getTexture("PlayerPlaceholder")
-		);
-
+		m_actors->assignActor(Actors::ActorTypes::PLAYER, Actors::ActorSubtypes::NONE);
 		m_actors->transformComponents[0].position = Physics::Vec2f(64.f * 2.5f, 64.f * 2.5f);
-	
-		m_actions.insert({ sf::Keyboard::W, MOVE_UP });
-		m_actions.insert({ sf::Keyboard::S, MOVE_DOWN });
-		m_actions.insert({ sf::Keyboard::A, MOVE_LEFT });
-		m_actions.insert({ sf::Keyboard::D, MOVE_RIGHT });
-		m_actions.insert({ sf::Keyboard::Escape, EXIT });
-
-		m_playerMovement.insert({ MOVE_UP, false });
-		m_playerMovement.insert({ MOVE_DOWN, false });
-		m_playerMovement.insert({ MOVE_LEFT, false });
-		m_playerMovement.insert({ MOVE_RIGHT, false });
 	}
 
-	void GameScene::m_setPlayerMovement(Engine::Action<GameSceneActionNames> action)
+	void GameScene::m_setPlayerMovement(Engine::Action<GameSceneActions> action)
 	{
-		m_playerMovement[action.getName()] = (action.getType() == Engine::PRESS) ? true : false;
+		m_playerMoves[action.getName()] = (action.getType() == Engine::PRESS) ? true : false;
 
 		if (action.getType() == Engine::PRESS)
-		{
-			if (action.getName() == MOVE_UP)
+		{	
+			std::map<GameSceneActions, GameSceneActions> opposites
 			{
-				m_playerMovement[MOVE_DOWN] == false;
-			}
-			if (action.getName() == MOVE_DOWN)
-			{
-				m_playerMovement[MOVE_UP] == false;
-			}
-			if (action.getName() == MOVE_RIGHT)
-			{
-				m_playerMovement[MOVE_RIGHT] == false;
-			}
-			if (action.getName() == MOVE_LEFT)
-			{
-				m_playerMovement[MOVE_LEFT] == false;
-			}
+				{GameSceneActions::MOVE_UP, GameSceneActions::MOVE_DOWN},
+				{GameSceneActions::MOVE_DOWN, GameSceneActions::MOVE_UP},
+				{GameSceneActions::MOVE_LEFT, GameSceneActions::MOVE_RIGHT},
+				{GameSceneActions::MOVE_RIGHT, GameSceneActions::MOVE_LEFT}
+			};
+
+			m_playerMoves[opposites[action.getName()]] = false;
 		}
 	}
 
 	void GameScene::m_setPlayerAngle()
 	{
+		std::map<GameSceneActions, float> movementAngles
+		{
+			{GameSceneActions::MOVE_RIGHT, 0.f}, {GameSceneActions::MOVE_DOWN, 90.f},
+			{GameSceneActions::MOVE_LEFT, 180.f}, {GameSceneActions::MOVE_UP, 270.f}
+		};
 
+		int counter = 0;
+		float angle = 0.f;
+		for (const std::pair<GameSceneActions, float>& action : movementAngles)
+		{
+			if (m_playerMoves[action.first])
+			{
+				angle += action.second;
+				counter += 1;
+			}
+		}
+
+		if (m_playerMoves[GameSceneActions::MOVE_UP] &&
+			m_playerMoves[GameSceneActions::MOVE_RIGHT])
+		{
+			angle += 360.f;
+		}
+
+		angle = angle / std::max(counter, 1);
+		m_actors->forceComponents[0].isMoving = counter > 0;
+		m_actors->forceComponents[0].movementAngle = angle; 
 	}
 
 }

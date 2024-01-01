@@ -28,4 +28,4 @@ namespace Engine
 	}
 }
 
-template class Engine::Action<Scenes::GameSceneActionNames>;
+template class Engine::Action<Scenes::GameSceneActions>;

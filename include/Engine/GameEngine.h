@@ -27,7 +27,7 @@ namespace Engine
 		GameEngine();
 
 	private:
-		std::unique_ptr<Scenes::Scene<Scenes::GameSceneActionNames>> m_currentScene;
+		std::unique_ptr<Scenes::Scene<Scenes::GameSceneActions>> m_currentScene;
 
 	};
 }

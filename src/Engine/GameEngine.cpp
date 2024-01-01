@@ -24,11 +24,13 @@ namespace Engine
 	{
 		if (typeid(*m_currentScene) == typeid(Scenes::GameScene))
 		{
-			Scenes::GameSceneActionNames sceneAction = m_currentScene->checkInput(key);
-			ActionType type = (eventType == sf::Event::KeyPressed) ? PRESS : RELEASE;
-
-			Action newAction = Action<Scenes::GameSceneActionNames>(sceneAction, type);
-			m_currentScene->processAction(newAction);
+			Scenes::GameSceneActions sceneAction = m_currentScene->checkInput(key);
+			if (sceneAction != Scenes::GameSceneActions::NONE)
+			{
+				ActionType type = (eventType == sf::Event::KeyPressed) ? PRESS : RELEASE;
+				Action newAction = Action<Scenes::GameSceneActions>(sceneAction, type);
+				m_currentScene->processAction(newAction);
+			}
 		}
 	}
 

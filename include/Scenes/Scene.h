@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Engine/Action.h"
+#include "Scenes/GameSceneActions.h"
 
 namespace Scenes
 {

@@ -2,7 +2,7 @@
 
 namespace Scenes
 {
-	enum GameSceneActionNames
+	enum class GameSceneActions
 	{
 		NONE,
 		EXIT,

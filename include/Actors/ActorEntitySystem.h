@@ -8,6 +8,7 @@ namespace Actors
 {
 	class ActorEntitySystem
 	{
+	public:
 		static void applyMovementForce(std::vector<ActorForceComponent>& forceComponents);
 	};
 }

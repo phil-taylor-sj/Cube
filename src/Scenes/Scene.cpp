@@ -21,4 +21,4 @@ namespace Scenes
 	}
 }
 
-template class Scenes::Scene<Scenes::GameSceneActionNames>;
+template class Scenes::Scene<Scenes::GameSceneActions>;

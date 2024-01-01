@@ -4,6 +4,7 @@
 #include "Physics/Vec2.h"
 #include "Physics/Rectangle.h"
 #include "Physics/Circle.h"
+#include "Actors/ActorTypes.h"
 
 namespace Actors
 {
@@ -15,8 +16,8 @@ namespace Actors
 
 	struct ActorTypeComponent
 	{
-		std::string type = "None";
-		std::string subtype = "None";
+		ActorTypes type = ActorTypes::NONE;
+		ActorSubtypes subtype = ActorSubtypes::NONE;
 	};
 
 	struct ActorTransformComponent
@@ -28,6 +29,7 @@ namespace Actors
 	struct ActorForceComponent
 	{
 		Physics::Vec2f netForce;
+		bool isMoving = true;
 		float weight = 75.f;
 		float movement = 75.f;
 		float movementAngle = 0.f;
