@@ -18,6 +18,11 @@ namespace Engine
 				m_getResizeInputs(event);
 			}
 		}
+
+		engine.sendCursorPosition(
+			sf::Mouse::getPosition().x,
+			sf::Mouse::getPosition().y
+		);
 	}
 
 	void Inputs::setWindow(std::shared_ptr<sf::RenderWindow> window)

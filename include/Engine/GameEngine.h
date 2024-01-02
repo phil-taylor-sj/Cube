@@ -21,6 +21,7 @@ namespace Engine
 
 
 		void checkInput(sf::Keyboard::Key key, sf::Event::EventType eventType);
+		void sendCursorPosition(float xCursor, float yCursor);
 
 		void runEngine();
 

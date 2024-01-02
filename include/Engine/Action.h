@@ -7,8 +7,9 @@ namespace Engine
 {
 	enum ActionType
 	{
-		PRESS = 0,
-		RELEASE = 1
+		NONE, 
+		PRESS,
+		RELEASE
 	};
 
 	template <typename T>

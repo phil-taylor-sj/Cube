@@ -6,6 +6,7 @@
 #include "Levels/CellEntity.h"
 #include "Levels/CellComponents.h"
 #include "Utilities/GridGen.h"
+#include "Levels/CellTypes.h"
 
 namespace Levels
 {
@@ -20,5 +21,8 @@ namespace Levels
 		static void assignCellTypes(const std::vector<std::vector<CellEntity>>& cellEntities, std::vector<CellTypeComponent>& cellTypes);
 		static void loadAllLevelTextures();
 	
+	private:
+		static const std::map<CellSubtypes, std::string> m_colourFilenames;
+		static const std::map<CellTypes, std::string> m_voidFilenames;
 	};
 }

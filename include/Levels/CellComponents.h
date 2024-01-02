@@ -3,6 +3,7 @@
 #include "Physics/Vec2.h"
 #include "Physics/Circle.h"
 #include "Levels/CellStaticWall.h"
+#include "Levels/CellTypes.h"
 #include <array>
 
 namespace Levels
@@ -16,8 +17,8 @@ namespace Levels
 
 	struct CellTypeComponent
 	{
-		std::string type = "None";
-		std::string subtype = "None";
+		CellTypes type = CellTypes::NONE;
+		CellSubtypes subtype = CellSubtypes::NONE;
 	};
 
 	struct CellWallRectComponent

@@ -23,6 +23,14 @@ namespace Levels
 
 	void LevelFactory::assignCellTypes(const std::vector<std::vector<CellEntity>>& cellEntities, std::vector<CellTypeComponent>& cellTypes)
 	{
+		std::map<std::string, CellSubtypes> colours {
+			{"Yellow", CellSubtypes::YELLOW},
+			{"White", CellSubtypes::WHITE},
+			{"Green", CellSubtypes::GREEN},
+			{"Blue", CellSubtypes::BLUE},
+			{"Red", CellSubtypes::RED}
+		};
+
 		int xGridSize = cellEntities.size();
 		int yGridSize = cellEntities[0].size();
 
@@ -33,8 +41,8 @@ namespace Levels
 			for (int j = 1; j < yGridSize - 1; j++)
 			{
 				int cellId = cellEntities[i][j].cellId;
-				cellTypes[cellId].type = "Room";
-				cellTypes[cellId].subtype = randomGridColours[i][j];
+				cellTypes[cellId].type = CellTypes::ROOM;
+				cellTypes[cellId].subtype = colours[randomGridColours[i][j]];
 			}
 		}
 
@@ -42,65 +50,69 @@ namespace Levels
 		{
 			CellTypeComponent& typeLeft = cellTypes[cellEntities[0][i].cellId];
 			CellTypeComponent& typeRight = cellTypes[cellEntities[xGridSize - 1][i].cellId];
-			typeLeft.type = "EdgeVoid";
-			typeLeft.subtype = "LeftEdge";
-			typeRight.type = "EdgeVoid";
-			typeRight.subtype =  "RightEdge";
+			typeLeft.type = CellTypes::EDGE_VOID;
+			typeLeft.subtype = CellSubtypes::LEFT_EDGE;
+			typeRight.type = CellTypes::EDGE_VOID;
+			typeRight.subtype =  CellSubtypes::RIGHT_EDGE;
 		}
 
 		for (int i = 0; i < xGridSize; i++)
 		{
 			CellTypeComponent& typeUpper = cellTypes[cellEntities[i][0].cellId];
 			CellTypeComponent& typeLower = cellTypes[cellEntities[yGridSize - 1][i].cellId];
-			typeUpper.type = "EdgeVoid";
-			typeUpper.subtype = "UpperEdge";
-			typeLower.type = "EdgeVoid";
-			typeLower.subtype = "LowerEdge";
+			typeUpper.type = CellTypes::EDGE_VOID;
+			typeUpper.subtype = CellSubtypes::UPPER_EDGE;
+			typeLower.type = CellTypes::EDGE_VOID;
+			typeLower.subtype = CellSubtypes::LOWER_EDGE;
 		}
 
 		CellTypeComponent& upperLeft = cellTypes[cellEntities[0][0].cellId];
-		upperLeft.type = "CornerVoid";
-		upperLeft.subtype = "UpperLeft";
+		upperLeft.type = CellTypes::CORNER_VOID;
+		upperLeft.subtype = CellSubtypes::UPPER_LEFT;
 
 		CellTypeComponent& upperRight = cellTypes[cellEntities[xGridSize - 1][0].cellId];
-		upperRight.type = "CornerVoid";
-		upperRight.subtype = "UpperRight";
+		upperRight.type = CellTypes::CORNER_VOID;
+		upperRight.subtype = CellSubtypes::UPPER_RIGHT;
 
 		CellTypeComponent& lowerLeft = cellTypes[cellEntities[0][yGridSize - 1].cellId];
-		lowerLeft.type = "CornerVoid";
-		lowerLeft.subtype = "LowerLeft";
+		lowerLeft.type = CellTypes::CORNER_VOID;
+		lowerLeft.subtype = CellSubtypes::LOWER_LEFT;
 
 		CellTypeComponent& lowerRight = cellTypes[cellEntities[xGridSize - 1][yGridSize - 1].cellId];
-		lowerRight.type = "CornerVoid";
-		lowerRight.subtype = "LowerRight";
+		lowerRight.type = CellTypes::CORNER_VOID;
+		lowerRight.subtype = CellSubtypes::LOWER_RIGHT;
 	}
 
 	void LevelFactory::addTextures(const std::vector<CellTypeComponent>& cellTypes, std::vector<CellGraphicsComponent>& graphics)
 	{
-		std::map<std::string, float> voidConfig;
-		voidConfig.insert({ "UpperEdge", 180.f });
-		voidConfig.insert({ "LowerEdge", 0.f });
-		voidConfig.insert({ "LeftEdge", 90.f });
-		voidConfig.insert({ "RightEdge", 270.f });
-		voidConfig.insert({ "UpperLeft", 90.f });
-		voidConfig.insert({ "UpperRight", 180.f });
-		voidConfig.insert({ "LowerLeft", 0.f });
-		voidConfig.insert({ "LowerRight", 270.f });
-
+		std::map<CellSubtypes, float> voidConfig {
+			{CellSubtypes::UPPER_EDGE, 180.f},
+			{CellSubtypes::LOWER_EDGE, 0.f},
+			{CellSubtypes::LEFT_EDGE, 90.f},
+			{CellSubtypes::RIGHT_EDGE, 270.f},
+			{CellSubtypes::UPPER_LEFT, 90.f},
+			{CellSubtypes::UPPER_RIGHT, 180.f},
+			{CellSubtypes::LOWER_LEFT, 0.f},
+			{CellSubtypes::LOWER_RIGHT, 270.f}
+		};
 
 		for (int i = 0; i < cellTypes.size(); i++)
 		{
-			if (cellTypes[i].type == "Room")
+			if (cellTypes[i].type == CellTypes::ROOM)
 			{
 				graphics[i].sprite.setTexture(
-					Assets::TextureDict::getInstance()->getTexture(cellTypes[i].subtype)
+					Assets::TextureDict::getInstance()->getTexture(
+						m_colourFilenames.at(cellTypes[i].subtype)
+					)
 				);
 			}
 
 			if (voidConfig.count(cellTypes[i].subtype) > 0)
 			{
 				graphics[i].sprite.setTexture(
-					Assets::TextureDict::getInstance()->getTexture(cellTypes[i].type)
+					Assets::TextureDict::getInstance()->getTexture(
+						m_voidFilenames.at(cellTypes[i].type)
+					)
 				);
 			}
 
@@ -118,7 +130,10 @@ namespace Levels
 		}
 	}
 
-	void LevelFactory::addCollision(const std::vector<CellTypeComponent>& cellTypes, std::vector<CellCollisionComponent>& cellCollisions)
+	void LevelFactory::addCollision(
+		const std::vector<CellTypeComponent>& cellTypes, 
+		std::vector<CellCollisionComponent>& cellCollisions
+	)
 	{
 
 
@@ -166,4 +181,18 @@ namespace Levels
 			}
 		}
 	}
+
+	const std::map<CellSubtypes, std::string> LevelFactory::m_colourFilenames = {
+		{CellSubtypes::YELLOW, "YellowRoom"},
+		{CellSubtypes::WHITE, "WhiteRoom"},
+		{CellSubtypes::GREEN, "GreenRoom"},
+		{CellSubtypes::BLUE, "BlueRoom"},
+		{CellSubtypes::RED, "RedRoom"}
+	};
+
+	const std::map<CellTypes, std::string> LevelFactory::m_voidFilenames = {
+		{CellTypes::CORNER_VOID, "CornerVoid"},
+		{CellTypes::EDGE_VOID, "EdgeVoid"},
+		{CellTypes::BRIDGE_VOID, "BridgeVoid"}
+	};
 }

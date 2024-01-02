@@ -55,6 +55,7 @@ namespace Actors
 	{
 		entities[id].isAssigned = false;
 		graphicsComponents[id].isVisible = false;
+		forceComponents[id].isMoving = false;
 		m_totalActors -= 1;
 	}
 

@@ -34,6 +34,17 @@ namespace Engine
 		}
 	}
 
+	void GameEngine::sendCursorPosition(float xCursor, float yCursor)
+	{
+		if (typeid(*m_currentScene) == typeid(Scenes::GameScene))
+		{
+			Action newAction = Action<Scenes::GameSceneActions>(
+				Scenes::GameSceneActions::SET_CURSOR, Engine::ActionType::NONE
+			);
+			m_currentScene->processAction(newAction);
+		}
+	}
+
 	GameEngine::GameEngine()
 	{
 		resolution = sf::Vector2f(1000.f, 750.f);
