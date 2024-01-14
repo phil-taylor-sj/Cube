@@ -3,11 +3,8 @@
 namespace Physics
 {
 
-    bool checkIntersection(const Circle& circleSetterOne, const Circle& circleSetterTwo)
+    bool checkIntersection(const CircleParams& circleOne, const CircleParams& circleTwo)
     {
-        CircleParams circleOne = circleSetterOne.getCircle();
-        CircleParams circleTwo = circleSetterTwo.getCircle();
-
         float centreSpacing = circleOne.position.distance(
             circleTwo.position
         );
@@ -16,10 +13,10 @@ namespace Physics
         return centreSpacing <= totalRadius;
     }
 
-    bool checkIntersection(const Rectangle& rectangleSetter, const Circle& circleSetter)
+    bool checkIntersection(const RectParams& rectangleIn, const CircleParams& circleIn)
     {
-        RectParams rectangle = rectangleSetter.getRectangle();
-        CircleParams circle = circleSetter.getCircle();
+        RectParams rectangle = rectangleIn;
+        CircleParams circle = circleIn;
 
         if (rectangle.angle > 0.f)
         {
@@ -101,10 +98,11 @@ namespace Physics
         return true;
     }
 
-    bool checkIntersection(const Rectangle& rectSetterOne, const Rectangle& rectSetterTwo)
+    bool checkIntersection(const RectParams& rectangleOneIn, 
+        const RectParams& rectangleTwoIn)
     {
-        RectParams rectOne = rectSetterOne.getRectangle();
-        RectParams rectTwo = rectSetterTwo.getRectangle();
+        RectParams rectOne = rectangleOneIn;
+        RectParams rectTwo = rectangleTwoIn;
 
         if (rectOne.angle == 0. && rectTwo.angle == 0.)
         {

@@ -14,6 +14,17 @@ namespace Levels
 				(transform.cellIndices.y + 0.5f) * transform.cellWidth
 			);
 		}
+		LevelFactory::updateCollision(m_cellTransformComponents, m_cellCollisionComponents);
+	}
+
+	float LevelEntityManager::getCommonCellWidth()
+	{
+		return m_commonCellWidth;
+	}
+
+	Physics::Vec2i LevelEntityManager::getGridSize()
+	{
+		return Physics::Vec2i(m_xGridSize, m_yGridSize);
 	}
 
 	void LevelEntityManager::updateAllCellScaling()
@@ -31,7 +42,6 @@ namespace Levels
 				);
 			}
 		}
-
 		updateAllCellPositions();
 	}
 
@@ -53,6 +63,30 @@ namespace Levels
 			window.draw(m_cellGraphicsComponents[i].sprite);
 		}
 	};
+
+	std::vector<Physics::RectParams> LevelEntityManager::getCircleCollisions(
+		const Actors::ActorCollisionComponent& actorCollision)
+	{
+		std::vector<Physics::RectParams> detectedCollisions;
+		for (const CellCollisionComponent& cellCollision : m_cellCollisionComponents)
+		{
+			if (!Physics::checkIntersection(cellCollision.broadCircle.getCircle(),
+				actorCollision.broadCircle.getCircle()))
+			{
+				continue;
+			}
+			for (const CellStaticWall& wallCollision : cellCollision.staticWalls)
+			{
+				if (Physics::checkIntersection(wallCollision.getRectangle(), 
+					actorCollision.broadCircle.getCircle()))
+				{
+					detectedCollisions.push_back(wallCollision.getRectangle());
+				}
+			}
+		}
+		return detectedCollisions;
+
+	}
 
 	LevelEntityManager::LevelEntityManager(int xNumberOfRooms, int yNumberOfRooms)
 	{
@@ -87,7 +121,8 @@ namespace Levels
 		LevelFactory::loadAllLevelTextures();
 		LevelFactory::assignCellTypes(m_cellEntities, m_cellTypeComponents);
 		LevelFactory::addTextures(m_cellTypeComponents, m_cellGraphicsComponents);
-		LevelFactory::addCollision(m_cellTypeComponents, m_cellCollisionComponents);		
+		LevelFactory::addCollision(m_cellTypeComponents, m_cellCollisionComponents);
+		LevelFactory::updateCollision(m_cellTransformComponents, m_cellCollisionComponents);
 	}
 
 }

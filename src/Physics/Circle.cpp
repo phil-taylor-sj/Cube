@@ -4,12 +4,27 @@ namespace Physics
 {
 	void Circle::setPosition(Vec2f position)
 	{
+		m_params.previousPosition = m_params.position;
 		m_params.position = position;
 	}
 
 	void Circle::setPosition(float xPosition, float yPosition)
 	{
+		m_params.previousPosition = m_params.position;
 		m_params.position = Vec2f(xPosition, yPosition);
+	}
+
+	void Circle::translate(Vec2f deltaPosition)
+	{
+		m_params.previousPosition = m_params.position;
+		m_params.position += deltaPosition;
+	}
+
+	void Circle::translate(float xPosition, float yPosition)
+	{
+		m_params.previousPosition = m_params.position;
+		m_params.position.x += xPosition;
+		m_params.position.y += yPosition;
 	}
 
 	void Circle::setRadius(float radius)
@@ -22,6 +37,12 @@ namespace Physics
 	{
 		m_params.radius = m_params.radius * scale;
 		m_params.radiusSquared = pow(m_params.radius, 2);
+	}
+
+	void Circle::scalePosition(float scale)
+	{
+		m_params.previousPosition = m_params.previousPosition * scale;
+		m_params.position = m_params.position * scale;
 	}
 
 	CircleParams Circle::getCircle() const

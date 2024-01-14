@@ -36,9 +36,27 @@ namespace Physics
 	}
 
 	template <typename T>
+	Vec2<T> Vec2<T>::operator + (T value)
+	{
+		return Vec2<T>(this->x + value, this->y + value);
+	}
+
+	template <typename T>
 	Vec2<T> Vec2<T>::operator - (const Vec2<T>& vector)
 	{
 		return Vec2<T>(this->x - vector.x, this->y - vector.y);
+	}
+
+	template <typename T>
+	Vec2<T> Vec2<T>::operator - (T value)
+	{
+		return Vec2<T>(this->x - value, this->y - value);
+	}
+
+	template<typename T>
+	Vec2<T> Vec2<T>::operator * (T value)
+	{
+		return Vec2<T>(this->x * value, this->y * value);
 	}
 
 	template <typename T>
@@ -54,7 +72,6 @@ namespace Physics
 		this->x = this->x - vector.x;
 		this->y = this->y - vector.y;
 	}
-
 
 	template <typename T>
 	Vec2<T>::Vec2(T xin, T yin)

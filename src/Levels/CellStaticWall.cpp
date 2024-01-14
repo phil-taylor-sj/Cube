@@ -41,7 +41,7 @@ namespace Levels
 		m_updateRectangle();
 	}
 
-	Physics::RectParams CellStaticWall::getRectangle()
+	Physics::RectParams CellStaticWall::getRectangle() const
 	{
 		return m_rectangle.getRectangle();
 	}

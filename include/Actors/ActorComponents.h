@@ -12,6 +12,7 @@ namespace Actors
 	{
 		sf::Sprite sprite;
 		bool isVisible = true;
+		float initialTextureAngle = 0.f;
 	};
 
 	struct ActorTypeComponent
@@ -24,6 +25,10 @@ namespace Actors
 	{
 		Physics::Vec2f position;
 		float angle;
+		float width = 1.f;
+		float height = 1.f;
+		float relativeWidth = 1.f;
+		float relativeHeight = 1.f;
 	};
 
 	struct ActorForceComponent
@@ -39,6 +44,6 @@ namespace Actors
 	{
 		Physics::Rectangle rectangle;
 		Physics::Circle broadCircle;
-		float relativeBroadRadius;
+		float relativeBroadRadius = 1.f;
 	};
 }

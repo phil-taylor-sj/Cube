@@ -20,14 +20,18 @@ namespace Actors
 		
 		void assignActor(ActorTypes type, ActorSubtypes subtype);
 		void unassignActor(int id);
-		void updateActors(float deltaTime);
+		void moveActors(float deltaTime);
+		void updateGraphics();
 		void renderActors(sf::RenderWindow& window);
+		
+		void setReferenceLength(float length);
+		void updateReferenceLength(float length);
 
 		ActorEntityManager();
 		~ActorEntityManager();
 
 	private:
-
+		float m_referenceLength;
 		int m_totalActors;
 		int m_maxActors = 100;
 		int m_findFreeEntity();

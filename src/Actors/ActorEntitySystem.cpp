@@ -16,4 +16,23 @@ namespace Actors
 		
 	}
 
+	void ActorEntitySystem::applyWallCollisions(
+		ActorTransformComponent& actorTransform,
+		ActorCollisionComponent& actorCollision,
+		const std::vector<Physics::RectParams> collidingWalls
+	)
+	{
+		for (const Physics::RectParams& wall : collidingWalls)
+		{
+			Physics::Vec2f correction =
+				Physics::CollisionCorrections::getWallCorrection(
+					actorCollision.broadCircle.getCircle(), wall
+				);
+			actorTransform.position += correction;
+		}
+
+		actorCollision.broadCircle.setPosition(actorTransform.position);
+		actorCollision.rectangle.setPosition(actorTransform.position);
+	}
+
 }

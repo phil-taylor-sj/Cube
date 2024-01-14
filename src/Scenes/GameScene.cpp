@@ -24,6 +24,15 @@ namespace Scenes
 			case GameSceneActions::MOVE_RIGHT:
 				m_setPlayerMovement(action);
 				break;
+			case GameSceneActions::SET_CURSOR:
+				if (action.checkProperty("x") && action.checkProperty("y"))
+				{
+					m_cursorPosition = Physics::Vec2f(
+						action.getProperty("x"),
+						action.getProperty("y")
+						);
+				}
+				break;			
 			case GameSceneActions::EXIT:
 				m_window->close();
 				break;
@@ -46,8 +55,24 @@ namespace Scenes
 	void GameScene::updateScene()
 	{
 		this->m_setPlayerAngle();
+		//this->m_cursorPosition -= m_actors->transformComponents[0].position;
+		m_cursorPosition.x -= 0.5f * m_window->getSize().x;
+		m_cursorPosition.y -= 0.5f * m_window->getSize().y;
+		
+		float playerAngle = Utilities::VecMath<float>::angleBetweenVectors(
+			m_cursorPosition, Physics::Vec2f(100.f, 0.f)
+		);
+		if (m_cursorPosition.y < 0.f)
+		{
+			playerAngle = 360.f - playerAngle;
+		}
+
+		m_actors->transformComponents[0].angle = playerAngle;
 		Actors::ActorEntitySystem::applyMovementForce(m_actors->forceComponents);
-		m_actors->updateActors(0.1f);
+
+		m_actors->moveActors(0.1f);
+		m_processCollisions();
+		m_actors->updateGraphics();
 	}
 
 	GameScene::GameScene()
@@ -56,10 +81,17 @@ namespace Scenes
 		m_level->setCommonCellWidth(512.f);
 		m_level->updateAllCellScaling();
 
+		// Make an actor for the player (always set to index 0)
 		m_actors = std::make_unique<Actors::ActorEntityManager>();
-
+		m_actors->setReferenceLength(m_level->getCommonCellWidth());
 		m_actors->assignActor(Actors::ActorTypes::PLAYER, Actors::ActorSubtypes::NONE);
-		m_actors->transformComponents[0].position = Physics::Vec2f(64.f * 2.5f, 64.f * 2.5f);
+
+		
+		Physics::Vec2i gridSize = m_level->getGridSize() - 2;
+		m_actors->transformComponents[0].position = Physics::Vec2f(
+			(rand() % gridSize.x + 1 + 0.5f) * m_level->getCommonCellWidth(),
+			(rand() % gridSize.y + 1 + 0.5f) * m_level->getCommonCellWidth()
+		);
 	}
 
 	void GameScene::m_setPlayerMovement(Engine::Action<GameSceneActions> action)
@@ -108,6 +140,31 @@ namespace Scenes
 		angle = angle / std::max(counter, 1);
 		m_actors->forceComponents[0].isMoving = counter > 0;
 		m_actors->forceComponents[0].movementAngle = angle; 
+	}
+
+	void GameScene::m_processCollisions()
+	{
+		for (const Actors::ActorEntity& actor : m_actors->entities)
+		{
+			if (!actor.isAssigned)
+			{
+				continue;
+			}
+
+			const std::vector<Physics::RectParams> collisions = 
+				m_level->getCircleCollisions(
+					m_actors->collisionComponents[actor.id]
+				);
+			if (collisions.size() > 0)
+			{
+				Actors::ActorEntitySystem::applyWallCollisions(
+					m_actors->transformComponents[actor.id],
+					m_actors->collisionComponents[actor.id],
+					collisions
+				);
+			}
+			
+		}
 	}
 
 }

@@ -15,9 +15,9 @@ namespace Physics
         float rightLowerXY[2] = {0.f, 0.f};
     };
     const double pi = 3.141592653589793;
-    bool checkIntersection(const Circle& circleSetterOne, const Circle& circleSetterTwo);
-    bool checkIntersection(const Rectangle& rectangleSetter, const Circle& circleSetter);
-    bool checkIntersection(const Rectangle& rectSetterOne, const Rectangle& rectSetterTwo);
+    bool checkIntersection(const CircleParams& circleOne, const CircleParams& circleTwo);
+    bool checkIntersection(const RectParams& rectangleIn, const CircleParams& circleIn);
+    bool checkIntersection(const RectParams& rectangleOneIn, const RectParams& rectangleTwoIn);
 
 
     RectCorners calculateCornerPositions(RectParams params);

@@ -4,6 +4,7 @@ namespace Actors
 {
 	void ActorEntityManager::renderActors(sf::RenderWindow& window)
 	{
+		window.draw(graphicsComponents[0].sprite);
 		for (const ActorGraphicsComponent& graphics : graphicsComponents)
 		{
 			if (graphics.isVisible)
@@ -13,7 +14,7 @@ namespace Actors
 		}
 	}
 
-	void ActorEntityManager::updateActors(float deltaTime)
+	void ActorEntityManager::moveActors(float deltaTime)
 	{
 		for (const ActorEntity& actor : entities)
 		{
@@ -21,18 +22,30 @@ namespace Actors
 			{
 				ActorForceComponent& forces = forceComponents[actor.id];
 				ActorTransformComponent& transform = transformComponents[actor.id];
-				ActorGraphicsComponent& graphics = graphicsComponents[actor.id];
+				ActorCollisionComponent& collision = collisionComponents[actor.id];
 
 				transform.position.x += deltaTime * forces.netForce.x;
 				transform.position.y += deltaTime * forces.netForce.y;
 
 				forces.netForce = Physics::Vec2f(0.f, 0.f);
 
-				graphics.sprite.setPosition(
-					transform.position.x,
-					transform.position.y
-				);
+				collision.broadCircle.setPosition(transform.position);
+				collision.rectangle.setPosition(transform.position);
 			}
+		}
+	}
+
+	void ActorEntityManager::updateGraphics()
+	{
+		for (const ActorEntity& actor : entities)
+		{
+			ActorGraphicsComponent& graphics = graphicsComponents[actor.id];
+			ActorTransformComponent& transform = transformComponents[actor.id];
+			graphics.sprite.setPosition(
+				transform.position.x,
+				transform.position.y
+			);
+			graphics.sprite.setRotation(transform.angle - graphics.initialTextureAngle);
 		}
 	}
 
@@ -47,6 +60,19 @@ namespace Actors
 			graphicsComponents[id].isVisible = true;
 			
 			ActorFactory::buildGraphicsComponent(typeComponents[id], graphicsComponents[id]);
+			
+			ActorFactory::buildTransformComponent(
+				typeComponents[id], 
+				transformComponents[id], 
+				m_referenceLength
+			);
+			
+			ActorFactory::buildCollisionComponent(
+				typeComponents[id], 
+				transformComponents[id], 
+				collisionComponents[id]
+			);
+			
 			m_totalActors += 1;			
 		}
 	}
@@ -57,6 +83,16 @@ namespace Actors
 		graphicsComponents[id].isVisible = false;
 		forceComponents[id].isMoving = false;
 		m_totalActors -= 1;
+	}
+
+	void ActorEntityManager::setReferenceLength(float length)
+	{
+		m_referenceLength = length;
+	}
+
+	void ActorEntityManager::updateReferenceLength(float length)
+	{
+		m_referenceLength = length;
 	}
 
 	ActorEntityManager::ActorEntityManager()

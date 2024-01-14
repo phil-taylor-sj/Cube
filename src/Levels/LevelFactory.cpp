@@ -59,7 +59,7 @@ namespace Levels
 		for (int i = 0; i < xGridSize; i++)
 		{
 			CellTypeComponent& typeUpper = cellTypes[cellEntities[i][0].cellId];
-			CellTypeComponent& typeLower = cellTypes[cellEntities[yGridSize - 1][i].cellId];
+			CellTypeComponent& typeLower = cellTypes[cellEntities[i][yGridSize - 1].cellId];
 			typeUpper.type = CellTypes::EDGE_VOID;
 			typeUpper.subtype = CellSubtypes::UPPER_EDGE;
 			typeLower.type = CellTypes::EDGE_VOID;
@@ -182,6 +182,25 @@ namespace Levels
 		}
 	}
 
+	void LevelFactory::updateCollision(
+		const std::vector<CellTransformComponent>& cellTransforms,
+		std::vector<CellCollisionComponent>& cellCollisions)
+	{
+		for (int i = 0; i < cellCollisions.size(); i++)
+		{
+			cellCollisions[i].broadCircle.setPosition(cellTransforms[i].position);
+			cellCollisions[i].broadCircle.setRadius(
+				cellCollisions[i].relativeBroadRadius *
+				cellTransforms[i].cellWidth
+			);
+			for (CellStaticWall& wall : cellCollisions[i].staticWalls)
+			{
+				wall.setCellPosition(cellTransforms[i].position);
+				wall.setCellWidth(cellTransforms[i].cellWidth);
+			}
+		}
+	}
+
 	const std::map<CellSubtypes, std::string> LevelFactory::m_colourFilenames = {
 		{CellSubtypes::YELLOW, "YellowRoom"},
 		{CellSubtypes::WHITE, "WhiteRoom"},
@@ -195,4 +214,5 @@ namespace Levels
 		{CellTypes::EDGE_VOID, "EdgeVoid"},
 		{CellTypes::BRIDGE_VOID, "BridgeVoid"}
 	};
+
 }

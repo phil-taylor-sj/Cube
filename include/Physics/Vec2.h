@@ -19,11 +19,19 @@ namespace Physics
 
 		Vec2<T> operator + (const Vec2<T>& vector);
 
+		Vec2<T> operator + (T value);
+
 		Vec2<T> operator - (const Vec2<T>& vector);
 
+		Vec2<T> operator - (T value);
+
+		Vec2<T> operator * (T value);
+	
 		void operator += (const Vec2<T>& vector);
 
 		void operator -= (const Vec2<T>& vector);
+
+
 
 		bool operator == (const Vec2<T>& vector) const
 		{

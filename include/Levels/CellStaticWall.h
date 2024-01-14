@@ -16,7 +16,7 @@ namespace Levels
 		void setCellPosition(float xPosition, float yPosition);
 		void setCellPosition(Physics::Vec2f position);
 
-		Physics::RectParams getRectangle();
+		Physics::RectParams getRectangle() const;
 
 		CellStaticWall();
 		~CellStaticWall();

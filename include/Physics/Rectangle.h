@@ -5,6 +5,7 @@ namespace Physics
 {
 	struct RectParams {
 		Vec2f position;
+		Vec2f previousPosition;
 		float width;
 		float height;
 		float halfWidth;
@@ -17,10 +18,13 @@ namespace Physics
 	public:
 		void setPosition(Vec2f position);
 		void setPosition(float xPosition, float yPosition);
+		void translate(Vec2f deltaPosition);
+		void translate(float xDelta, float yDelta);
 		void setWidth(float width);
 		void setHeight(float height);
 		void setAngle(float angle);
 		void scaleWidthHeight(float scale);
+		void scalePosition(float scale);
 
 		struct RectParams getRectangle() const;
 

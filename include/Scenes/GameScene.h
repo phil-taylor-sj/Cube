@@ -2,12 +2,15 @@
 #include <SFML/Graphics.hpp>
 #include "math.h"
 #include "Actors/ActorEntityManager.h"
+#include "Actors/ActorEntity.h"
+#include "Actors/ActorComponents.h"
 #include "Levels/LevelEntityManager.h"
 #include "Scenes/Scene.h"
 #include "Assets/TextureDict.h"
 #include "Scenes/GameSceneActions.h"
 #include "Engine/Action.h"
 #include "Actors/ActorEntitySystem.h"
+#include "Utilities/VecMath.h"
 
 namespace Scenes
 {
@@ -41,7 +44,10 @@ namespace Scenes
 			{GameSceneActions::MOVE_RIGHT, false}
 		};
 
+		Physics::Vec2f m_cursorPosition;
+
 		void m_setPlayerMovement(Engine::Action<GameSceneActions> action);
 		void m_setPlayerAngle();
+		void m_processCollisions();
 	};
 }

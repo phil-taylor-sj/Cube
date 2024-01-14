@@ -41,6 +41,8 @@ namespace Engine
 			Action newAction = Action<Scenes::GameSceneActions>(
 				Scenes::GameSceneActions::SET_CURSOR, Engine::ActionType::NONE
 			);
+			newAction.setProperty("x", xCursor);
+			newAction.setProperty("y", yCursor);
 			m_currentScene->processAction(newAction);
 		}
 	}

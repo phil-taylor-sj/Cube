@@ -4,12 +4,28 @@ namespace Physics
 {
 	void Rectangle::setPosition(Vec2f position)
 	{
+		m_params.previousPosition = m_params.position;
 		m_params.position = position;
 	}
 
 	void Rectangle::setPosition(float xPosition, float yPosition)
 	{
+		m_params.previousPosition = m_params.position;
 		m_params.position = Vec2f(xPosition, yPosition);
+	}
+
+	void Rectangle::translate(Vec2f deltaPosition)
+	{
+		m_params.previousPosition = m_params.position;
+		m_params.position += deltaPosition;
+
+	}
+
+	void Rectangle::translate(float xDelta, float yDelta)
+	{
+		m_params.previousPosition = m_params.position;
+		m_params.position.x += xDelta;
+		m_params.position.y += yDelta;
 	}
 
 	void Rectangle::setWidth(float width)
@@ -35,6 +51,12 @@ namespace Physics
 		m_params.height = m_params.height * scale;
 		m_params.halfWidth = 0.5f * m_params.width;
 		m_params.halfHeight = 0.5f * m_params.height;
+	}
+
+	void Rectangle::scalePosition(float scale)
+	{
+		m_params.previousPosition = m_params.previousPosition * scale;
+		m_params.position = m_params.position * scale;
 	}
 
 	RectParams Rectangle::getRectangle() const

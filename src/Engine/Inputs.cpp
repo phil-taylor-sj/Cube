@@ -20,8 +20,8 @@ namespace Engine
 		}
 
 		engine.sendCursorPosition(
-			sf::Mouse::getPosition().x,
-			sf::Mouse::getPosition().y
+			sf::Mouse::getPosition(*m_window).x,
+			sf::Mouse::getPosition(*m_window).y
 		);
 	}
 

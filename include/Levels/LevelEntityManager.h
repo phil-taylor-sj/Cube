@@ -44,6 +44,9 @@ Methods:
 #include "Utilities/GridGen.h"
 #include "Assets/TextureDict.h"
 #include "Levels/LevelFactory.h"
+#include "Physics/Physics.h"
+#include "Actors/ActorComponents.h"
+
 
 namespace Levels
 {
@@ -51,9 +54,14 @@ namespace Levels
 	{
 	public:
 		void setCommonCellWidth(float comonCellWidth);
+		float getCommonCellWidth();
+		Physics::Vec2i getGridSize();
 		void renderLevel(sf::RenderWindow& window);
 		void updateAllCellScaling();
 		void updateAllCellPositions();
+
+		std::vector<Physics::RectParams> getCircleCollisions(
+			const Actors::ActorCollisionComponent& actorCollision);
 
 		LevelEntityManager(int xNumberOfRooms, int yNumberOfRooms);
 
