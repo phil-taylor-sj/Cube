@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 
 add_library(Engine OBJECT
+    Action.cpp
     GameEngine.cpp
     Inputs.cpp
-    Level.cpp
-    TextureDict.cpp
 )
 
 target_include_directories(Engine PUBLIC 

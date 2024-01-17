@@ -2,16 +2,16 @@
 #include <string>
 
 #include "Engine/GameEngine.h"
-#include "Engine/TextureDict.h"
+#include "Assets/TextureDict.h"
 
 int main(int argc, char* argv[])
 {
 	std::string relativePath = "../../../";
 
-	TextureDict::getInstance()->setExeFilepath(argv);
-	TextureDict::getInstance()->setRelativeFilepath(relativePath);
+	Assets::TextureDict::getInstance()->setExeFilepath(argv);
+	Assets::TextureDict::getInstance()->setRelativeFilepath(relativePath);
 
-	GameEngine engine = GameEngine();
+	Engine::GameEngine engine = Engine::GameEngine();
 	engine.runEngine();
 
 	return 0;

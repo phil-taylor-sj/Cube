@@ -1,76 +1,52 @@
 #include "Engine/Inputs.h"
 
-void Inputs::getInputs()
+namespace Engine
 {
-	sf::Event event;
-	while (_window->pollEvent(event))
+	void Inputs::getInputs(GameEngine& engine)
 	{
-		if (event.type == sf::Event::KeyPressed
-			|| event.type == sf::Event::KeyReleased)
+		sf::Event event;
+		while (m_window->pollEvent(event))
 		{
-			_getKeyInputs();
+			if (event.type == sf::Event::KeyPressed
+				|| event.type == sf::Event::KeyReleased)
+			{
+				engine.checkInput(event.key.code, event.type);
+			}
+
+			if (event.type == sf::Event::Resized)
+			{
+				m_getResizeInputs(event);
+			}
 		}
 
-		if (event.type == sf::Event::Resized)
-		{
-			_getResizeInputs(event);
-		}
+		engine.sendCursorPosition(
+			sf::Mouse::getPosition(*m_window).x,
+			sf::Mouse::getPosition(*m_window).y
+		);
 	}
-}
 
-void Inputs::setWindow(std::shared_ptr<sf::RenderWindow> window)
-{
-	_window = window;
-}
-
-void Inputs::setPlayerView(std::shared_ptr<sf::View> playerView)
-{
-	_playerView = playerView;
-}
-
-void Inputs::setPlayer(std::shared_ptr<Player> player)
-{
-	_player = player;
-}
-
-Inputs* Inputs::_instance = nullptr;
-
-Inputs* Inputs::getInstance()
-{
-	if (_instance == nullptr)
+	void Inputs::setWindow(std::shared_ptr<sf::RenderWindow> window)
 	{
-		_instance = new Inputs;
+		m_window = window;
 	}
-		return _instance;
-}
 
-void Inputs::_getKeyInputs()
-{
-	_player->setUpMovement(
-		sf::Keyboard::isKeyPressed(sf::Keyboard::W)
-	);
-	_player->setDownMovement(
-		sf::Keyboard::isKeyPressed(sf::Keyboard::S)
-	);
-	_player->setLeftMovement(
-		sf::Keyboard::isKeyPressed(sf::Keyboard::A)
-	);
-	_player->setRightMovement(
-		sf::Keyboard::isKeyPressed(sf::Keyboard::D)
-	);
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	void Inputs::setPlayerView(std::shared_ptr<sf::View> playerView)
 	{
-		_window->close();
+		m_playerView = playerView;
 	}
-};
 
-void Inputs::_getResizeInputs(
-	sf::Event & event
-)
-{
-	_playerView->setSize(
-		event.size.width,
-		event.size.height
-	);
+	Inputs::Inputs()
+	{
+
+	}
+
+	void Inputs::m_getResizeInputs(
+		sf::Event& event
+	)
+	{
+		m_playerView->setSize(
+			event.size.width,
+			event.size.height
+		);
+	}
 }

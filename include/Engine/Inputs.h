@@ -1,34 +1,31 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <memory>
-#include "Assets/Player.h"
+#include "Engine/GameEngine.h"
 
 
-class Inputs
+
+namespace Engine
 {
 
-public:
-	static Inputs* getInstance();
+	class GameEngine;
 	
-	void getInputs();
+	class Inputs
+	{
+	public:
+		void getInputs(GameEngine& engine);
+		void setWindow(std::shared_ptr<sf::RenderWindow> window);
+		void setPlayerView(std::shared_ptr<sf::View> playerView);
 
-	void setWindow(std::shared_ptr<sf::RenderWindow> window);
-	void setPlayerView(std::shared_ptr<sf::View> playerView);
-	void setPlayer(std::shared_ptr<Player> player);
+		Inputs();
 
-protected:
-	Inputs() = default;
+	private:
 
-private:
-	static Inputs* _instance;
+		std::shared_ptr<sf::RenderWindow> m_window;
+		std::shared_ptr<sf::View> m_playerView;
 
-	std::shared_ptr<sf::RenderWindow> _window;
-	std::shared_ptr<sf::View> _playerView;
-	std::shared_ptr<Player> _player;
-
-	void _getKeyInputs();
-
-	void _getResizeInputs(
-		sf::Event& event
-	);
-};
+		void m_getResizeInputs(
+			sf::Event& event
+		);
+	};
+}

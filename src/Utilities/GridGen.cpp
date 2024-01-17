@@ -1,54 +1,56 @@
 #include "Utilities/GridGen.h"
 
-
-std::vector<std::vector<std::string>> GridGen::randomiseGridColours(
-	int totalCellsX, int totalCellsY
-)
+namespace GridGen
 {
-	int totalColours = 5;
-	std::string randomColour;
-	std::array<std::string, 5> colourList {
-		"BlueRoom", "RedRoom", "GreenRoom", "YellowRoom", "WhiteRoom"
-	};
-
-	std::vector<std::vector<std::string>> randomGridColours;
-	randomGridColours.resize(totalCellsX);
-	for (std::vector<std::string>& row : randomGridColours)
+	std::vector<std::vector<std::string>> GridGen::randomiseGridColours(
+		int totalCellsX, int totalCellsY
+	)
 	{
-		row.resize(totalCellsY);
-	}
+		int totalColours = 5;
+		std::string randomColour;
+		std::array<std::string, 5> colourList {
+			"Blue", "Red", "Green", "Yellow", "White"
+		};
 
-	srand(time(NULL));
-	for (int i = 1; i < totalCellsX; i++)
-	{
-		randomColour = colourList[rand() % totalColours];
-		while (randomColour == randomGridColours[i-1][0])
+		std::vector<std::vector<std::string>> randomGridColours;
+		randomGridColours.resize(totalCellsX);
+		for (std::vector<std::string>& row : randomGridColours)
 		{
-			randomColour = colourList[rand() % totalColours];
+			row.resize(totalCellsY);
 		}
-		randomGridColours[i][0] = randomColour;
-		
-	}
-	for (int j = 1; j < totalCellsY; j++)
-	{
-		randomColour = colourList[rand() % totalColours];
-		while (randomColour == randomGridColours[0][j-1])
+
+		srand(time(NULL));
+		for (int i = 1; i < totalCellsX; i++)
 		{
 			randomColour = colourList[rand() % totalColours];
-		}	
-		randomGridColours[0][j] = randomColour;
-	}
-	for (int i = 1; i < totalCellsX; i++) {
-		for (int j = 1; j < totalCellsY; j++)
-		{
-			randomColour = colourList[rand() % totalColours];
-			while (randomColour == randomGridColours[i][j-1]
-				|| randomColour == randomGridColours[i-1][j])
+			while (randomColour == randomGridColours[i-1][0])
 			{
 				randomColour = colourList[rand() % totalColours];
 			}
-			randomGridColours[i][j] = randomColour;
+			randomGridColours[i][0] = randomColour;
+		
 		}
+		for (int j = 1; j < totalCellsY; j++)
+		{
+			randomColour = colourList[rand() % totalColours];
+			while (randomColour == randomGridColours[0][j-1])
+			{
+				randomColour = colourList[rand() % totalColours];
+			}	
+			randomGridColours[0][j] = randomColour;
+		}
+		for (int i = 1; i < totalCellsX; i++) {
+			for (int j = 1; j < totalCellsY; j++)
+			{
+				randomColour = colourList[rand() % totalColours];
+				while (randomColour == randomGridColours[i][j-1]
+					|| randomColour == randomGridColours[i-1][j])
+				{
+					randomColour = colourList[rand() % totalColours];
+				}
+				randomGridColours[i][j] = randomColour;
+			}
+		}
+		return randomGridColours;
 	}
-	return randomGridColours;
 }

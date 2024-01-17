@@ -1,18 +1,34 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <memory>
-#include "Engine/Level.h"
+#include <typeinfo>
 #include "Engine/Inputs.h"
-#include "Engine/TextureDict.h"
+#include "Assets/TextureDict.h"
+#include "Scenes/GameScene.h"
+#include "Engine/GameEngine.h"
+#include "Engine/Action.h"
 
-class GameEngine
+namespace Engine
 {
-public:
-	void runEngine();
-	
-	GameEngine();
+	class GameEngine
+	{
+	public:
+		std::shared_ptr<sf::RenderWindow> window;
+		sf::Vector2f resolution;
+		sf::VideoMode video;
+
+		std::shared_ptr<sf::View> playerView;
 
 
-private:
+		void checkInput(sf::Keyboard::Key key, sf::Event::EventType eventType);
+		void sendCursorPosition(float xCursor, float yCursor);
 
-};
+		void runEngine();
+
+		GameEngine();
+
+	private:
+		std::unique_ptr<Scenes::Scene<Scenes::GameSceneActions>> m_currentScene;
+
+	};
+}

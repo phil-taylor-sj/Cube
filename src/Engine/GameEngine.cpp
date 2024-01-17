@@ -1,54 +1,69 @@
 #include "Engine/GameEngine.h"
 
-void GameEngine::runEngine()
+
+namespace Engine
 {
-	sf::Vector2f resolution = sf::Vector2f(1000.0, 750.0);
-	sf::VideoMode video(resolution.x, resolution.y);
-	
-	std::shared_ptr<sf::RenderWindow> window = 
-		std::make_shared<sf::RenderWindow>(video, "Cube");
-
-	Level newLevel = Level(5, 5);
-	newLevel.setCommonCellWidth(1024.f);
-
-	std::shared_ptr<Player> player = std::make_shared<Player>();
-	
-	TextureDict::getInstance()->loadTexture("PlayerPlaceholder");
-	player->setTexture(
-		TextureDict::getInstance()->getTexture("PlayerPlaceholder")
-	);
-	player->setMovementSpeed(5.0);
-	player->setPosition(512.f * 2.5f, 512.f * 2.5f);
-	
-	newLevel.constructCells();
-
-	std::shared_ptr<sf::View> playerView = 
-		std::make_shared<sf::View> (
-		sf::Vector2f(0.5*resolution.x, 0.5*resolution.y),
-		sf::Vector2f(resolution.x, resolution.y)
-	);
-	playerView->setViewport(sf::FloatRect(-0.f, -0.f, 1.f, 1.f));
-
-	window->setFramerateLimit(60);
-	
-	Inputs::getInstance()->setWindow(window);
-	Inputs::getInstance()->setPlayerView(playerView);
-	Inputs::getInstance()->setPlayer(player);
-
-	while (window->isOpen())
+	void GameEngine::runEngine()
 	{
-		window->clear();
-		Inputs::getInstance()->getInputs();
-		player->move(1.0);
-		playerView->setCenter(player->getPosition());
-		window->setView(*playerView);
-		newLevel.displayGrid(*window);
-		player->drawSprite(*window);
-		window->display();
+		Engine::Inputs inputs = Engine::Inputs();
+		inputs.setWindow(window);
+		inputs.setPlayerView(playerView);
+
+		while (window->isOpen())
+		{
+			inputs.getInputs(*this);
+			m_currentScene->updateScene();
+			window->clear();
+			m_currentScene->renderScene();
+			window->setView(*playerView);
+			window->display();
+		}
 	}
-}
 
-GameEngine::GameEngine()
-{
+	void GameEngine::checkInput(sf::Keyboard::Key key, sf::Event::EventType eventType)
+	{
+		if (typeid(*m_currentScene) == typeid(Scenes::GameScene))
+		{
+			Scenes::GameSceneActions sceneAction = m_currentScene->checkInput(key);
+			if (sceneAction != Scenes::GameSceneActions::NONE)
+			{
+				ActionType type = (eventType == sf::Event::KeyPressed) ? PRESS : RELEASE;
+				Action newAction = Action<Scenes::GameSceneActions>(sceneAction, type);
+				m_currentScene->processAction(newAction);
+			}
+		}
+	}
 
+	void GameEngine::sendCursorPosition(float xCursor, float yCursor)
+	{
+		if (typeid(*m_currentScene) == typeid(Scenes::GameScene))
+		{
+			Action newAction = Action<Scenes::GameSceneActions>(
+				Scenes::GameSceneActions::SET_CURSOR, Engine::ActionType::NONE
+			);
+			newAction.setProperty("x", xCursor);
+			newAction.setProperty("y", yCursor);
+			m_currentScene->processAction(newAction);
+		}
+	}
+
+	GameEngine::GameEngine()
+	{
+		resolution = sf::Vector2f(1000.f, 750.f);
+		video = sf::VideoMode(resolution.x, resolution.y);
+
+		// Create render window and set framerate.
+		window = std::make_shared<sf::RenderWindow>(video, "Cube");
+		window->setFramerateLimit(60);
+
+		playerView = std::make_shared<sf::View>(
+			sf::Vector2f(0.5 * resolution.x, 0.5 * resolution.y),
+			sf::Vector2f(resolution.x, resolution.y)
+		);
+		playerView->setViewport(sf::FloatRect(-0.f, -0.f, 1.f, 1.f));
+	
+		m_currentScene = std::make_unique<Scenes::GameScene>();
+		m_currentScene->setRenderWindow(window);
+		m_currentScene->setView(playerView);
+	}
 }
