@@ -4,7 +4,7 @@
 
 namespace Levels
 {
-	class CellStaticWall
+	class CellStaticRectangle
 	{
 	public:
 		void setRelativePosition(float relativeX, float relativeY);
@@ -18,8 +18,8 @@ namespace Levels
 
 		Physics::RectParams getRectangle() const;
 
-		CellStaticWall();
-		~CellStaticWall();
+		CellStaticRectangle();
+		~CellStaticRectangle();
 
 	protected:
 		void m_updateRectangle();

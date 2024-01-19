@@ -75,7 +75,7 @@ namespace Levels
 			{
 				continue;
 			}
-			for (const CellStaticWall& wallCollision : cellCollision.staticWalls)
+			for (const CellStaticRectangle& wallCollision : cellCollision.staticWalls)
 			{
 				if (Physics::checkIntersection(wallCollision.getRectangle(), 
 					actorCollision.broadCircle.getCircle()))

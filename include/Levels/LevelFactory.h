@@ -13,10 +13,16 @@ namespace Levels
 	class LevelFactory
 	{
 	public:
+		/**
+		 * @brief Add sf:Texture instances to each cell's sprites based upon its type.
+		 * @params cellTypes A vector array of CellTypeComponent instances.
+		 * @params graphics A vector array of CellGraphicsComponent instances.
+		 */
 		static void addTextures(
 			const std::vector<CellTypeComponent>& cellTypes,
 			std::vector<CellGraphicsComponent>& graphics
 		);
+
 		static void addCollision(const std::vector<CellTypeComponent>& cellTypes, std::vector<CellCollisionComponent>& cellCollisions);
 		static void updateCollision(
 			const std::vector<CellTransformComponent>& cellTransforms,

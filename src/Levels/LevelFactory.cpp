@@ -193,7 +193,7 @@ namespace Levels
 				cellCollisions[i].relativeBroadRadius *
 				cellTransforms[i].cellWidth
 			);
-			for (CellStaticWall& wall : cellCollisions[i].staticWalls)
+			for (CellStaticRectangle& wall : cellCollisions[i].staticWalls)
 			{
 				wall.setCellPosition(cellTransforms[i].position);
 				wall.setCellWidth(cellTransforms[i].cellWidth);

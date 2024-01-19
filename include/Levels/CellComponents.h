@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Physics/Vec2.h"
 #include "Physics/Circle.h"
-#include "Levels/CellStaticWall.h"
+#include "Levels/CellStaticRectangle.h"
 #include "Levels/CellTypes.h"
 #include <array>
 
@@ -21,6 +21,7 @@ namespace Levels
 		CellSubtypes subtype = CellSubtypes::NONE;
 	};
 
+	/*
 	struct CellWallRectComponent
 	{
 		// Absolute position and dimensions.
@@ -42,10 +43,11 @@ namespace Levels
 		// Radius for broad phase collision detection relative to cell width.
 		float relativeBroadRadius;
 	};
+	*/
 
 	struct CellCollisionComponent
 	{
-		std::array<CellStaticWall, 8> staticWalls;
+		std::array<CellStaticRectangle, 8> staticWalls;
 		Physics::Circle broadCircle;
 		float relativeBroadRadius;
 	};
@@ -56,10 +58,14 @@ namespace Levels
 		float cellWidth;
 		float rotation;
 		Physics::Vec2i cellIndices = Physics::Vec2i(0, 0);
-
-		
 	};
 
+	struct CellForceComponent
+	{
+		Physics::Vec2f netForce;
+		bool isMoving = true;
+		float movement = 75.f;
+	};
 
 }
 

@@ -1,52 +1,52 @@
-#include "Levels/CellStaticWall.h"
+#include "Levels/CellStaticRectangle.h"
 
 namespace Levels
 {
-	void CellStaticWall ::setRelativePosition(float relativeX, float relativeY)
+	void CellStaticRectangle ::setRelativePosition(float relativeX, float relativeY)
 	{
 		m_relativePosition = Physics::Vec2f(relativeX, relativeY);
 	}
 
-	void CellStaticWall::setRelativePosition(Physics::Vec2f relativePosition)
+	void CellStaticRectangle::setRelativePosition(Physics::Vec2f relativePosition)
 	{
 		m_relativePosition = relativePosition;
 	}
 
-	void CellStaticWall::setRelativeDimensions(float relativeWidth, float relativeHeight)
+	void CellStaticRectangle::setRelativeDimensions(float relativeWidth, float relativeHeight)
 	{
 		m_relativeWidth = relativeWidth;
 		m_relativeHeight = relativeHeight;
 	}
 
-	void CellStaticWall::setAngle(float angle)
+	void CellStaticRectangle::setAngle(float angle)
 	{
 		m_rectangle.setAngle(angle);
 	}
 
-	void CellStaticWall::setCellWidth(float width)
+	void CellStaticRectangle::setCellWidth(float width)
 	{
 		m_cellWidth = width;
 		m_updateRectangle();
 	}
 
-	void CellStaticWall::setCellPosition(float xPosition, float yPosition)
+	void CellStaticRectangle::setCellPosition(float xPosition, float yPosition)
 	{
 		m_cellPosition = Physics::Vec2f(xPosition, yPosition);
 		m_updateRectangle();
 	}
 
-	void CellStaticWall::setCellPosition(Physics::Vec2f position)
+	void CellStaticRectangle::setCellPosition(Physics::Vec2f position)
 	{
 		m_cellPosition = position;
 		m_updateRectangle();
 	}
 
-	Physics::RectParams CellStaticWall::getRectangle() const
+	Physics::RectParams CellStaticRectangle::getRectangle() const
 	{
 		return m_rectangle.getRectangle();
 	}
 
-	CellStaticWall::CellStaticWall()
+	CellStaticRectangle::CellStaticRectangle()
 	{
 		m_cellWidth = 10.f;
 		m_cellPosition = Physics::Vec2f(10.f, 10.f);
@@ -57,12 +57,12 @@ namespace Levels
 		m_updateRectangle();
 	}
 
-	CellStaticWall::~CellStaticWall()
+	CellStaticRectangle::~CellStaticRectangle()
 	{
 
 	}
 
-	void CellStaticWall::m_updateRectangle()
+	void CellStaticRectangle::m_updateRectangle()
 	{
 		m_rectangle.setPosition(
 			m_cellPosition.x + m_relativePosition.x * m_cellWidth,
