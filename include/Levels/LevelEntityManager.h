@@ -12,8 +12,10 @@
 #include <memory>
 #include <bitset>
 
+#include "Levels/DetectedLevelCollisions.h"
 #include "Levels/CellComponents.h"
 #include "Levels/CellEntity.h"
+#include "Levels/LevelEntitySystem.h"
 #include "Utilities/GridGen.h"
 #include "Assets/TextureDict.h"
 #include "Levels/LevelFactory.h"
@@ -69,7 +71,7 @@ namespace Levels
          * @param actorCollision The actor's collision component.
          * @return A vector of Physics::RectParams representing detected collisions.
          */
-		std::vector<Physics::RectParams> getCircleCollisions(
+		DetectedLevelCollisions getCircleCollisions(
 			const Actors::ActorCollisionComponent& actorCollision);
 
 		/**
@@ -82,11 +84,13 @@ namespace Levels
 	private:
 
 
-		std::vector<std::vector<CellEntity>> m_cellEntities;
+		std::vector<std::vector<int>> m_cellEntityGrid;
+		std::vector<CellEntity> m_cellEntities;
 		std::vector<CellTypeComponent> m_cellTypeComponents;
 		std::vector<CellGraphicsComponent> m_cellGraphicsComponents;
 		std::vector<CellTransformComponent> m_cellTransformComponents;
 		std::vector<CellCollisionComponent> m_cellCollisionComponents;
+		std::vector<CellForceComponent> m_cellForceComponents;
 		int m_xGridSize;
 		int m_yGridSize;
 		int m_totalCells;

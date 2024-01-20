@@ -21,18 +21,18 @@ namespace Levels
 		}
 	};
 
-	void LevelFactory::assignCellTypes(const std::vector<std::vector<CellEntity>>& cellEntities, std::vector<CellTypeComponent>& cellTypes)
+	void LevelFactory::assignCellTypes(const std::vector<std::vector<int>>& cellEntityGrid, std::vector<CellTypeComponent>& cellTypes)
 	{
-		std::map<std::string, CellSubtypes> colours {
-			{"Yellow", CellSubtypes::YELLOW},
-			{"White", CellSubtypes::WHITE},
-			{"Green", CellSubtypes::GREEN},
-			{"Blue", CellSubtypes::BLUE},
-			{"Red", CellSubtypes::RED}
+		std::map<std::string, CellColours> colours {
+			{"Yellow", CellColours::YELLOW},
+			{"White", CellColours::WHITE},
+			{"Green", CellColours::GREEN},
+			{"Blue", CellColours::BLUE},
+			{"Red", CellColours::RED}
 		};
 
-		int xGridSize = cellEntities.size();
-		int yGridSize = cellEntities[0].size();
+		int xGridSize = cellEntityGrid.size();
+		int yGridSize = cellEntityGrid[0].size();
 
 		std::vector<std::vector<std::string>> randomGridColours =
 			GridGen::randomiseGridColours(xGridSize, yGridSize);
@@ -40,16 +40,16 @@ namespace Levels
 		{
 			for (int j = 1; j < yGridSize - 1; j++)
 			{
-				int cellId = cellEntities[i][j].cellId;
+				int cellId = cellEntityGrid[i][j];
 				cellTypes[cellId].type = CellTypes::ROOM;
-				cellTypes[cellId].subtype = colours[randomGridColours[i][j]];
+				cellTypes[cellId].colour = colours[randomGridColours[i][j]];
 			}
 		}
 
 		for (int i = 0; i < yGridSize; i++)
 		{
-			CellTypeComponent& typeLeft = cellTypes[cellEntities[0][i].cellId];
-			CellTypeComponent& typeRight = cellTypes[cellEntities[xGridSize - 1][i].cellId];
+			CellTypeComponent& typeLeft = cellTypes[cellEntityGrid[0][i]];
+			CellTypeComponent& typeRight = cellTypes[cellEntityGrid[xGridSize - 1][i]];
 			typeLeft.type = CellTypes::EDGE_VOID;
 			typeLeft.subtype = CellSubtypes::LEFT_EDGE;
 			typeRight.type = CellTypes::EDGE_VOID;
@@ -58,27 +58,27 @@ namespace Levels
 
 		for (int i = 0; i < xGridSize; i++)
 		{
-			CellTypeComponent& typeUpper = cellTypes[cellEntities[i][0].cellId];
-			CellTypeComponent& typeLower = cellTypes[cellEntities[i][yGridSize - 1].cellId];
+			CellTypeComponent& typeUpper = cellTypes[cellEntityGrid[i][0]];
+			CellTypeComponent& typeLower = cellTypes[cellEntityGrid[i][yGridSize - 1]];
 			typeUpper.type = CellTypes::EDGE_VOID;
 			typeUpper.subtype = CellSubtypes::UPPER_EDGE;
 			typeLower.type = CellTypes::EDGE_VOID;
 			typeLower.subtype = CellSubtypes::LOWER_EDGE;
 		}
 
-		CellTypeComponent& upperLeft = cellTypes[cellEntities[0][0].cellId];
+		CellTypeComponent& upperLeft = cellTypes[cellEntityGrid[0][0]];
 		upperLeft.type = CellTypes::CORNER_VOID;
 		upperLeft.subtype = CellSubtypes::UPPER_LEFT;
 
-		CellTypeComponent& upperRight = cellTypes[cellEntities[xGridSize - 1][0].cellId];
+		CellTypeComponent& upperRight = cellTypes[cellEntityGrid[xGridSize - 1][0]];
 		upperRight.type = CellTypes::CORNER_VOID;
 		upperRight.subtype = CellSubtypes::UPPER_RIGHT;
 
-		CellTypeComponent& lowerLeft = cellTypes[cellEntities[0][yGridSize - 1].cellId];
+		CellTypeComponent& lowerLeft = cellTypes[cellEntityGrid[0][yGridSize - 1]];
 		lowerLeft.type = CellTypes::CORNER_VOID;
 		lowerLeft.subtype = CellSubtypes::LOWER_LEFT;
 
-		CellTypeComponent& lowerRight = cellTypes[cellEntities[xGridSize - 1][yGridSize - 1].cellId];
+		CellTypeComponent& lowerRight = cellTypes[cellEntityGrid[xGridSize - 1][yGridSize - 1]];
 		lowerRight.type = CellTypes::CORNER_VOID;
 		lowerRight.subtype = CellSubtypes::LOWER_RIGHT;
 	}
@@ -102,7 +102,7 @@ namespace Levels
 			{
 				graphics[i].sprite.setTexture(
 					Assets::TextureDict::getInstance()->getTexture(
-						m_colourFilenames.at(cellTypes[i].subtype)
+						m_colourFilenames.at(cellTypes[i].colour)
 					)
 				);
 			}
@@ -130,19 +130,30 @@ namespace Levels
 		}
 	}
 
-	void LevelFactory::addCollision(
+	void LevelFactory::addCollisions(
 		const std::vector<CellTypeComponent>& cellTypes, 
 		std::vector<CellCollisionComponent>& cellCollisions
 	)
 	{
+		for (CellCollisionComponent& collision : cellCollisions)
+		{
+			m_addWallCollisions(collision);
+		}
 
+		for (int i = 0; i < cellCollisions.size(); i++)
+		{
+			m_addFloorCollisions(cellTypes[i], cellCollisions[i]);
+		}
+	}
 
-		// Initialise the eight outer walls
+	void LevelFactory::m_addWallCollisions(CellCollisionComponent& collision)
+	{
 		float wallLength = 0.34375;
 		float wallDepth = 0.078125;
 		float wallHalfLength = 0.5f * wallLength;
 		float wallHalfDepth = 0.5f * wallDepth;
 
+		// Initialise the eight outer walls
 		float wallPositions[8][2] = {
 			{wallHalfDepth,  wallHalfLength},
 			{wallHalfDepth, 1.f - wallHalfLength},
@@ -160,29 +171,137 @@ namespace Levels
 			wallPositions[i][1] -= 0.5f;
 		}
 
-		for (CellCollisionComponent& collision : cellCollisions)
+		collision.relativeBroadRadius = 1.5f;
+
+		for (int i = 0; i <= 3; i++)
 		{
-			collision.relativeBroadRadius = 1.5f;
+			collision.staticWalls[i].setRelativeDimensions(wallDepth, wallLength);
+			collision.staticWalls[i].setRelativePosition(
+				wallPositions[i][0], wallPositions[i][1]
+			);
+		}
 
-			for (int i = 0; i <= 3; i++)
-			{
-				collision.staticWalls[i].setRelativeDimensions(wallDepth, wallLength);
-				collision.staticWalls[i].setRelativePosition(
-					wallPositions[i][0], wallPositions[i][1]
-				);
-			}
+		for (int i = 4; i <= 7; i++)
+		{
+			collision.staticWalls[i].setRelativeDimensions(wallLength, wallDepth);
+			collision.staticWalls[i].setRelativePosition(
+				wallPositions[i][0], wallPositions[i][1]
+			);
+		}
+	}
 
-			for (int i = 4; i <= 7; i++)
+	void LevelFactory::m_addFloorCollisions(
+		const CellTypeComponent& type,
+		CellCollisionComponent& collision)
+	{
+		if (type.type == CellTypes::ROOM)
+		{
+			CellStaticRectangle roomFloor = CellStaticRectangle();
+			roomFloor.setRelativeDimensions(1.f, 1.f);
+			roomFloor.setRelativePosition(0.f, 0.f);
+			collision.staticFloors.push_back(roomFloor);
+		}
+
+		if (type.type == CellTypes::EDGE_VOID || type.type == CellTypes::BRIDGE_VOID)
+		{
+			float floorDepth = 0.078125;
+			float floorLength = 0.4;
+			float floorHalfLength = 0.5f * floorLength;
+			float floorHalfDepth = 0.5f * floorDepth;
+			
+			auto setUpperTunnelFloor = 
+				[floorDepth, floorLength, floorHalfLength, floorHalfDepth]
+				(CellCollisionComponent& collision)
+			{	
+				CellStaticRectangle newFloor = CellStaticRectangle();
+				newFloor.setRelativeDimensions(floorLength, floorDepth);
+				newFloor.setRelativePosition(0.5f, floorHalfDepth);
+				collision.staticFloors.push_back(newFloor);
+			};
+
+			auto setLowerTunnelFloor =
+				[floorDepth, floorLength, floorHalfLength, floorHalfDepth]
+				(CellCollisionComponent& collision)
+				{
+					CellStaticRectangle newFloor = CellStaticRectangle();
+					newFloor.setRelativeDimensions(floorLength, floorDepth);
+					newFloor.setRelativePosition(0.5f, 1.f - floorHalfDepth);
+					collision.staticFloors.push_back(newFloor);
+				};
+
+			auto setRightTunnelFloor =
+				[floorDepth, floorLength, floorHalfLength, floorHalfDepth]
+				(CellCollisionComponent& collision)
+				{
+					CellStaticRectangle newFloor = CellStaticRectangle();
+					newFloor.setRelativeDimensions(floorDepth, floorLength);
+					newFloor.setRelativePosition(1.f - floorHalfDepth, 0.5f);
+					collision.staticFloors.push_back(newFloor);
+				};
+
+			auto setLeftTunnelFloor =
+				[floorDepth, floorLength, floorHalfLength, floorHalfDepth]
+				(CellCollisionComponent& collision)
+				{
+					CellStaticRectangle newFloor = CellStaticRectangle();
+					newFloor.setRelativeDimensions(floorDepth, floorLength);
+					newFloor.setRelativePosition(floorHalfDepth, 0.5f);
+					collision.staticFloors.push_back(newFloor);
+				};
+
+			switch (type.subtype)
 			{
-				collision.staticWalls[i].setRelativeDimensions(wallLength, wallDepth);
-				collision.staticWalls[i].setRelativePosition(
-					wallPositions[i][0], wallPositions[i][1]
-				);
+			case CellSubtypes::UPPER_EDGE:
+				setLowerTunnelFloor(collision);
+				break;
+			case CellSubtypes::LOWER_EDGE:
+				setUpperTunnelFloor(collision);
+				break;
+			case CellSubtypes::LEFT_EDGE:
+				setRightTunnelFloor(collision);
+				break;
+			case CellSubtypes::RIGHT_EDGE:
+				setLeftTunnelFloor(collision);
+				break;
+			case CellSubtypes::BRIDGE_UPPER_LEFT:
+				setLowerTunnelFloor(collision);
+				setRightTunnelFloor(collision);
+				break;
+			case CellSubtypes::BRIDGE_UPPER_RIGHT:
+				setLowerTunnelFloor(collision);
+				setLeftTunnelFloor(collision);
+				break;
+			case CellSubtypes::BRIDGE_LOWER_LEFT:
+				setUpperTunnelFloor(collision);
+				setRightTunnelFloor(collision);
+				break;
+			case CellSubtypes::BRIDGE_LOWER_RIGHT:
+				setUpperTunnelFloor(collision);
+				setLeftTunnelFloor(collision);
+				break;
+			case CellSubtypes::BRIDGE_LEFT_UPPER:
+				setRightTunnelFloor(collision);
+				setLowerTunnelFloor(collision);				
+				break;
+			case CellSubtypes::BRIDGE_LEFT_LOWER:
+				setRightTunnelFloor(collision);
+				setUpperTunnelFloor(collision);				
+				break;
+			case CellSubtypes::BRIDGE_RIGHT_UPPER:
+				setLeftTunnelFloor(collision);
+				setLowerTunnelFloor(collision);
+				break;
+			case CellSubtypes::BRIDGE_RIGHT_LOWER:
+				setLeftTunnelFloor(collision);
+				setUpperTunnelFloor(collision);				
+				break;
+			default:
+				break;
 			}
 		}
 	}
 
-	void LevelFactory::updateCollision(
+	void LevelFactory::updateCollisions(
 		const std::vector<CellTransformComponent>& cellTransforms,
 		std::vector<CellCollisionComponent>& cellCollisions)
 	{
@@ -198,15 +317,20 @@ namespace Levels
 				wall.setCellPosition(cellTransforms[i].position);
 				wall.setCellWidth(cellTransforms[i].cellWidth);
 			}
+			for (CellStaticRectangle& floor : cellCollisions[i].staticFloors)
+			{
+				floor.setCellPosition(cellTransforms[i].position);
+				floor.setCellWidth(cellTransforms[i].cellWidth);
+			}
 		}
 	}
 
-	const std::map<CellSubtypes, std::string> LevelFactory::m_colourFilenames = {
-		{CellSubtypes::YELLOW, "YellowRoom"},
-		{CellSubtypes::WHITE, "WhiteRoom"},
-		{CellSubtypes::GREEN, "GreenRoom"},
-		{CellSubtypes::BLUE, "BlueRoom"},
-		{CellSubtypes::RED, "RedRoom"}
+	const std::map<CellColours, std::string> LevelFactory::m_colourFilenames = {
+		{CellColours::YELLOW, "YellowRoom"},
+		{CellColours::WHITE, "WhiteRoom"},
+		{CellColours::GREEN, "GreenRoom"},
+		{CellColours::BLUE, "BlueRoom"},
+		{CellColours::RED, "RedRoom"}
 	};
 
 	const std::map<CellTypes, std::string> LevelFactory::m_voidFilenames = {

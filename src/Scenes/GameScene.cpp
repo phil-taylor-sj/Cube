@@ -144,6 +144,7 @@ namespace Scenes
 
 	void GameScene::m_processCollisions()
 	{
+		int actorIndex = 0;
 		for (const Actors::ActorEntity& actor : m_actors->entities)
 		{
 			if (!actor.isAssigned)
@@ -151,19 +152,45 @@ namespace Scenes
 				continue;
 			}
 
-			const std::vector<Physics::RectParams> collisions = 
+			const Levels::DetectedLevelCollisions levelCollisions = 
 				m_level->getCircleCollisions(
-					m_actors->collisionComponents[actor.id]
+					m_actors->collisionComponents[actorIndex]
 				);
-			if (collisions.size() > 0)
+
+			if (levelCollisions.isFloorDetected == false)
 			{
-				Actors::ActorEntitySystem::applyWallCollisions(
-					m_actors->transformComponents[actor.id],
-					m_actors->collisionComponents[actor.id],
-					collisions
+				m_window->close();
+			}
+
+			if (actor.components.test(Actors::ActorComponentTypes::GRAVITY))
+			{
+				if (!m_actors->gravityComponents[actorIndex].isFalling)
+				{
+					m_actors->gravityComponents[actorIndex].isFalling = !levelCollisions.isFloorDetected;				
+				}
+				else
+				{
+					continue;
+				}
+				
+				Actors::ActorEntitySystem::applyFloorMovement(
+					m_actors->transformComponents[actorIndex],
+					m_actors->collisionComponents[actorIndex],
+					levelCollisions.floorForce
 				);
 			}
-			
+
+			if (levelCollisions.wallCollisions.size() > 0)
+			{
+				Actors::ActorEntitySystem::applyWallCollisions(
+					m_actors->transformComponents[actorIndex],
+					m_actors->collisionComponents[actorIndex],
+					levelCollisions.wallCollisions
+				);
+			}
+
+
+			actorIndex++;	
 		}
 	}
 

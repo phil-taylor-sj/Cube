@@ -17,7 +17,8 @@ namespace Actors
 		std::vector<ActorTransformComponent> transformComponents;
 		std::vector<ActorCollisionComponent> collisionComponents;
 		std::vector<ActorForceComponent> forceComponents;
-		
+		std::vector<ActorGravityComponent> gravityComponents;
+
 		void assignActor(ActorTypes type, ActorSubtypes subtype);
 		void unassignActor(int id);
 		void moveActors(float deltaTime);

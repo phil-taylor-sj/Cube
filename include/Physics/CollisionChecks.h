@@ -16,6 +16,7 @@ namespace Physics
     };
     const double pi = 3.141592653589793;
     bool checkIntersection(const CircleParams& circleOne, const CircleParams& circleTwo);
+    bool checkIntersection(Vec2f pointPosition, const RectParams& rectangleIn);
     bool checkIntersection(const RectParams& rectangleIn, const CircleParams& circleIn);
     bool checkIntersection(const RectParams& rectangleOneIn, const RectParams& rectangleTwoIn);
 

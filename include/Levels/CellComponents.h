@@ -19,6 +19,7 @@ namespace Levels
 	{
 		CellTypes type = CellTypes::NONE;
 		CellSubtypes subtype = CellSubtypes::NONE;
+		CellColours colour = CellColours::NONE;
 	};
 
 	/*
@@ -48,8 +49,10 @@ namespace Levels
 	struct CellCollisionComponent
 	{
 		std::array<CellStaticRectangle, 8> staticWalls;
+		std::vector<CellStaticRectangle> staticFloors;
 		Physics::Circle broadCircle;
 		float relativeBroadRadius;
+		bool isFloorActive = true;
 	};
 
 	struct CellTransformComponent

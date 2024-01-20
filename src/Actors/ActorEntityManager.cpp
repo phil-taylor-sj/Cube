@@ -55,24 +55,31 @@ namespace Actors
 		if (id >= 0)
 		{
 			entities[id].isAssigned = true;
+
+			entities[id].components.set(ActorComponentTypes::TYPE);
 			typeComponents[id].type = type;
 			typeComponents[id].subtype = subtype;
 			graphicsComponents[id].isVisible = true;
 			
+			entities[id].components.set(ActorComponentTypes::GRAPHICS);
 			ActorFactory::buildGraphicsComponent(typeComponents[id], graphicsComponents[id]);
 			
+			entities[id].components.set(ActorComponentTypes::TRANSFORM);
 			ActorFactory::buildTransformComponent(
 				typeComponents[id], 
 				transformComponents[id], 
 				m_referenceLength
 			);
 			
+			entities[id].components.set(ActorComponentTypes::COLLISION);
 			ActorFactory::buildCollisionComponent(
 				typeComponents[id], 
 				transformComponents[id], 
 				collisionComponents[id]
 			);
 			
+			entities[id].components.set(ActorComponentTypes::GRAVITY);
+
 			m_totalActors += 1;			
 		}
 	}
@@ -82,6 +89,7 @@ namespace Actors
 		entities[id].isAssigned = false;
 		graphicsComponents[id].isVisible = false;
 		forceComponents[id].isMoving = false;
+		entities[id].components.reset();
 		m_totalActors -= 1;
 	}
 
@@ -140,6 +148,7 @@ namespace Actors
 		transformComponents.resize(newSize);
 		collisionComponents.resize(newSize);
 		forceComponents.resize(newSize);
+		gravityComponents.resize(newSize);
 	}
 
 	void ActorEntityManager::m_loadAllTextures()

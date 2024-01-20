@@ -14,7 +14,7 @@ namespace Levels
 				(transform.cellIndices.y + 0.5f) * transform.cellWidth
 			);
 		}
-		LevelFactory::updateCollision(m_cellTransformComponents, m_cellCollisionComponents);
+		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
 	}
 
 	float LevelEntityManager::getCommonCellWidth()
@@ -64,26 +64,25 @@ namespace Levels
 		}
 	};
 
-	std::vector<Physics::RectParams> LevelEntityManager::getCircleCollisions(
+	DetectedLevelCollisions LevelEntityManager::getCircleCollisions(
 		const Actors::ActorCollisionComponent& actorCollision)
 	{
-		std::vector<Physics::RectParams> detectedCollisions;
+		DetectedLevelCollisions detectedCollisions;
+		const Physics::CircleParams& actorCircle = actorCollision.broadCircle.getCircle();
+		int componentIndex = -1;
 		for (const CellCollisionComponent& cellCollision : m_cellCollisionComponents)
 		{
-			if (!Physics::checkIntersection(cellCollision.broadCircle.getCircle(),
-				actorCollision.broadCircle.getCircle()))
-			{
+			componentIndex++;
+			if (!Physics::checkIntersection(cellCollision.broadCircle.getCircle(), actorCircle))
+			{	
 				continue;
 			}
-			for (const CellStaticRectangle& wallCollision : cellCollision.staticWalls)
-			{
-				if (Physics::checkIntersection(wallCollision.getRectangle(), 
-					actorCollision.broadCircle.getCircle()))
-				{
-					detectedCollisions.push_back(wallCollision.getRectangle());
-				}
-			}
+			LevelEntitySystem::getWallCollisions(detectedCollisions, cellCollision, actorCircle);
+			LevelEntitySystem::getFloorCollisions(
+				detectedCollisions, cellCollision, m_cellForceComponents[componentIndex], actorCircle
+			);
 		}
+
 		return detectedCollisions;
 
 	}
@@ -96,15 +95,17 @@ namespace Levels
 
 		m_totalCells = m_xGridSize * m_yGridSize;
 
-		m_cellEntities.resize(m_xGridSize);
-		for (std::vector<CellEntity>& row : m_cellEntities)
+		m_cellEntityGrid.resize(m_xGridSize);
+		for (std::vector<int>& row : m_cellEntityGrid)
 		{
 			row.resize(m_yGridSize);
 		}
 
+		m_cellEntities.resize(m_totalCells);
 		m_cellTransformComponents.resize(m_totalCells);
 		m_cellGraphicsComponents.resize(m_totalCells);
 		m_cellCollisionComponents.resize(m_totalCells);
+		m_cellForceComponents.resize(m_totalCells);
 		m_cellTypeComponents.resize(m_totalCells);
 
 		int counter = 0;
@@ -112,19 +113,18 @@ namespace Levels
 		{
 			for (int j = 0; j < m_yGridSize; j++)
 			{
-				m_cellEntities[i][j].cellId = counter;
+				m_cellEntityGrid[i][j] = counter;
 				m_cellTransformComponents[counter].cellIndices = Physics::Vec2i(i, j);
 				counter += 1;
 			}
 		}
 
 		LevelFactory::loadAllLevelTextures();
-		LevelFactory::assignCellTypes(m_cellEntities, m_cellTypeComponents);
+		LevelFactory::assignCellTypes(m_cellEntityGrid, m_cellTypeComponents);
 		LevelFactory::addTextures(m_cellTypeComponents, m_cellGraphicsComponents);
-		LevelFactory::addCollision(m_cellTypeComponents, m_cellCollisionComponents);
-		LevelFactory::updateCollision(m_cellTransformComponents, m_cellCollisionComponents);
+		LevelFactory::addCollisions(m_cellTypeComponents, m_cellCollisionComponents);
+		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
 	}
-
 }
 
 //std::shared_ptr<Cell> testRoom = std::make_shared<Cell>();
