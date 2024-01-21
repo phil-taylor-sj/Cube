@@ -215,7 +215,7 @@ namespace Levels
 			{	
 				CellStaticRectangle newFloor = CellStaticRectangle();
 				newFloor.setRelativeDimensions(floorLength, floorDepth);
-				newFloor.setRelativePosition(0.5f, floorHalfDepth);
+				newFloor.setRelativePosition(0.f, floorHalfDepth);
 				collision.staticFloors.push_back(newFloor);
 			};
 
@@ -225,7 +225,7 @@ namespace Levels
 				{
 					CellStaticRectangle newFloor = CellStaticRectangle();
 					newFloor.setRelativeDimensions(floorLength, floorDepth);
-					newFloor.setRelativePosition(0.5f, 1.f - floorHalfDepth);
+					newFloor.setRelativePosition(0.f, 0.5f - floorHalfDepth);
 					collision.staticFloors.push_back(newFloor);
 				};
 
@@ -235,7 +235,7 @@ namespace Levels
 				{
 					CellStaticRectangle newFloor = CellStaticRectangle();
 					newFloor.setRelativeDimensions(floorDepth, floorLength);
-					newFloor.setRelativePosition(1.f - floorHalfDepth, 0.5f);
+					newFloor.setRelativePosition(0.5f - floorHalfDepth, 0.f);
 					collision.staticFloors.push_back(newFloor);
 				};
 
@@ -245,7 +245,7 @@ namespace Levels
 				{
 					CellStaticRectangle newFloor = CellStaticRectangle();
 					newFloor.setRelativeDimensions(floorDepth, floorLength);
-					newFloor.setRelativePosition(floorHalfDepth, 0.5f);
+					newFloor.setRelativePosition(floorHalfDepth, 0.f);
 					collision.staticFloors.push_back(newFloor);
 				};
 

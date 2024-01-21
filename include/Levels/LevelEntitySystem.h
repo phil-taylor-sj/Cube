@@ -25,5 +25,7 @@ namespace Levels
 			const CellForceComponent& cellForce,
 			const Physics::CircleParams& actorCircle
 			);
+
+		static void adjustGravityMotion(CellGravityComponent& gravity);
 	};
 }

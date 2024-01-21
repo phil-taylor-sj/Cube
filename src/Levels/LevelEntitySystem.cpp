@@ -44,4 +44,43 @@ namespace Levels
 			}
 		}
 	}
+
+	void LevelEntitySystem::adjustGravityMotion(CellGravityComponent& gravity)
+	{
+		if (gravity.CellState == CellGravityComponent::STEADY)
+		{
+			return;
+		}
+		float time = gravity.timer.getElapsedTime().asSeconds();
+		float timeFraction = std::max(time/gravity.verticalTime, 1.f);
+
+		switch (gravity.CellState)
+		{
+		case CellGravityComponent::FALLING:
+			gravity.currentScale = 1.f - pow(timeFraction, 2);
+			if (timeFraction == 1.f)
+			{
+				gravity.CellState = CellGravityComponent::VANISHED;
+			}
+			break;
+		case CellGravityComponent::RISING:
+			gravity.currentScale = pow(timeFraction, 2);
+			if (timeFraction == 1.f)
+			{
+				gravity.currentScale = 1.f;
+				gravity.CellState = CellGravityComponent::STEADY;
+			}
+			break;
+		case CellGravityComponent::VANISHED:
+			gravity.currentScale = 0.f;
+			break;
+		default:
+			break;
+		};
+		
+
+	}
+	
+
+
 }

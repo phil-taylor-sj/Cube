@@ -70,5 +70,20 @@ namespace Levels
 		float movement = 75.f;
 	};
 
+	struct CellGravityComponent
+	{
+		static enum State 
+		{
+			STEADY,
+			FALLING,
+			RISING,
+			VANISHED
+		};
+
+		sf::Clock timer;
+		State CellState = STEADY; 
+		float currentScale = 1.f;
+		float verticalTime = 3.f;
+	};
 }
 
