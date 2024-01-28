@@ -5,7 +5,7 @@
 #include "Physics/Physics.h"
 #include "Actors/Actors.h"
 #include "Levels/LevelEntityManager.h"
-
+#include "Levels/LevelMoveAction.h"
 
 
 namespace Levels
@@ -26,6 +26,27 @@ namespace Levels
 			const Physics::CircleParams& actorCircle
 			);
 
+
+		static void createMoveAction(
+			int axis,
+			std::vector<std::vector<int>>& cellGrid,
+			std::vector<CellMoveComponent>& moveComponents,
+			std::vector<LevelMoveAction>& moveActions
+		);
+
 		static void adjustGravityMotion(CellGravityComponent& gravity);
+
+		static void applyMovement(
+			CellMoveComponent& move, CellTransformComponent& transform,
+			float relativeSpeed, float commonCellWidth
+		);
+
+		static void updateCellIndicies(
+			const std::vector<std::vector<int>>& cellGrid,
+			std::vector<CellTransformComponent>& transformComponents,
+			std::vector<CellMoveComponent>& moveComponents,
+			int startIndex, int endIndex
+		);
+
 	};
 }

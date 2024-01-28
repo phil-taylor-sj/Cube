@@ -53,6 +53,7 @@ namespace Levels
 		Physics::Circle broadCircle;
 		float relativeBroadRadius;
 		bool isFloorActive = true;
+		bool areCollisionsActive = true;
 	};
 
 	struct CellTransformComponent
@@ -68,6 +69,21 @@ namespace Levels
 		Physics::Vec2f netForce;
 		bool isMoving = true;
 		float movement = 75.f;
+	};
+
+	struct CellMoveComponent
+	{
+		static enum State
+		{
+			STATIC,
+			MOVING_UP,
+			MOVING_DOWN,
+			MOVING_LEFT,
+			MOVING_RIGHT
+		};
+
+		State cellState = STATIC;
+		Physics::Vec2i destinationIndicies = Physics::Vec2i(0, 0);
 	};
 
 	struct CellGravityComponent

@@ -5,7 +5,6 @@ namespace Levels
 	void LevelEntityManager::setCommonCellWidth(float commonCellWidth)
 	{
 		m_commonCellWidth = commonCellWidth;
-
 		for (CellTransformComponent& transform : m_cellTransformComponents)
 		{
 			transform.cellWidth = commonCellWidth;
@@ -32,13 +31,25 @@ namespace Levels
 		for (int i = 0; i < m_totalCells; i++)
 		{
 			CellTransformComponent& transform = m_cellTransformComponents[i];
+			CellGravityComponent& gravity = m_cellGravityComponents[i];
 			sf::Sprite& sprite = m_cellGraphicsComponents[i].sprite;
 			
-			if (sprite.getLocalBounds().width != transform.cellWidth)
+			float cellWidth = transform.cellWidth * gravity.currentScale;
+			if (gravity.CellState == CellGravityComponent::STEADY)
 			{
-				sprite.scale(
-					transform.cellWidth / sprite.getLocalBounds().width,
-					transform.cellWidth / sprite.getLocalBounds().height
+				cellWidth = transform.cellWidth;
+
+			};
+			
+			if (sprite.getLocalBounds().width != cellWidth)
+			{
+				sprite.setScale(
+					cellWidth / sprite.getLocalBounds().width,
+					cellWidth / sprite.getLocalBounds().height
+				);
+				sprite.setOrigin(
+					sprite.getLocalBounds().width * 0.5f,
+					sprite.getLocalBounds().height * 0.5f
 				);
 			}
 		}
@@ -54,6 +65,88 @@ namespace Levels
 
 			sprite.setPosition(transform.position.x, transform.position.y);
 		}
+	}
+
+	void LevelEntityManager::processLevelShift()
+	{
+		if (m_currentMoveActions.size() == 0)
+		{
+			m_currentShiftAxis = (m_currentShiftAxis == LevelEntityManager::ROW) 
+				? LevelEntityManager::COLUMN : LevelEntityManager::ROW;
+			LevelEntitySystem::createMoveAction(m_currentShiftAxis, m_cellEntityGrid,
+				m_cellMoveComponents, m_currentMoveActions);
+			LevelEntitySystem::updateCellIndicies(m_cellEntityGrid, m_cellTransformComponents,
+				m_cellMoveComponents, 0, m_cellEntityGrid.size() - 1);
+		}
+ 
+		for (LevelMoveAction& action : m_currentMoveActions)
+		{
+			switch (action.getCurrentActionState())
+			{
+			case LevelMoveAction::STARTING:
+				action.beginDrop(m_cellGravityComponents, m_cellCollisionComponents);
+				break;
+			case LevelMoveAction::DROPPING:
+				if (action.hasDropCompleted(m_cellGravityComponents))
+				{
+					action.beginShift(m_cellMoveComponents);
+				}
+				break;
+			case LevelMoveAction::SHIFTING:
+				if (action.hasShiftCompleted(m_cellMoveComponents))
+				{
+					CellTransformComponent& transform = 
+						m_cellTransformComponents[action.getDropCellId()];
+					transform.position = Physics::Vec2f(
+						(transform.cellIndices.x + 0.5f) * m_commonCellWidth,
+						(transform.cellIndices.y + 0.5f) * m_commonCellWidth
+					);
+					action.beginRise(m_cellGravityComponents);
+				}
+				break;
+			case LevelMoveAction::CLIMBING:
+				if (action.hasRiseCompleted(m_cellGravityComponents))
+				{
+					action.endAction(m_cellCollisionComponents);
+				}
+				break;
+			case LevelMoveAction::ENDED:
+				break;
+			default:
+				break;
+			};
+		}
+
+		// Remove actions which have completed (ended)
+		for (std::vector<LevelMoveAction>::iterator iter 
+			= m_currentMoveActions.begin(); iter != m_currentMoveActions.end();)
+		{
+			if (iter->getCurrentActionState() == LevelMoveAction::ENDED)
+			{
+				iter = m_currentMoveActions.erase(iter);
+			}
+			else
+			{
+				++iter;
+			}
+		}
+
+		for (int i = 0; i < m_totalCells; i++)
+		{
+			if (m_cellGravityComponents[i].CellState != CellGravityComponent::STEADY)
+			{
+				LevelEntitySystem::adjustGravityMotion(m_cellGravityComponents[i]);
+			}
+				
+			if (m_cellMoveComponents[i].cellState != CellMoveComponent::STATIC)
+			{
+				LevelEntitySystem::applyMovement(
+					m_cellMoveComponents[i], m_cellTransformComponents[i],
+					m_relativeSpeed, m_commonCellWidth
+				);
+			}
+		}
+		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
 	}
 
 	void LevelEntityManager::renderLevel(sf::RenderWindow& window)
@@ -107,6 +200,8 @@ namespace Levels
 		m_cellCollisionComponents.resize(m_totalCells);
 		m_cellForceComponents.resize(m_totalCells);
 		m_cellTypeComponents.resize(m_totalCells);
+		m_cellMoveComponents.resize(m_totalCells);
+		m_cellGravityComponents.resize(m_totalCells);
 
 		int counter = 0;
 		for (int i = 0; i < m_xGridSize; i++)

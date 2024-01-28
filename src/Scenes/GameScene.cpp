@@ -70,14 +70,17 @@ namespace Scenes
 		m_actors->transformComponents[0].angle = playerAngle;
 		Actors::ActorEntitySystem::applyMovementForce(m_actors->forceComponents);
 
+		m_level->processLevelShift();
+		m_level->updateAllCellScaling();
 		m_actors->moveActors(0.1f);
 		m_processCollisions();
 		m_actors->updateGraphics();
+	
 	}
 
 	GameScene::GameScene()
 	{
-		m_level = std::make_unique<Levels::LevelEntityManager>(5, 5);
+		m_level = std::make_unique<Levels::LevelEntityManager>(3, 3);
 		m_level->setCommonCellWidth(512.f);
 		m_level->updateAllCellScaling();
 
@@ -180,12 +183,12 @@ namespace Scenes
 				);
 			}
 
-			if (levelCollisions.wallCollisions.size() > 0)
+			if (levelCollisions.staticWalls.size() > 0)
 			{
 				Actors::ActorEntitySystem::applyWallCollisions(
 					m_actors->transformComponents[actorIndex],
 					m_actors->collisionComponents[actorIndex],
-					levelCollisions.wallCollisions
+					levelCollisions.staticWalls
 				);
 			}
 

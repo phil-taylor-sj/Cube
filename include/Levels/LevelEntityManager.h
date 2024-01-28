@@ -16,6 +16,7 @@
 #include "Levels/CellComponents.h"
 #include "Levels/CellEntity.h"
 #include "Levels/LevelEntitySystem.h"
+#include "levels/LevelMoveAction.h"
 #include "Utilities/GridGen.h"
 #include "Assets/TextureDict.h"
 #include "Levels/LevelFactory.h"
@@ -31,7 +32,13 @@ namespace Levels
 	 */
 	class LevelEntityManager
 	{
-	public:	
+	public:
+
+		enum ShiftAxis
+		{
+			COLUMN = 0,
+			ROW = 1
+		};
 		/**
 	     * @brief Set the common cell width for all cells in the level.
          * @param commonCellWidth The width of each cell.
@@ -49,6 +56,9 @@ namespace Levels
          * @return A Physics::Vec2i representing the grid size.
          */
 		Physics::Vec2i getGridSize();
+
+
+		void processLevelShift();
 
 		/**
          * @brief Render the level on the provided SFML RenderWindow.
@@ -82,7 +92,8 @@ namespace Levels
 		LevelEntityManager(int xNumberOfRooms, int yNumberOfRooms);
 
 	private:
-
+		ShiftAxis m_currentShiftAxis = ROW;
+		std::vector<LevelMoveAction> m_currentMoveActions;
 
 		std::vector<std::vector<int>> m_cellEntityGrid;
 		std::vector<CellEntity> m_cellEntities;
@@ -91,9 +102,12 @@ namespace Levels
 		std::vector<CellTransformComponent> m_cellTransformComponents;
 		std::vector<CellCollisionComponent> m_cellCollisionComponents;
 		std::vector<CellForceComponent> m_cellForceComponents;
+		std::vector<CellMoveComponent> m_cellMoveComponents;
+		std::vector<CellGravityComponent> m_cellGravityComponents;
 		int m_xGridSize;
 		int m_yGridSize;
 		int m_totalCells;
-		float m_commonCellWidth;
+		float m_relativeSpeed = 0.005f;
+		float m_commonCellWidth = 512.f;
 	};
 }
