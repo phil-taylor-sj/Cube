@@ -4,7 +4,7 @@ namespace Levels
 {
 	void LevelFactory::loadAllLevelTextures()
 	{
-		std::string textureNames[8] = {
+		std::string textureNames[9] = {
 			"YellowRoom",
 			"WhiteRoom",
 			"GreenRoom",
@@ -12,14 +12,31 @@ namespace Levels
 			"RedRoom",
 			"CornerVoid",
 			"BridgeVoid",
-			"EdgeVoid"
+			"EdgeVoid",
+			"BackgroundVoid"
 		};
 
 		for (std::string name : textureNames)
 		{
 			Assets::TextureDict::getInstance()->loadTexture(name);
+			if (name == "BackgroundVoid")
+			{
+				Assets::TextureDict::getInstance()->setRepeated(name, true);
+			}
 		}
 	};
+
+	void LevelFactory::createBackground(
+		sf::Sprite& backgroundSprite, float xGridSize, float yGridSize)
+	{
+		sf::Texture& texture = Assets::TextureDict::getInstance()->getTexture("BackgroundVoid");
+		backgroundSprite.setTexture(texture);
+		backgroundSprite.setTextureRect(
+			sf::IntRect(0, 0, 
+				backgroundSprite.getTextureRect().width * xGridSize, 
+				backgroundSprite.getTextureRect().height * yGridSize)
+			);
+	}
 
 	void LevelFactory::assignCellTypes(const std::vector<std::vector<int>>& cellEntityGrid, std::vector<CellTypeComponent>& cellTypes)
 	{

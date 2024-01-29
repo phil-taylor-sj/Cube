@@ -38,7 +38,7 @@ namespace Levels
 
 		static void applyMovement(
 			CellMoveComponent& move, CellTransformComponent& transform,
-			float relativeSpeed, float commonCellWidth
+			CellForceComponent& force, float relativeSpeed, float commonCellWidth
 		);
 
 		static void updateCellIndicies(

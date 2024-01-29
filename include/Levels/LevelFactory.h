@@ -23,6 +23,9 @@ namespace Levels
 			std::vector<CellGraphicsComponent>& graphics
 		);
 
+		static void createBackground(
+			sf::Sprite& backgroundSprite, float xGridSize, float yGridSize);
+
 		static void addCollisions(const std::vector<CellTypeComponent>& cellTypes, std::vector<CellCollisionComponent>& cellCollisions);
 		static void updateCollisions(
 			const std::vector<CellTransformComponent>& cellTransforms,

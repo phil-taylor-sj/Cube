@@ -48,6 +48,7 @@ namespace Scenes
 			m_actors->transformComponents[0].position.y
 		);
 		m_window->setView(*m_view);
+		m_level->renderBackground(*m_window);
 		m_level->renderLevel(*m_window);
 		m_actors->renderActors(*m_window);
 	}
@@ -75,12 +76,13 @@ namespace Scenes
 		m_actors->moveActors(0.1f);
 		m_processCollisions();
 		m_actors->updateGraphics();
+		m_level->clearForces();
 	
 	}
 
 	GameScene::GameScene()
 	{
-		m_level = std::make_unique<Levels::LevelEntityManager>(3, 3);
+		m_level = std::make_unique<Levels::LevelEntityManager>(4, 4);
 		m_level->setCommonCellWidth(512.f);
 		m_level->updateAllCellScaling();
 
@@ -147,7 +149,7 @@ namespace Scenes
 
 	void GameScene::m_processCollisions()
 	{
-		int actorIndex = 0;
+		int actorId = 0;
 		for (const Actors::ActorEntity& actor : m_actors->entities)
 		{
 			if (!actor.isAssigned)
@@ -157,19 +159,19 @@ namespace Scenes
 
 			const Levels::DetectedLevelCollisions levelCollisions = 
 				m_level->getCircleCollisions(
-					m_actors->collisionComponents[actorIndex]
+					m_actors->collisionComponents[actorId]
 				);
 
 			if (levelCollisions.isFloorDetected == false)
 			{
-				m_window->close();
+
 			}
 
 			if (actor.components.test(Actors::ActorComponentTypes::GRAVITY))
 			{
-				if (!m_actors->gravityComponents[actorIndex].isFalling)
+				if (!m_actors->gravityComponents[actorId].isFalling)
 				{
-					m_actors->gravityComponents[actorIndex].isFalling = !levelCollisions.isFloorDetected;				
+					m_actors->gravityComponents[actorId].isFalling = !levelCollisions.isFloorDetected;				
 				}
 				else
 				{
@@ -177,8 +179,8 @@ namespace Scenes
 				}
 				
 				Actors::ActorEntitySystem::applyFloorMovement(
-					m_actors->transformComponents[actorIndex],
-					m_actors->collisionComponents[actorIndex],
+					m_actors->transformComponents[actorId],
+					m_actors->collisionComponents[actorId],
 					levelCollisions.floorForce
 				);
 			}
@@ -186,14 +188,14 @@ namespace Scenes
 			if (levelCollisions.staticWalls.size() > 0)
 			{
 				Actors::ActorEntitySystem::applyWallCollisions(
-					m_actors->transformComponents[actorIndex],
-					m_actors->collisionComponents[actorIndex],
+					m_actors->transformComponents[actorId],
+					m_actors->collisionComponents[actorId],
 					levelCollisions.staticWalls
 				);
 			}
 
 
-			actorIndex++;	
+			actorId++;	
 		}
 	}
 

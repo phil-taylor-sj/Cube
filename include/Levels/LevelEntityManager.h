@@ -60,11 +60,16 @@ namespace Levels
 
 		void processLevelShift();
 
+
+		void renderBackground(sf::RenderWindow& window);
+
 		/**
          * @brief Render the level on the provided SFML RenderWindow.
          * @param window The SFML RenderWindow on which to render the level.
          */
 		void renderLevel(sf::RenderWindow& window);
+
+		void clearForces();
 
 		/**
          * @brief Update the scaling of all cell sprites based on their cell width.
@@ -104,6 +109,8 @@ namespace Levels
 		std::vector<CellForceComponent> m_cellForceComponents;
 		std::vector<CellMoveComponent> m_cellMoveComponents;
 		std::vector<CellGravityComponent> m_cellGravityComponents;
+
+		sf::Sprite m_backgroundSprite;
 		int m_xGridSize;
 		int m_yGridSize;
 		int m_totalCells;

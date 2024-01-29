@@ -28,6 +28,11 @@ namespace Levels
 
 	void LevelEntityManager::updateAllCellScaling()
 	{
+		m_backgroundSprite.setScale(
+			m_commonCellWidth * m_xGridSize / m_backgroundSprite.getLocalBounds().width,
+			m_commonCellWidth * m_yGridSize / m_backgroundSprite.getLocalBounds().height
+		);
+
 		for (int i = 0; i < m_totalCells; i++)
 		{
 			CellTransformComponent& transform = m_cellTransformComponents[i];
@@ -142,11 +147,16 @@ namespace Levels
 			{
 				LevelEntitySystem::applyMovement(
 					m_cellMoveComponents[i], m_cellTransformComponents[i],
-					m_relativeSpeed, m_commonCellWidth
+					m_cellForceComponents[i], m_relativeSpeed, m_commonCellWidth
 				);
 			}
 		}
 		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
+	}
+
+	void LevelEntityManager::renderBackground(sf::RenderWindow& window)
+	{
+		window.draw(m_backgroundSprite);
 	}
 
 	void LevelEntityManager::renderLevel(sf::RenderWindow& window)
@@ -156,6 +166,14 @@ namespace Levels
 			window.draw(m_cellGraphicsComponents[i].sprite);
 		}
 	};
+
+	void LevelEntityManager::clearForces()
+	{
+		for (CellForceComponent& force : m_cellForceComponents)
+		{
+			force.netForce = Physics::Vec2f(0.f, 0.f);
+		}
+	}
 
 	DetectedLevelCollisions LevelEntityManager::getCircleCollisions(
 		const Actors::ActorCollisionComponent& actorCollision)
@@ -215,6 +233,7 @@ namespace Levels
 		}
 
 		LevelFactory::loadAllLevelTextures();
+		LevelFactory::createBackground(m_backgroundSprite, m_xGridSize, m_yGridSize);
 		LevelFactory::assignCellTypes(m_cellEntityGrid, m_cellTypeComponents);
 		LevelFactory::addTextures(m_cellTypeComponents, m_cellGraphicsComponents);
 		LevelFactory::addCollisions(m_cellTypeComponents, m_cellCollisionComponents);

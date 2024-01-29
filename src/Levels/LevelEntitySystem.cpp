@@ -214,6 +214,7 @@ namespace Levels
 	void LevelEntitySystem::applyMovement(
 		CellMoveComponent& move,
 		CellTransformComponent& transform,
+		CellForceComponent& force,
 		float relativeSpeed,
 		float commonCellWidth
 	)
@@ -222,10 +223,12 @@ namespace Levels
 			(move.destinationIndicies.x + 0.5f) * commonCellWidth,
 			(move.destinationIndicies.y + 0.5f) * commonCellWidth
 		);
+		float distance = relativeSpeed * commonCellWidth;
 		switch (move.cellState)
 		{
 		case CellMoveComponent::MOVING_UP:
-			transform.position.y -= relativeSpeed * commonCellWidth;
+			transform.position.y -= distance;
+			force.netForce.y -= distance;
 			if (transform.position.y <= destination.y)
 			{
 				transform.position.y = destination.y;
@@ -234,6 +237,7 @@ namespace Levels
 			break;
 		case CellMoveComponent::MOVING_DOWN:
 			transform.position.y += relativeSpeed * commonCellWidth;
+			force.netForce.y = distance;
 			if (transform.position.y >= destination.y)
 			{
 				transform.position.y = destination.y;
@@ -242,6 +246,7 @@ namespace Levels
 			break;
 		case CellMoveComponent::MOVING_LEFT:
 			transform.position.x -= relativeSpeed * commonCellWidth;
+			force.netForce.x -= distance;
 			if (transform.position.x <= destination.x)
 			{
 				transform.position.x = destination.x;
@@ -250,6 +255,7 @@ namespace Levels
 			break;
 		case CellMoveComponent::MOVING_RIGHT:
 			transform.position.x += relativeSpeed * commonCellWidth;
+			force.netForce.x += distance;
 			if (transform.position.x >= destination.x)
 			{
 				transform.position.x = destination.x;
