@@ -4,6 +4,10 @@
 
 namespace Physics
 {
+	/**
+	 * @struct CircleParams
+	 * @brief Parameters for a circular object.
+	 */
 	struct CircleParams {
 		Vec2f position;
 		Vec2f previousPosition;
@@ -14,10 +18,36 @@ namespace Physics
 	class Circle
 	{
 	public:
+		/**
+		 * @brief Set the x-y coordinates of the circle centre.
+		 * @param position Vector of new x-y coordinates.
+		 */
 		void setPosition(Vec2f position);
+
+		/**
+		 * @brief Set the x-y coordinates of the circle centre.
+	     * @param xPosition The new x-coordinate.
+		 * @param yPosition The new y-coordinate.
+		 */
 		void setPosition(float xPosition, float yPosition);
+		 
+		/**
+		 * @brief Translate the x-y corrdinates of the circle centre.
+		 * @param deltaPosition Distance by which to shift the centre along each axis.
+		 */
 		void translate(Vec2f deltaPosition);
+		
+		/**
+		 * @brief Translate the x-y corrdinates of the circle centre.
+		 * @param xDelta Distance by which to shift the centre along the x axis.
+		 * @param yDelta Distance by which to shift the centre along the y axis.
+		 */
 		void translate(float xDelta, float yDelta);
+
+		/**
+		 * @brief Set the radius of the circle.
+		 * @param 
+		 */
 		void setRadius(float radius);
 		void scaleRadius(float scale);
 		void scalePosition(float scale);

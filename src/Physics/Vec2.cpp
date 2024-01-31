@@ -74,6 +74,13 @@ namespace Physics
 	}
 
 	template <typename T>
+	bool Vec2<T>::operator ==  (const Vec2<T>& vector) const
+	{
+		return this->x == vector.x &&
+			this->y == vector.y;
+	}
+
+	template <typename T>
 	Vec2<T>::Vec2(T xin, T yin)
 	{
 		this->x = xin;
