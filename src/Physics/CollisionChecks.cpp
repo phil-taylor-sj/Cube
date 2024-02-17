@@ -13,6 +13,22 @@ namespace Physics
         return centreSpacing <= totalRadius;
     }
 
+    bool checkIntersection(Physics::Vec2f pointPosition, const RectParams& rectangleIn)
+    {
+        RectParams rectangle = rectangleIn;
+        pointPosition = pointPosition - rectangle.position;      
+        rectangle.position.x = 0.f;
+        rectangle.position.y = 0.f;       
+        
+        if (rectangle.angle > 0.f)
+        {
+            pointPosition.applyRotation(-1.f * rectangle.angle);
+        }
+
+        return !(std::abs(pointPosition.x) > rectangle.halfWidth ||
+            std::abs(pointPosition.y) > rectangle.halfHeight);
+    }
+
     bool checkIntersection(const RectParams& rectangleIn, const CircleParams& circleIn)
     {
         RectParams rectangle = rectangleIn;

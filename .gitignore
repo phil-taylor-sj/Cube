@@ -1,5 +1,7 @@
 # cmake directories
 build
+doxygen/*
+!doxygen/Doxyfile
 lib/*
 !lib/requirements.txt
 # Prerequisites

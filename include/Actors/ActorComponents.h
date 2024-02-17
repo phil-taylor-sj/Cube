@@ -8,6 +8,20 @@
 
 namespace Actors
 {
+	class ActorComponentTypes
+	{
+	public:
+		static enum
+		{
+			GRAPHICS,
+			TYPE,
+			TRANSFORM,
+			FORCE,
+			COLLISION,
+			GRAVITY
+		};
+	};
+
 	struct ActorGraphicsComponent
 	{
 		sf::Sprite sprite;
@@ -45,5 +59,11 @@ namespace Actors
 		Physics::Rectangle rectangle;
 		Physics::Circle broadCircle;
 		float relativeBroadRadius = 1.f;
+	};
+
+	struct ActorGravityComponent
+	{
+		bool isFalling = false;
+		float weight = 0.f;
 	};
 }

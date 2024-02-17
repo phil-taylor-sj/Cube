@@ -13,7 +13,6 @@ namespace Actors
 		
 			}
 		}
-		
 	}
 
 	void ActorEntitySystem::applyWallCollisions(
@@ -31,6 +30,17 @@ namespace Actors
 			actorTransform.position += correction;
 		}
 
+		actorCollision.broadCircle.setPosition(actorTransform.position);
+		actorCollision.rectangle.setPosition(actorTransform.position);
+	}
+
+	void ActorEntitySystem::applyFloorMovement(
+		ActorTransformComponent& actorTransform,
+		ActorCollisionComponent& actorCollision,
+		Physics::Vec2f floorForce
+	)
+	{
+		actorTransform.position += floorForce;
 		actorCollision.broadCircle.setPosition(actorTransform.position);
 		actorCollision.rectangle.setPosition(actorTransform.position);
 	}

@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Physics/Vec2.h"
 #include "Physics/Circle.h"
-#include "Levels/CellStaticWall.h"
+#include "Levels/CellStaticRectangle.h"
 #include "Levels/CellTypes.h"
 #include <array>
 
@@ -19,8 +19,10 @@ namespace Levels
 	{
 		CellTypes type = CellTypes::NONE;
 		CellSubtypes subtype = CellSubtypes::NONE;
+		CellColours colour = CellColours::NONE;
 	};
 
+	/*
 	struct CellWallRectComponent
 	{
 		// Absolute position and dimensions.
@@ -42,12 +44,16 @@ namespace Levels
 		// Radius for broad phase collision detection relative to cell width.
 		float relativeBroadRadius;
 	};
+	*/
 
 	struct CellCollisionComponent
 	{
-		std::array<CellStaticWall, 8> staticWalls;
+		std::array<CellStaticRectangle, 8> staticWalls;
+		std::vector<CellStaticRectangle> staticFloors;
 		Physics::Circle broadCircle;
 		float relativeBroadRadius;
+		bool isFloorActive = true;
+		bool areCollisionsActive = true;
 	};
 
 	struct CellTransformComponent
@@ -56,10 +62,44 @@ namespace Levels
 		float cellWidth;
 		float rotation;
 		Physics::Vec2i cellIndices = Physics::Vec2i(0, 0);
-
-		
 	};
 
+	struct CellForceComponent
+	{
+		Physics::Vec2f netForce;
+		bool isMoving = true;
+		float movement = 75.f;
+	};
 
+	struct CellMoveComponent
+	{
+		static enum State
+		{
+			STATIC,
+			MOVING_UP,
+			MOVING_DOWN,
+			MOVING_LEFT,
+			MOVING_RIGHT
+		};
+
+		State cellState = STATIC;
+		Physics::Vec2i destinationIndicies = Physics::Vec2i(0, 0);
+	};
+
+	struct CellGravityComponent
+	{
+		static enum State 
+		{
+			STEADY,
+			FALLING,
+			RISING,
+			VANISHED
+		};
+
+		sf::Clock timer;
+		State CellState = STEADY; 
+		float currentScale = 1.f;
+		float verticalTime = 3.f;
+	};
 }
 

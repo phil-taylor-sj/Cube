@@ -3,27 +3,27 @@
 
 namespace Assets
 {
-	TextureDict* TextureDict::_instance = nullptr;
+	TextureDict* TextureDict::m_instance = nullptr;
 
 	TextureDict* TextureDict::getInstance()
 	{
-		if (_instance == nullptr)
+		if (m_instance == nullptr)
 		{
-			_instance = new TextureDict;
+			m_instance = new TextureDict;
 		}
-		return _instance;
+		return m_instance;
 	}
 
 	sf::Texture& TextureDict::getTexture(std::string name)
 	{
-		if (_textures.find(name) == _textures.end())
+		if (m_textures.find(name) == m_textures.end())
 		{
 			throw std::invalid_argument(
 				"Key '" + name + "' not found in _textures map of TextureDict."
 			);
 		}
 
-		return _textures[name];
+		return m_textures[name];
 	}
 
 	void TextureDict::loadTexture(std::string name)
@@ -32,8 +32,8 @@ namespace Assets
 		// Specify the relative path to your image file
    
 		// Create the full path by concatenating the executable path and the relative image path
-		_textures[name].loadFromFile(
-			_exePath + "/" + _relativePath + "resources/graphics/" + name + ".png");
+		m_textures[name].loadFromFile(
+			m_exePath + "/" + m_relativePath + "resources/graphics/" + name + ".png");
 	}
 
 	void TextureDict::setExeFilepath(char* argv[])
@@ -41,11 +41,23 @@ namespace Assets
 		std::filesystem::path exeFilepath = std::filesystem::canonical(
 				std::filesystem::path(argv[0])
 				).parent_path();
-		_exePath = exeFilepath.string();
+		m_exePath = exeFilepath.string();
+	}
+
+	void TextureDict::setRepeated(std::string name, bool isRepeated)
+	{
+		if (m_textures.find(name) == m_textures.end())
+		{
+			throw std::invalid_argument(
+				"Key '" + name + "' not found in _textures map of TextureDict."
+			);
+		}
+
+		m_textures[name].setRepeated(isRepeated);
 	}
 
 	void TextureDict::setRelativeFilepath(std::string relativePath)
 	{
-		_relativePath = relativePath;
+		m_relativePath = relativePath;
 	}
 }

@@ -15,5 +15,10 @@ namespace Actors
 			ActorCollisionComponent& actorCollision,
 			std::vector<Physics::RectParams> walls
 		);
+		static void applyFloorMovement(
+			ActorTransformComponent& actorTransform,
+			ActorCollisionComponent& actorCollision,
+			Physics::Vec2f floorForce
+		);
 	};
 }
