@@ -80,6 +80,11 @@ namespace Scenes
 	
 	}
 
+	void GameScene::setDeltaTime(float deltaTime)
+	{
+		Levels::LevelEntitySystem::setDeltaTime(deltaTime);
+	}
+
 	GameScene::GameScene()
 	{
 		m_level = std::make_unique<Levels::LevelEntityManager>(4, 4);

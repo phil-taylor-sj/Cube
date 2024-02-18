@@ -13,6 +13,8 @@ namespace Levels
 	class LevelEntitySystem
 	{
 	public:
+		static void setDeltaTime(float deltaTime);
+
 		static void getWallCollisions(
 			DetectedLevelCollisions& detectedCollisions,
 			const CellCollisionComponent& cellCollision,
@@ -47,6 +49,9 @@ namespace Levels
 			std::vector<CellMoveComponent>& moveComponents,
 			int startIndex, int endIndex
 		);
+
+	private:
+		static float m_deltaTime;
 
 	};
 }

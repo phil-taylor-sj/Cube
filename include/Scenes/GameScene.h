@@ -5,6 +5,7 @@
 #include "Actors/ActorEntity.h"
 #include "Actors/ActorComponents.h"
 #include "Levels/LevelEntityManager.h"
+#include "Levels/LevelEntitySystem.h"
 #include "Scenes/Scene.h"
 #include "Assets/TextureDict.h"
 #include "Scenes/GameSceneActions.h"
@@ -21,6 +22,7 @@ namespace Scenes
 		void processAction(Engine::Action<GameSceneActions>) override;
 		void updateScene() override;
 		void renderScene() override;
+		void setDeltaTime(float deltaTime) override;
 
 		GameScene();
 

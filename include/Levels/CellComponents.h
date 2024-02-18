@@ -96,7 +96,7 @@ namespace Levels
 			VANISHED
 		};
 
-		sf::Clock timer;
+		float timer;
 		State CellState = STEADY; 
 		float currentScale = 1.f;
 		float verticalTime = 3.f;

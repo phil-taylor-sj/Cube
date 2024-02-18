@@ -2,6 +2,11 @@
 
 namespace Levels
 {
+	void LevelEntitySystem::setDeltaTime(float deltaTime)
+	{
+		m_deltaTime = deltaTime;
+	}
+
 	void LevelEntitySystem::getWallCollisions(
 		DetectedLevelCollisions& detectedCollisions,
 		const CellCollisionComponent& cellCollision,
@@ -183,8 +188,9 @@ namespace Levels
 		{
 			return;
 		}
-		float time = gravity.timer.getElapsedTime().asSeconds();
-		float timeFraction = std::min(time/gravity.verticalTime, 1.f);
+		gravity.timer += m_deltaTime;
+		//float time = gravity.timer.getElapsedTime().asSeconds();
+		float timeFraction = std::min(gravity.timer/gravity.verticalTime, 1.f);
 
 		switch (gravity.CellState)
 		{
@@ -266,4 +272,6 @@ namespace Levels
 			break;
 		}
 	}
+
+	float LevelEntitySystem::m_deltaTime = 0.f;
 }

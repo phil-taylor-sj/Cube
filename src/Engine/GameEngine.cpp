@@ -9,14 +9,23 @@ namespace Engine
 		inputs.setWindow(window);
 		inputs.setPlayerView(playerView);
 
+		m_lastDeltaTime = 0.016f;
+		
 		while (window->isOpen())
 		{
+			m_frameTimer.restart();
+			m_currentScene->setDeltaTime(m_lastDeltaTime);
+
 			inputs.getInputs(*this);
 			m_currentScene->updateScene();
+
 			window->clear();
 			m_currentScene->renderScene();
+
 			window->setView(*playerView);
 			window->display();
+			
+			m_lastDeltaTime = m_frameTimer.getElapsedTime().asSeconds();
 		}
 	}
 
