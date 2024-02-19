@@ -78,8 +78,13 @@ namespace Actors
 				collisionComponents[id]
 			);
 			
-			entities[id].components.set(ActorComponentTypes::GRAVITY);
-
+			
+			entities[id].components.reset(ActorComponentTypes::GRAVITY);
+			if (ActorFactory::buildGravityComponent(
+				typeComponents[id], gravityComponents[id]))
+			{
+				entities[id].components.set(ActorComponentTypes::GRAVITY);
+			}
 			m_totalActors += 1;			
 		}
 	}

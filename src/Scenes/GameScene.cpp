@@ -77,12 +77,12 @@ namespace Scenes
 		m_processCollisions();
 		m_actors->updateGraphics();
 		m_level->clearForces();
-	
 	}
 
 	void GameScene::setDeltaTime(float deltaTime)
 	{
 		Levels::LevelEntitySystem::setDeltaTime(deltaTime);
+		Actors::ActorEntitySystem::setDeltaTime(deltaTime);
 	}
 
 	GameScene::GameScene()
@@ -174,12 +174,18 @@ namespace Scenes
 
 			if (actor.components.test(Actors::ActorComponentTypes::GRAVITY))
 			{
-				if (!m_actors->gravityComponents[actorId].isFalling)
-				{
-					m_actors->gravityComponents[actorId].isFalling = !levelCollisions.isFloorDetected;				
+				if (m_actors->gravityComponents[actorId].ActorState == 
+						Actors::ActorGravityComponent::STEADY && !levelCollisions.isFloorDetected)
+				{	
+					m_actors->gravityComponents[actorId].ActorState = 
+						Actors::ActorGravityComponent::FALLING;				
 				}
-				else
+
+				if (m_actors->gravityComponents[actorId].ActorState !=
+					Actors::ActorGravityComponent::STEADY)
 				{
+					Actors::ActorEntitySystem::adjustGravityMotion(
+						m_actors->gravityComponents[actorId]);
 					continue;
 				}
 				

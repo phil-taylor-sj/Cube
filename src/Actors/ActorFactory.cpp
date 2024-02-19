@@ -67,4 +67,28 @@ namespace Actors
 			collision.relativeBroadRadius
 		);
 	}
+
+	bool ActorFactory::buildGravityComponent(
+		const ActorTypeComponent& types,
+		ActorGravityComponent& gravity
+	)
+	{
+		std::set<ActorTypes> flyingTypes = 
+		{
+			ActorTypes::PROJECTILE
+		};
+
+
+		if (flyingTypes.find(types.type) != flyingTypes.end()) 
+		{
+			return false;
+		}
+
+		gravity.timer = 0.f;
+		gravity.ActorState = ActorGravityComponent::STEADY;
+		gravity.currentScale = 1.f;
+		gravity.verticalTime = 2.f;
+		return true;
+
+	}
 }

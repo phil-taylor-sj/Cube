@@ -9,6 +9,7 @@ namespace Actors
 	class ActorEntitySystem
 	{
 	public:
+		static void setDeltaTime(float deltaTime);
 		static void applyMovementForce(std::vector<ActorForceComponent>& forceComponents);
 		static void applyWallCollisions(
 			ActorTransformComponent& actorTransform,
@@ -20,5 +21,11 @@ namespace Actors
 			ActorCollisionComponent& actorCollision,
 			Physics::Vec2f floorForce
 		);
+
+		static void adjustGravityMotion(ActorGravityComponent& gravity);
+
+	private:
+		static float m_deltaTime;
+
 	};
 }
