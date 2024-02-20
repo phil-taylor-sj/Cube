@@ -53,10 +53,13 @@ namespace Actors
 				float width = transformComponents[actor.id].width * currentScale;
 				float height = transformComponents[actor.id].height * currentScale;
 
+				float spriteWidth = graphics.sprite.getLocalBounds().width;
+				float spriteHeight = graphics.sprite.getLocalBounds().height;
 				graphics.sprite.setScale(
 					width / graphics.sprite.getLocalBounds().width,
 					height / graphics.sprite.getLocalBounds().height
 				);
+				int test = 4;
 			}
 		}
 	}

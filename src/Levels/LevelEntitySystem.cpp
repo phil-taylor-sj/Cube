@@ -41,10 +41,17 @@ namespace Levels
 			
 		for (const CellStaticRectangle& floorCollision : cellCollision.staticFloors)
 		{
+			// Create a new circle for checking actor contact with the floor
+			float baseScaleFactor = 0.2f;
+			Physics::CircleParams baseCircle = actorCircle;
+			baseCircle.radius = actorCircle.radius * baseScaleFactor;
+			baseCircle.radiusSquared = pow(baseCircle.radius, 2); 
+
 			if (Physics::checkIntersection(
-				actorCircle.position,floorCollision.getRectangle())
+				floorCollision.getRectangle(), baseCircle)
 				)
 			{
+				// Move the actor with the floor if in contact
 				detectedCollisions.isFloorDetected = true;
 				if (cellForce.isMoving)
 				{
