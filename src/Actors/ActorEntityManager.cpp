@@ -46,6 +46,18 @@ namespace Actors
 				transform.position.y
 			);
 			graphics.sprite.setRotation(transform.angle - graphics.initialTextureAngle);
+
+			if (actor.components.test(Actors::ActorComponentTypes::GRAVITY))
+			{
+				float currentScale = gravityComponents[actor.id].currentScale;
+				float width = transformComponents[actor.id].width * currentScale;
+				float height = transformComponents[actor.id].height * currentScale;
+
+				graphics.sprite.setScale(
+					width / graphics.sprite.getLocalBounds().width,
+					height / graphics.sprite.getLocalBounds().height
+				);
+			}
 		}
 	}
 

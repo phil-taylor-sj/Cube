@@ -15,7 +15,6 @@ namespace Actors
 			{
 				force.netForce.x += force.movement * cos(force.movementAngle * 3.14159f / 180.f);
 				force.netForce.y += force.movement * sin(force.movementAngle * 3.14159f / 180.f);
-		
 			}
 		}
 	}
@@ -78,5 +77,4 @@ namespace Actors
 	}
 
 	float Actors::ActorEntitySystem::m_deltaTime = 0.1f;
-
 }
