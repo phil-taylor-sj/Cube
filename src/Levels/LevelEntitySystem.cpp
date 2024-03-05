@@ -249,7 +249,7 @@ namespace Levels
 			}
 			break;
 		case CellMoveComponent::MOVING_DOWN:
-			transform.position.y += relativeSpeed * commonCellWidth;
+			transform.position.y += distance;
 			force.netForce.y = distance;
 			if (transform.position.y >= destination.y)
 			{
@@ -258,7 +258,7 @@ namespace Levels
 			}
 			break;
 		case CellMoveComponent::MOVING_LEFT:
-			transform.position.x -= relativeSpeed * commonCellWidth;
+			transform.position.x -= distance;
 			force.netForce.x -= distance;
 			if (transform.position.x <= destination.x)
 			{
@@ -267,7 +267,7 @@ namespace Levels
 			}
 			break;
 		case CellMoveComponent::MOVING_RIGHT:
-			transform.position.x += relativeSpeed * commonCellWidth;
+			transform.position.x += distance;
 			force.netForce.x += distance;
 			if (transform.position.x >= destination.x)
 			{

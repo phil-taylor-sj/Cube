@@ -148,8 +148,18 @@ namespace Scenes
 		}
 
 		angle = angle / std::max(counter, 1);
-		m_actors->forceComponents[0].isMoving = counter > 0;
-		m_actors->forceComponents[0].movementAngle = angle; 
+		
+		// Don't apply movement inputs if player is 
+		if (m_actors->gravityComponents[0].ActorState !=
+			Actors::ActorGravityComponent::FALLING)
+		{
+			m_actors->forceComponents[0].isMoving = counter > 0;
+			m_actors->forceComponents[0].movementAngle = angle; 
+		}
+		else
+		{
+			m_actors->forceComponents[0].isMoving = false;
+		}
 	}
 
 	void GameScene::m_processCollisions()
