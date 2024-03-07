@@ -1,5 +1,5 @@
 #pragma once
-#include "math.h"
+#include <cmath>
 
 namespace Physics
 {
@@ -43,12 +43,17 @@ namespace Physics
 		void applyRotation(T angle);
 
 		/**
+		 * @brief Round each component down to the nearest integer.
+		 */
+		Vec2<T> floor();
+
+		/**
 		 * @brief Overload the addition operator (+) for vector addition.
 		 * 
 		 * @param vector The vector to be added.
 		 * @return The result of vector addition.
 		 */
-		Vec2<T> operator + (const Vec2<T>& vector);
+		Vec2<T> operator + (const Vec2<T>& vector) const;
 
 		/**
 		 * @brief Overload the addition operator (+) for adding a scalar value.
@@ -56,7 +61,7 @@ namespace Physics
 		 * @param value The scalar value to be added.
 		 * @return The result of adding the scalar value.
 		 */
-		Vec2<T> operator + (T value);
+		Vec2<T> operator + (T value) const;
 
 		/**
 		 * @brief Overload the subtraction operator (-) for vector subtraction.
@@ -64,7 +69,7 @@ namespace Physics
 		 * @param vector The vector to be subtracted.
 		 * @return The result of vector subtraction.
 		 */
-		Vec2<T> operator - (const Vec2<T>& vector);
+		Vec2<T> operator - (const Vec2<T>& vector) const;
 
 		/**
 		 * @brief Overload the subtraction operator (-) for subtracting a scalar value.
@@ -72,7 +77,7 @@ namespace Physics
 		 * @param value The scalar value to be subtracted.
 		 * @return The result of subtracting the scalar value.
 		 */
-		Vec2<T> operator - (T value);
+		Vec2<T> operator - (T value) const;
 
 		/**
 		 * @brief Overload the multiplication operator (*) for scalar multiplication.
@@ -80,8 +85,16 @@ namespace Physics
 		 * @param value The scalar value to be multiplied.
 		 * @return The result of scalar multiplication.
 		 */
-		Vec2<T> operator * (T value);
+		Vec2<T> operator * (T value) const;
 	
+		/**
+		 * @brief Overload the division operator (/) for scalar division.
+		 *
+		 * @param value The scalar value to be divided by.
+		 * @return The result of scalar division.
+		 */
+		Vec2<T> operator / (T value) const;
+
 		/**
 		 * @brief Overload the addition assignment operator (+=) for vector addition.
 		 * 

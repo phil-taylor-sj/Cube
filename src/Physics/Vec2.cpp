@@ -28,35 +28,47 @@ namespace Physics
 		this->x = newX;
 		this->y = newY;
 	}
+
+	template <typename T>
+	Vec2<T> Vec2<T>::floor()
+	{
+		return Vec2<T>(std::floor(this->x),std::floor(this->y));
+	}
 	
 	template <typename T>
-	Vec2<T> Vec2<T>::operator + (const Vec2<T>& vector)
+	Vec2<T> Vec2<T>::operator + (const Vec2<T>& vector) const
 	{
 		return Vec2<T>(this->x + vector.x, this->y + vector.y);
 	}
 
 	template <typename T>
-	Vec2<T> Vec2<T>::operator + (T value)
+	Vec2<T> Vec2<T>::operator + (T value) const
 	{
 		return Vec2<T>(this->x + value, this->y + value);
 	}
 
 	template <typename T>
-	Vec2<T> Vec2<T>::operator - (const Vec2<T>& vector)
+	Vec2<T> Vec2<T>::operator - (const Vec2<T>& vector) const
 	{
 		return Vec2<T>(this->x - vector.x, this->y - vector.y);
 	}
 
 	template <typename T>
-	Vec2<T> Vec2<T>::operator - (T value)
+	Vec2<T> Vec2<T>::operator - (T value) const
 	{
 		return Vec2<T>(this->x - value, this->y - value);
 	}
 
 	template<typename T>
-	Vec2<T> Vec2<T>::operator * (T value)
+	Vec2<T> Vec2<T>::operator * (T value) const
 	{
 		return Vec2<T>(this->x * value, this->y * value);
+	}
+
+	template<typename T>
+	Vec2<T> Vec2<T>::operator / (T value) const
+	{
+		return Vec2<T>(this->x / value, this->y / value);
 	}
 
 	template <typename T>

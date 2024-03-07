@@ -185,13 +185,18 @@ namespace Levels
 		{
 			componentIndex++;
 			if (!Physics::checkIntersection(cellCollision.broadCircle.getCircle(), actorCircle))
-			{	
+			{
 				continue;
 			}
 			LevelEntitySystem::getWallCollisions(detectedCollisions, cellCollision, actorCircle);
 			LevelEntitySystem::getFloorCollisions(
 				detectedCollisions, cellCollision, m_cellForceComponents[componentIndex], actorCircle
 			);
+			if (detectedCollisions.isFloorDetected == false)
+			{
+				detectedCollisions.voidCentre = 
+					(actorCircle.position / m_commonCellWidth).floor() + 0.5f;
+			}
 		}
 
 		return detectedCollisions;

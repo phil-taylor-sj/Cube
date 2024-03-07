@@ -13,6 +13,7 @@ namespace Scenes
         void virtual processAction(Engine::Action<T> action) = 0;
         void virtual updateScene() = 0;
         void virtual renderScene() = 0;
+        void virtual setDeltaTime(float deltaTime) = 0;
 
         void setRenderWindow(std::shared_ptr<sf::RenderWindow> window);
         void setView(std::shared_ptr<sf::View> view);

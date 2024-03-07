@@ -41,7 +41,7 @@ namespace Actors
 	{
 		std::map<ActorTypes, std::array<float, 2>> relativeWidthsHeights
 		{
-			{ActorTypes::PLAYER, {0.0625f, 0.0625f}}
+			{ActorTypes::PLAYER, {2 * 0.0625f, 2 * 0.0625f}}
 		};
 
 		transform.relativeWidth = relativeWidthsHeights[types.type][0];
@@ -63,8 +63,32 @@ namespace Actors
 
 		collision.relativeBroadRadius = relativeBroadRadii[ActorTypes::PLAYER];
 		collision.broadCircle.setRadius(
-			std::max(transform.width, transform.height) * 
+			std::max(transform.width, transform.height) * 0.5f * 
 			collision.relativeBroadRadius
 		);
+	}
+
+	bool ActorFactory::buildGravityComponent(
+		const ActorTypeComponent& types,
+		ActorGravityComponent& gravity
+	)
+	{
+		std::set<ActorTypes> flyingTypes = 
+		{
+			ActorTypes::PROJECTILE
+		};
+
+
+		if (flyingTypes.find(types.type) != flyingTypes.end()) 
+		{
+			return false;
+		}
+
+		gravity.timer = 0.f;
+		gravity.ActorState = ActorGravityComponent::STEADY;
+		gravity.currentScale = 1.f;
+		gravity.verticalTime = 2.f;
+		return true;
+
 	}
 }

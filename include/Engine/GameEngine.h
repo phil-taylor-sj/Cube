@@ -29,6 +29,7 @@ namespace Engine
 
 	private:
 		std::unique_ptr<Scenes::Scene<Scenes::GameSceneActions>> m_currentScene;
-
+		sf::Clock m_frameTimer;
+		float m_lastDeltaTime;
 	};
 }

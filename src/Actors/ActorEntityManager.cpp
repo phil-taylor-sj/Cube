@@ -46,6 +46,21 @@ namespace Actors
 				transform.position.y
 			);
 			graphics.sprite.setRotation(transform.angle - graphics.initialTextureAngle);
+
+			if (actor.components.test(Actors::ActorComponentTypes::GRAVITY))
+			{
+				float currentScale = gravityComponents[actor.id].currentScale;
+				float width = transformComponents[actor.id].width * currentScale;
+				float height = transformComponents[actor.id].height * currentScale;
+
+				float spriteWidth = graphics.sprite.getLocalBounds().width;
+				float spriteHeight = graphics.sprite.getLocalBounds().height;
+				graphics.sprite.setScale(
+					width / graphics.sprite.getLocalBounds().width,
+					height / graphics.sprite.getLocalBounds().height
+				);
+				int test = 4;
+			}
 		}
 	}
 
@@ -78,8 +93,13 @@ namespace Actors
 				collisionComponents[id]
 			);
 			
-			entities[id].components.set(ActorComponentTypes::GRAVITY);
-
+			
+			entities[id].components.reset(ActorComponentTypes::GRAVITY);
+			if (ActorFactory::buildGravityComponent(
+				typeComponents[id], gravityComponents[id]))
+			{
+				entities[id].components.set(ActorComponentTypes::GRAVITY);
+			}
 			m_totalActors += 1;			
 		}
 	}

@@ -3,6 +3,7 @@
 #include <array>
 #include "Actors/ActorComponents.h"
 #include "Assets/TextureDict.h"
+#include <set>
 
 namespace Actors
 {
@@ -23,6 +24,11 @@ namespace Actors
 			const ActorTypeComponent& types, 
 			const ActorTransformComponent& transform,
 			ActorCollisionComponent& collision
+		);
+
+		static bool buildGravityComponent(
+			const ActorTypeComponent& types,
+			ActorGravityComponent& gravity
 		);
 		
 	};

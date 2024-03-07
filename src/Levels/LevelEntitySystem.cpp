@@ -2,6 +2,11 @@
 
 namespace Levels
 {
+	void LevelEntitySystem::setDeltaTime(float deltaTime)
+	{
+		m_deltaTime = deltaTime;
+	}
+
 	void LevelEntitySystem::getWallCollisions(
 		DetectedLevelCollisions& detectedCollisions,
 		const CellCollisionComponent& cellCollision,
@@ -36,10 +41,17 @@ namespace Levels
 			
 		for (const CellStaticRectangle& floorCollision : cellCollision.staticFloors)
 		{
+			// Create a new circle for checking actor contact with the floor
+			float baseScaleFactor = 0.2f;
+			Physics::CircleParams baseCircle = actorCircle;
+			baseCircle.radius = actorCircle.radius * baseScaleFactor;
+			baseCircle.radiusSquared = pow(baseCircle.radius, 2); 
+
 			if (Physics::checkIntersection(
-				actorCircle.position,floorCollision.getRectangle())
+				floorCollision.getRectangle(), baseCircle)
 				)
 			{
+				// Move the actor with the floor if in contact
 				detectedCollisions.isFloorDetected = true;
 				if (cellForce.isMoving)
 				{
@@ -183,8 +195,9 @@ namespace Levels
 		{
 			return;
 		}
-		float time = gravity.timer.getElapsedTime().asSeconds();
-		float timeFraction = std::min(time/gravity.verticalTime, 1.f);
+		gravity.timer += m_deltaTime;
+		//float time = gravity.timer.getElapsedTime().asSeconds();
+		float timeFraction = std::min(gravity.timer/gravity.verticalTime, 1.f);
 
 		switch (gravity.CellState)
 		{
@@ -236,7 +249,7 @@ namespace Levels
 			}
 			break;
 		case CellMoveComponent::MOVING_DOWN:
-			transform.position.y += relativeSpeed * commonCellWidth;
+			transform.position.y += distance;
 			force.netForce.y = distance;
 			if (transform.position.y >= destination.y)
 			{
@@ -245,7 +258,7 @@ namespace Levels
 			}
 			break;
 		case CellMoveComponent::MOVING_LEFT:
-			transform.position.x -= relativeSpeed * commonCellWidth;
+			transform.position.x -= distance;
 			force.netForce.x -= distance;
 			if (transform.position.x <= destination.x)
 			{
@@ -254,7 +267,7 @@ namespace Levels
 			}
 			break;
 		case CellMoveComponent::MOVING_RIGHT:
-			transform.position.x += relativeSpeed * commonCellWidth;
+			transform.position.x += distance;
 			force.netForce.x += distance;
 			if (transform.position.x >= destination.x)
 			{
@@ -266,4 +279,6 @@ namespace Levels
 			break;
 		}
 	}
+
+	float LevelEntitySystem::m_deltaTime = 0.f;
 }

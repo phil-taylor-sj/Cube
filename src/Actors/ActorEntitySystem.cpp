@@ -2,6 +2,11 @@
 
 namespace Actors
 {
+	void ActorEntitySystem::setDeltaTime(float deltaTime)
+	{
+		m_deltaTime = deltaTime;
+	}
+
 	void ActorEntitySystem::applyMovementForce(std::vector<ActorForceComponent>& forceComponents)
 	{
 		for (ActorForceComponent& force : forceComponents)
@@ -10,7 +15,6 @@ namespace Actors
 			{
 				force.netForce.x += force.movement * cos(force.movementAngle * 3.14159f / 180.f);
 				force.netForce.y += force.movement * sin(force.movementAngle * 3.14159f / 180.f);
-		
 			}
 		}
 	}
@@ -45,4 +49,32 @@ namespace Actors
 		actorCollision.rectangle.setPosition(actorTransform.position);
 	}
 
+	void ActorEntitySystem::adjustGravityMotion(ActorGravityComponent& gravity)
+	{
+		if (gravity.ActorState == ActorGravityComponent::STEADY)
+		{
+			return;
+		}
+		gravity.timer += m_deltaTime;
+		//float time = gravity.timer.getElapsedTime().asSeconds();
+		float timeFraction = std::min(gravity.timer / gravity.verticalTime, 1.f);
+
+		switch (gravity.ActorState)
+		{
+		case ActorGravityComponent::FALLING:
+			gravity.currentScale = 1.f - pow(timeFraction, 2);
+			if (timeFraction == 1.f)
+			{
+				gravity.ActorState = ActorGravityComponent::VANISHED;
+			}
+			break;
+		case ActorGravityComponent::VANISHED:
+			gravity.currentScale = 0.f;
+			break;
+		default:
+			break;
+		};
+	}
+
+	float Actors::ActorEntitySystem::m_deltaTime = 0.1f;
 }

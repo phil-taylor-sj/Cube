@@ -63,7 +63,16 @@ namespace Actors
 
 	struct ActorGravityComponent
 	{
-		bool isFalling = false;
-		float weight = 0.f;
+		static enum State
+		{
+			STEADY,
+			FALLING,
+			VANISHED
+		};
+
+		float timer = 0.f;
+		State ActorState = STEADY;
+		float currentScale = 1.f;
+		float verticalTime = 3.f;
 	};
 }

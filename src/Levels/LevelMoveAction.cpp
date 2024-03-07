@@ -54,7 +54,7 @@ namespace Levels
 		m_actionState = DROPPING;
 		gravityComponents[m_cellToDrop].CellState = 
 			CellGravityComponent::FALLING;
-		gravityComponents[m_cellToDrop].timer.restart();
+		gravityComponents[m_cellToDrop].timer = 0.f;
 		collisionComponents[m_cellToDrop].areCollisionsActive = false;
 		collisionComponents[m_cellToDrop].isFloorActive = false;
 	}
@@ -76,7 +76,7 @@ namespace Levels
 		m_actionState = CLIMBING;
 		gravityComponents[m_cellToDrop].CellState =
 			CellGravityComponent::RISING;
-		gravityComponents[m_cellToDrop].timer.restart();
+		gravityComponents[m_cellToDrop].timer = 0.f;
 	}
 
 	void LevelMoveAction::endAction(
