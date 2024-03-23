@@ -1,7 +1,10 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Engine/Action.h"
+#include "Scenes/SceneNames.h"
 #include "Scenes/GameSceneActions.h"
+#include "Scenes/TitleSceneActions.h"
+
 
 namespace Scenes
 {

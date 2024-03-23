@@ -53,3 +53,5 @@ namespace Engine
 }
 
 template class Engine::Action<Scenes::GameSceneActions>;
+
+template class Engine::Action<Scenes::TitleSceneActions>;
