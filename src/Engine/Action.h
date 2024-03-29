@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include "Scenes/GameSceneActions.h"
+#include "Scenes/TitleSceneActions.h"
 
 namespace Engine
 {
