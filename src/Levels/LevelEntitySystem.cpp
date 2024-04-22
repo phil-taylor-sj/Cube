@@ -285,7 +285,7 @@ namespace Levels
 	)
 	{
 		numbers.timer += m_deltaTime;
-		if (numbers.timer == numbers.period)
+		if (numbers.timer < numbers.period)
 		{
 			return;
 		}
@@ -296,6 +296,11 @@ namespace Levels
 		{
 			numbers.currentPanel = m_panels[rand() % 9];
 		}
+		numbers.relativePosition = m_panelPositions[numbers.currentPanel];
+		numbers.currentIndex = (numbers.currentIndex < numbers.numbers.size() - 1)
+			? numbers.currentIndex + 1 
+			: 0;
+		numbers.text.setString(numbers.numbers[numbers.currentIndex]);
 	}
 
 	float LevelEntitySystem::m_deltaTime = 0.f;
@@ -324,4 +329,5 @@ namespace Levels
 		{CellPanel::BOT_LEFT,  Physics::Vec2f(-1.f * m_offset,  1.f * m_offset)},
 		{CellPanel::BOT_MID,   Physics::Vec2f(0.f * m_offset,  1.f * m_offset)},
 		{CellPanel::BOT_RIGHT, Physics::Vec2f(1.f * m_offset,  1.f * m_offset)}
+	};
 }

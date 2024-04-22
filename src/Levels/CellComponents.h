@@ -117,12 +117,12 @@ namespace Levels
 
 	struct CellNumbersComponent
 	{
-		std::vector<int> numbers = {100, 100, 100};
+		std::vector<std::string> numbers = {"100", "100", "100"};
 		bool isActive = true;
 		int currentIndex = 0;
 		float period = 2.f;
 		float timer = 0.f;
-		sf::Text display;
+		sf::Text text;
 		CellPanel currentPanel = CellPanel::TOP_LEFT;
 		Physics::Vec2f relativePosition = Physics::Vec2f(0.f, 0.f);
 	};

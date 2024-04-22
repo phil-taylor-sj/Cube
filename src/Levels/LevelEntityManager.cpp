@@ -64,11 +64,14 @@ namespace Levels
 	void LevelEntityManager::updateAllCellPositions()
 	{
 		for (int i = 0; i < m_totalCells; i++)
-		{
-			CellTransformComponent& transform = m_cellTransformComponents[i];
-			sf::Sprite& sprite = m_cellGraphicsComponents[i].sprite;
+		{ 
+			float x = m_cellTransformComponents[i].position.x;
+			float y = m_cellTransformComponents[i].position.y;
 
-			sprite.setPosition(transform.position.x, transform.position.y);
+			m_cellGraphicsComponents[i].sprite.setPosition(x, y);
+
+			LevelEntitySystem::updateCellNumbers(m_cellNumbersComponents[i]);
+			m_cellNumbersComponents[i].text.setPosition(x, y);
 		}
 	}
 
@@ -164,6 +167,10 @@ namespace Levels
 		for (int i = 0; i < m_totalCells; i++)
 		{
 			window.draw(m_cellGraphicsComponents[i].sprite);
+			if (m_cellNumbersComponents[i].isActive)
+			{
+				window.draw(m_cellNumbersComponents[i].text);
+			}
 		}
 	};
 
@@ -244,6 +251,7 @@ namespace Levels
 		LevelFactory::addTextures(m_cellTypeComponents, m_cellGraphicsComponents);
 		LevelFactory::addCollisions(m_cellTypeComponents, m_cellCollisionComponents);
 		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
+		LevelFactory::addNumbers(m_cellTransformComponents, m_cellNumbersComponents);
 	}
 }
 

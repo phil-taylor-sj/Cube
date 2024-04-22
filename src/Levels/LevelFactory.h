@@ -7,6 +7,7 @@
 #include "Levels/CellComponents.h"
 #include "Utilities/GridGen.h"
 #include "Levels/CellTypes.h"
+#include "Assets/FontDict.h"
 
 namespace Levels
 {
@@ -34,6 +35,8 @@ namespace Levels
 		static void assignCellTypes(const std::vector<std::vector<int>>& cellEntityGrid, std::vector<CellTypeComponent>& cellTypes);
 		static void loadAllLevelTextures();
 	
+		static void addNumbers(const std::vector<CellTransformComponent>& cellTransforms, std::vector<CellNumbersComponent>& cellNumbers);
+
 	private:
 		static void m_addWallCollisions(CellCollisionComponent& collision);
 		static void m_addFloorCollisions(const CellTypeComponent& type, CellCollisionComponent& collision);

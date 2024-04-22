@@ -342,6 +342,17 @@ namespace Levels
 		}
 	}
 
+	void LevelFactory::addNumbers(
+		const std::vector<CellTransformComponent>& cellTransforms, 
+		std::vector<CellNumbersComponent>& cellNumbers)
+	{
+		for (int i = 0; i < cellTransforms.size(); i++)
+		{
+			cellNumbers[i].text.setFont(
+				Assets::FontDict::getInstance()->getFont("Tuffy"));
+		}
+	}
+
 	const std::map<CellColours, std::string> LevelFactory::m_colourFilenames = {
 		{CellColours::YELLOW, "YellowRoom"},
 		{CellColours::WHITE, "WhiteRoom"},
