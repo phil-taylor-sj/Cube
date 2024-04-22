@@ -280,5 +280,48 @@ namespace Levels
 		}
 	}
 
+	void LevelEntitySystem::updateCellNumbers(
+		CellNumbersComponent& numbers
+	)
+	{
+		numbers.timer += m_deltaTime;
+		if (numbers.timer == numbers.period)
+		{
+			return;
+		}
+		
+		numbers.timer = 0.f;  // TODO: Update to get remainder
+		CellPanel current = numbers.currentPanel;
+		while (numbers.currentPanel == current)
+		{
+			numbers.currentPanel = m_panels[rand() % 9];
+		}
+	}
+
 	float LevelEntitySystem::m_deltaTime = 0.f;
+
+	float LevelEntitySystem::m_offset = 0.265625;
+
+	std::map<int, CellPanel> LevelEntitySystem::m_panels = {
+		{0, CellPanel::TOP_LEFT},
+		{1, CellPanel::TOP_MID},
+		{2, CellPanel::TOP_RIGHT},
+		{3, CellPanel::MID_LEFT},
+		{4, CellPanel::MID_MID},
+		{5, CellPanel::MID_RIGHT},
+		{6, CellPanel::BOT_LEFT},
+		{7, CellPanel::BOT_MID},
+		{8, CellPanel::BOT_RIGHT}
+	};
+
+	std::map<CellPanel, Physics::Vec2f> LevelEntitySystem::m_panelPositions = {
+		{CellPanel::TOP_LEFT,  Physics::Vec2f(-1.f * m_offset, -1.f * m_offset)},
+		{CellPanel::TOP_MID,   Physics::Vec2f(0.f * m_offset, -1.f * m_offset)},
+		{CellPanel::TOP_RIGHT, Physics::Vec2f(1.f * m_offset, -1.f * m_offset)},
+		{CellPanel::MID_LEFT,  Physics::Vec2f(-1.f * m_offset,  0.f * m_offset)},
+		{CellPanel::MID_MID,   Physics::Vec2f(0.f * m_offset,  0.f * m_offset)},
+		{CellPanel::MID_RIGHT, Physics::Vec2f(1.f * m_offset,  0.f * m_offset)},
+		{CellPanel::BOT_LEFT,  Physics::Vec2f(-1.f * m_offset,  1.f * m_offset)},
+		{CellPanel::BOT_MID,   Physics::Vec2f(0.f * m_offset,  1.f * m_offset)},
+		{CellPanel::BOT_RIGHT, Physics::Vec2f(1.f * m_offset,  1.f * m_offset)}
 }

@@ -20,8 +20,13 @@ namespace Assets
 	{
 		if (m_fonts.find(name) == m_fonts.end())
 		{
+			name = this->m_defaultName;
+		}
+
+		if (m_fonts.find(name) == m_fonts.end())
+		{
 			throw std::invalid_argument(
-				"Key '" + name + "' not found in m_fonts map of FontDict."
+				"Default font not found in m_fonts map of FontDict."
 			);
 		}
 
@@ -35,7 +40,7 @@ namespace Assets
 
 		// Create the full path by concatenating the executable path and the relative image path
 		m_fonts[name].loadFromFile(
-			m_exePath + "/" + m_relativePath + "resources/fonts/" + name + ".png");
+			m_exePath + "/" + m_relativePath + "resources/fonts/" + name + ".ttf");
 	}
 
 	void FontDict::setExeFilepath(char* argv[])
@@ -49,5 +54,10 @@ namespace Assets
 	void FontDict::setRelativeFilepath(std::string relativePath)
 	{
 		m_relativePath = relativePath;
+	}
+
+	void FontDict::loadDefault()
+	{
+		this->loadFont(this->m_defaultName);
 	}
 }

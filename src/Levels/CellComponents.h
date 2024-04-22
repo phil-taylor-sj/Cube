@@ -8,6 +8,19 @@
 
 namespace Levels
 {
+	enum class CellPanel
+	{
+		TOP_LEFT,
+		TOP_MID,
+		TOP_RIGHT,
+		MID_LEFT,
+		MID_MID,
+		MID_RIGHT,
+		BOT_LEFT,
+		BOT_MID,
+		BOT_RIGHT
+	};
+
 	struct CellGraphicsComponent
 	{
 		sf::Sprite sprite;
@@ -100,6 +113,18 @@ namespace Levels
 		State CellState = STEADY; 
 		float currentScale = 1.f;
 		float verticalTime = 3.f;
+	};
+
+	struct CellNumbersComponent
+	{
+		std::vector<int> numbers = {100, 100, 100};
+		bool isActive = true;
+		int currentIndex = 0;
+		float period = 2.f;
+		float timer = 0.f;
+		sf::Text display;
+		CellPanel currentPanel = CellPanel::TOP_LEFT;
+		Physics::Vec2f relativePosition = Physics::Vec2f(0.f, 0.f);
 	};
 }
 

@@ -14,6 +14,7 @@ int main(int argc, char* argv[])
 
 	Assets::FontDict::getInstance()->setExeFilepath(argv);
 	Assets::FontDict::getInstance()->setRelativeFilepath(relativePath);
+	Assets::FontDict::getInstance()->loadDefault();
 
 	Engine::GameEngine engine = Engine::GameEngine();
 	engine.runEngine();

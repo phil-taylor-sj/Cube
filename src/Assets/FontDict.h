@@ -27,6 +27,7 @@ namespace Assets
 		void loadFont(std::string name);
 		void setExeFilepath(char* argv[]);
 		void setRelativeFilepath(std::string relativePath);
+		void loadDefault();
 
 	protected:
 		FontDict() = default;
@@ -36,6 +37,7 @@ namespace Assets
 		std::map<std::string, sf::Font> m_fonts;
 		std::string m_exePath = "./";
 		std::string m_relativePath = "./";
+		const std::string m_defaultName = "Tuffy";
 
 	};
 }

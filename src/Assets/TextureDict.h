@@ -28,7 +28,7 @@ namespace Assets
 		void setExeFilepath( char* argv[]);
 		void setRelativeFilepath(std::string relativePath);
 		void setRepeated(std::string name, bool isRepeated);
-
+		
 	protected:
 		TextureDict() = default;
 

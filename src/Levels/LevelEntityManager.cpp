@@ -225,6 +225,7 @@ namespace Levels
 		m_cellTypeComponents.resize(m_totalCells);
 		m_cellMoveComponents.resize(m_totalCells);
 		m_cellGravityComponents.resize(m_totalCells);
+		m_cellNumbersComponents.resize(m_totalCells);
 
 		int counter = 0;
 		for (int i = 0; i < m_xGridSize; i++)
