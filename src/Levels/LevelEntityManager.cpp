@@ -2,6 +2,31 @@
 
 namespace Levels
 {
+	void LevelEntityManager::updateLevel() 
+	{
+		processLevelShift();
+
+		srand(time(NULL));
+		for (int i = 0; i < m_totalCells; i++)
+		{
+			if (m_cellGravityComponents[i].CellState != CellGravityComponent::STEADY)
+			{
+				LevelEntitySystem::adjustGravityMotion(m_cellGravityComponents[i]);
+			}
+
+			if (m_cellMoveComponents[i].cellState != CellMoveComponent::STATIC)
+			{
+				LevelEntitySystem::applyMovement(
+					m_cellMoveComponents[i], m_cellTransformComponents[i],
+					m_cellForceComponents[i], m_relativeSpeed, m_commonCellWidth
+				);
+			}
+			LevelEntitySystem::updateCellNumbers(m_cellNumbersComponents[i]);
+		}
+		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
+		updateAllCellScaling();
+	}
+
 	void LevelEntityManager::setCommonCellWidth(float commonCellWidth)
 	{
 		m_commonCellWidth = commonCellWidth;
@@ -70,10 +95,15 @@ namespace Levels
 
 			m_cellGraphicsComponents[i].sprite.setPosition(x, y);
 
-			LevelEntitySystem::updateCellNumbers(m_cellNumbersComponents[i]);
-			m_cellNumbersComponents[i].text.setPosition(x, y);
+			CellNumbersComponent& numbers = m_cellNumbersComponents[i];
+			LevelEntitySystem::updateCellNumbers(numbers);
+			numbers.text.setPosition(
+				x + m_commonCellWidth * numbers.relativePosition.x, 
+				y + m_commonCellWidth * numbers.relativePosition.y
+			);
 		}
 	}
+
 
 	void LevelEntityManager::processLevelShift()
 	{
@@ -138,29 +168,14 @@ namespace Levels
 				++iter;
 			}
 		}
-
-		for (int i = 0; i < m_totalCells; i++)
-		{
-			if (m_cellGravityComponents[i].CellState != CellGravityComponent::STEADY)
-			{
-				LevelEntitySystem::adjustGravityMotion(m_cellGravityComponents[i]);
-			}
-				
-			if (m_cellMoveComponents[i].cellState != CellMoveComponent::STATIC)
-			{
-				LevelEntitySystem::applyMovement(
-					m_cellMoveComponents[i], m_cellTransformComponents[i],
-					m_cellForceComponents[i], m_relativeSpeed, m_commonCellWidth
-				);
-			}
-		}
-		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
 	}
+
 
 	void LevelEntityManager::renderBackground(sf::RenderWindow& window)
 	{
 		window.draw(m_backgroundSprite);
 	}
+
 
 	void LevelEntityManager::renderLevel(sf::RenderWindow& window)
 	{
@@ -174,6 +189,7 @@ namespace Levels
 		}
 	};
 
+
 	void LevelEntityManager::clearForces()
 	{
 		for (CellForceComponent& force : m_cellForceComponents)
@@ -181,6 +197,7 @@ namespace Levels
 			force.netForce = Physics::Vec2f(0.f, 0.f);
 		}
 	}
+
 
 	DetectedLevelCollisions LevelEntityManager::getCircleCollisions(
 		const Actors::ActorCollisionComponent& actorCollision)

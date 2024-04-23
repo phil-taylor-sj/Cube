@@ -289,7 +289,7 @@ namespace Levels
 		{
 			return;
 		}
-		
+	
 		numbers.timer = 0.f;  // TODO: Update to get remainder
 		CellPanel current = numbers.currentPanel;
 		while (numbers.currentPanel == current)

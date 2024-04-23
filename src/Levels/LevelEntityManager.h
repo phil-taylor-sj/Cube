@@ -39,6 +39,9 @@ namespace Levels
 			COLUMN = 0,
 			ROW = 1
 		};
+
+		void updateLevel();
+
 		/**
 	     * @brief Set the common cell width for all cells in the level.
          * @param commonCellWidth The width of each cell.
