@@ -348,8 +348,15 @@ namespace Levels
 	{
 		for (int i = 0; i < cellTransforms.size(); i++)
 		{
-			cellNumbers[i].text.setFont(
-				Assets::FontDict::getInstance()->getFont("Tuffy"));
+			sf::Text& text = cellNumbers[i].text;
+			text.setFont(Assets::FontDict::getInstance()->getFont("Tuffy"));
+			text.setCharacterSize(48);
+			text.setOutlineColor(sf::Color::Black);
+			text.setOutlineThickness(2);
+			text.setString("100");
+			sf::FloatRect shape = text.getLocalBounds();
+			text.setOrigin(0.5 * shape.width, 0.5f * shape.height);
+			int a = 5;
 		}
 	}
 
