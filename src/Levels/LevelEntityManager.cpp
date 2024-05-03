@@ -262,14 +262,30 @@ namespace Levels
 			}
 		}
 
+		LevelFactory::assignCellTypes(m_cellEntityGrid, m_cellTypeComponents);
+		LevelFactory::setActiveComponentTypes(m_cellTypeComponents, m_cellEntities);
+		this->m_buildCellNumbers();
+
 		LevelFactory::loadAllLevelTextures();
 		LevelFactory::createBackground(m_backgroundSprite, m_xGridSize, m_yGridSize);
-		LevelFactory::assignCellTypes(m_cellEntityGrid, m_cellTypeComponents);
 		LevelFactory::addTextures(m_cellTypeComponents, m_cellGraphicsComponents);
 		LevelFactory::addCollisions(m_cellTypeComponents, m_cellCollisionComponents);
 		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
-		LevelFactory::addNumbers(m_cellTransformComponents, m_cellNumbersComponents);
 	}
+
+	void LevelEntityManager::m_buildCellNumbers()
+	{
+		for (int i = 0; i < m_totalCells; i++) 
+		{
+			if (m_cellEntities[i].components.test(CellComponentTypes::NUMBERS))
+			{
+				LevelFactory::addNumbers(m_cellTransformComponents[i], 
+					m_cellNumbersComponents[i]);
+			}
+				
+		}
+	}
+
 }
 
 //std::shared_ptr<Cell> testRoom = std::make_shared<Cell>();

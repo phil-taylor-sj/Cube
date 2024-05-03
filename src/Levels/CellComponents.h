@@ -21,6 +21,21 @@ namespace Levels
 		BOT_RIGHT
 	};
 
+	class CellComponentTypes
+	{
+	public:
+		static enum
+		{
+		TYPE = 0,
+		GRAPHICS = 1,
+		TRANSFORM = 2,
+		NUMBERS = 3,
+		COLLISION = 4,
+		FORCE = 5,
+		MOVE = 6
+		};
+	};
+
 	struct CellGraphicsComponent
 	{
 		sf::Sprite sprite;
@@ -117,7 +132,7 @@ namespace Levels
 
 	struct CellNumbersComponent
 	{
-		std::vector<std::string> numbers = {"100", "100", "100"};
+		std::vector<std::string> numbers = {"101", "102", "103"};
 		bool isActive = true;
 		int currentIndex = 0;
 		float period = 2.f;

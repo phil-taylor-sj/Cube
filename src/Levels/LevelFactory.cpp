@@ -2,6 +2,29 @@
 
 namespace Levels
 {
+
+	void LevelFactory::setActiveComponentTypes(
+		const std::vector<CellTypeComponent>& cellTypes, 
+		std::vector<CellEntity>& entities) 
+	{
+		for (int i = 0; i < cellTypes.size(); i++)
+		{
+
+			auto& activeTypes = entities[i].components; //bitset
+			activeTypes.set(CellComponentTypes::TYPE);
+			activeTypes.set(CellComponentTypes::GRAPHICS);
+			activeTypes.set(CellComponentTypes::COLLISION);
+			activeTypes.set(CellComponentTypes::TRANSFORM);
+			activeTypes.set(CellComponentTypes::MOVE);
+			if (cellTypes[i].type == CellTypes::ROOM)
+			{
+				activeTypes.set(CellComponentTypes::NUMBERS);
+				activeTypes.set(CellComponentTypes::MOVE);
+			}
+
+		}
+	}
+
 	void LevelFactory::loadAllLevelTextures()
 	{
 		std::string textureNames[9] = {
@@ -343,21 +366,17 @@ namespace Levels
 	}
 
 	void LevelFactory::addNumbers(
-		const std::vector<CellTransformComponent>& cellTransforms, 
-		std::vector<CellNumbersComponent>& cellNumbers)
+		const CellTransformComponent& cellTransform, 
+		CellNumbersComponent& cellNumbers)
 	{
-		for (int i = 0; i < cellTransforms.size(); i++)
-		{
-			sf::Text& text = cellNumbers[i].text;
-			text.setFont(Assets::FontDict::getInstance()->getFont("Tuffy"));
-			text.setCharacterSize(48);
-			text.setOutlineColor(sf::Color::Black);
-			text.setOutlineThickness(2);
-			text.setString("100");
-			sf::FloatRect shape = text.getLocalBounds();
-			text.setOrigin(0.5 * shape.width, 0.5f * shape.height);
-			int a = 5;
-		}
+		sf::Text& text = cellNumbers.text;
+		text.setFont(Assets::FontDict::getInstance()->getFont("Tuffy"));
+		text.setCharacterSize(48);
+		text.setOutlineColor(sf::Color::Black);
+		text.setOutlineThickness(2);
+		sf::FloatRect shape = text.getLocalBounds();
+		text.setOrigin(0.5 * shape.width, 0.5f * shape.height);
+		
 	}
 
 	const std::map<CellColours, std::string> LevelFactory::m_colourFilenames = {

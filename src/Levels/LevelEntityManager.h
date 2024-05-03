@@ -120,5 +120,7 @@ namespace Levels
 		int m_totalCells;
 		float m_relativeSpeed = 0.005f;
 		float m_commonCellWidth = 512.f;
+	
+		void m_buildCellNumbers();
 	};
 }
