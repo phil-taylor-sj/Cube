@@ -291,6 +291,7 @@ namespace Levels
 		}
 	
 		numbers.timer = 0.f;  // TODO: Update to get remainder
+		//numbers.period = 1.5f + 2.f * ((rand() % 9) * 0.1f);
 		CellPanel current = numbers.currentPanel;
 		while (numbers.currentPanel == current)
 		{

@@ -28,15 +28,8 @@ namespace Levels
 	void LevelFactory::loadAllLevelTextures()
 	{
 		std::string textureNames[9] = {
-			"YellowRoom",
-			"WhiteRoom",
-			"GreenRoom",
-			"BlueRoom",
-			"RedRoom",
-			"CornerVoid",
-			"BridgeVoid",
-			"EdgeVoid",
-			"BackgroundVoid"
+			"YellowRoom", "WhiteRoom", "GreenRoom", "BlueRoom", "RedRoom",
+			"CornerVoid", "BridgeVoid", "EdgeVoid", "BackgroundVoid"
 		};
 
 		for (std::string name : textureNames)
@@ -64,10 +57,8 @@ namespace Levels
 	void LevelFactory::assignCellTypes(const std::vector<std::vector<int>>& cellEntityGrid, std::vector<CellTypeComponent>& cellTypes)
 	{
 		std::map<std::string, CellColours> colours {
-			{"Yellow", CellColours::YELLOW},
-			{"White", CellColours::WHITE},
-			{"Green", CellColours::GREEN},
-			{"Blue", CellColours::BLUE},
+			{"Yellow", CellColours::YELLOW}, {"White", CellColours::WHITE},
+			{"Green", CellColours::GREEN}, {"Blue", CellColours::BLUE},
 			{"Red", CellColours::RED}
 		};
 
@@ -380,16 +371,13 @@ namespace Levels
 	}
 
 	const std::map<CellColours, std::string> LevelFactory::m_colourFilenames = {
-		{CellColours::YELLOW, "YellowRoom"},
-		{CellColours::WHITE, "WhiteRoom"},
-		{CellColours::GREEN, "GreenRoom"},
-		{CellColours::BLUE, "BlueRoom"},
+		{CellColours::YELLOW, "YellowRoom"}, {CellColours::WHITE, "WhiteRoom"},
+		{CellColours::GREEN, "GreenRoom"}, {CellColours::BLUE, "BlueRoom"},
 		{CellColours::RED, "RedRoom"}
 	};
 
 	const std::map<CellTypes, std::string> LevelFactory::m_voidFilenames = {
-		{CellTypes::CORNER_VOID, "CornerVoid"},
-		{CellTypes::EDGE_VOID, "EdgeVoid"},
+		{CellTypes::CORNER_VOID, "CornerVoid"}, {CellTypes::EDGE_VOID, "EdgeVoid"},
 		{CellTypes::BRIDGE_VOID, "BridgeVoid"}
 	};
 
