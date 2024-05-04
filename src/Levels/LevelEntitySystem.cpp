@@ -28,7 +28,7 @@ namespace Levels
 	}
 
 	void LevelEntitySystem::getFloorCollisions(
-		DetectedLevelCollisions& detectedCollisions,
+		DetectedLevelCollisions& detectedCollisions, 
 		const CellCollisionComponent& cellCollision,
 		const CellForceComponent& cellForce,
 		const Physics::CircleParams& actorCircle
