@@ -2,6 +2,31 @@
 
 namespace Levels
 {
+	void LevelEntityManager::updateLevel() 
+	{
+		processLevelShift();
+
+		srand(time(NULL));
+		for (int i = 0; i < m_totalCells; i++)
+		{
+			if (m_cellGravityComponents[i].CellState != CellGravityComponent::STEADY)
+			{
+				LevelEntitySystem::adjustGravityMotion(m_cellGravityComponents[i]);
+			}
+
+			if (m_cellMoveComponents[i].cellState != CellMoveComponent::STATIC)
+			{
+				LevelEntitySystem::applyMovement(
+					m_cellMoveComponents[i], m_cellTransformComponents[i],
+					m_cellForceComponents[i], m_relativeSpeed, m_commonCellWidth
+				);
+			}
+			LevelEntitySystem::updateCellNumbers(m_cellNumbersComponents[i]);
+		}
+		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
+		updateAllCellScaling();
+	}
+
 	void LevelEntityManager::setCommonCellWidth(float commonCellWidth)
 	{
 		m_commonCellWidth = commonCellWidth;
@@ -64,13 +89,21 @@ namespace Levels
 	void LevelEntityManager::updateAllCellPositions()
 	{
 		for (int i = 0; i < m_totalCells; i++)
-		{
-			CellTransformComponent& transform = m_cellTransformComponents[i];
-			sf::Sprite& sprite = m_cellGraphicsComponents[i].sprite;
+		{ 
+			float x = m_cellTransformComponents[i].position.x;
+			float y = m_cellTransformComponents[i].position.y;
 
-			sprite.setPosition(transform.position.x, transform.position.y);
+			m_cellGraphicsComponents[i].sprite.setPosition(x, y);
+
+			CellNumbersComponent& numbers = m_cellNumbersComponents[i];
+			LevelEntitySystem::updateCellNumbers(numbers);
+			numbers.text.setPosition(
+				x + m_commonCellWidth * numbers.relativePosition.x, 
+				y + m_commonCellWidth * numbers.relativePosition.y
+			);
 		}
 	}
+
 
 	void LevelEntityManager::processLevelShift()
 	{
@@ -135,37 +168,27 @@ namespace Levels
 				++iter;
 			}
 		}
-
-		for (int i = 0; i < m_totalCells; i++)
-		{
-			if (m_cellGravityComponents[i].CellState != CellGravityComponent::STEADY)
-			{
-				LevelEntitySystem::adjustGravityMotion(m_cellGravityComponents[i]);
-			}
-				
-			if (m_cellMoveComponents[i].cellState != CellMoveComponent::STATIC)
-			{
-				LevelEntitySystem::applyMovement(
-					m_cellMoveComponents[i], m_cellTransformComponents[i],
-					m_cellForceComponents[i], m_relativeSpeed, m_commonCellWidth
-				);
-			}
-		}
-		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
 	}
+
 
 	void LevelEntityManager::renderBackground(sf::RenderWindow& window)
 	{
 		window.draw(m_backgroundSprite);
 	}
 
+
 	void LevelEntityManager::renderLevel(sf::RenderWindow& window)
 	{
 		for (int i = 0; i < m_totalCells; i++)
 		{
 			window.draw(m_cellGraphicsComponents[i].sprite);
+			if (m_cellNumbersComponents[i].isActive)
+			{
+				window.draw(m_cellNumbersComponents[i].text);
+			}
 		}
 	};
+
 
 	void LevelEntityManager::clearForces()
 	{
@@ -174,6 +197,7 @@ namespace Levels
 			force.netForce = Physics::Vec2f(0.f, 0.f);
 		}
 	}
+
 
 	DetectedLevelCollisions LevelEntityManager::getCircleCollisions(
 		const Actors::ActorCollisionComponent& actorCollision)
@@ -225,6 +249,7 @@ namespace Levels
 		m_cellTypeComponents.resize(m_totalCells);
 		m_cellMoveComponents.resize(m_totalCells);
 		m_cellGravityComponents.resize(m_totalCells);
+		m_cellNumbersComponents.resize(m_totalCells);
 
 		int counter = 0;
 		for (int i = 0; i < m_xGridSize; i++)
@@ -237,13 +262,30 @@ namespace Levels
 			}
 		}
 
+		LevelFactory::assignCellTypes(m_cellEntityGrid, m_cellTypeComponents);
+		LevelFactory::setActiveComponentTypes(m_cellTypeComponents, m_cellEntities);
+		this->m_buildCellNumbers();
+
 		LevelFactory::loadAllLevelTextures();
 		LevelFactory::createBackground(m_backgroundSprite, m_xGridSize, m_yGridSize);
-		LevelFactory::assignCellTypes(m_cellEntityGrid, m_cellTypeComponents);
 		LevelFactory::addTextures(m_cellTypeComponents, m_cellGraphicsComponents);
 		LevelFactory::addCollisions(m_cellTypeComponents, m_cellCollisionComponents);
 		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
 	}
+
+	void LevelEntityManager::m_buildCellNumbers()
+	{
+		for (int i = 0; i < m_totalCells; i++) 
+		{
+			if (m_cellEntities[i].components.test(CellComponentTypes::NUMBERS))
+			{
+				LevelFactory::addNumbers(m_cellTransformComponents[i], 
+					m_cellNumbersComponents[i]);
+			}
+				
+		}
+	}
+
 }
 
 //std::shared_ptr<Cell> testRoom = std::make_shared<Cell>();

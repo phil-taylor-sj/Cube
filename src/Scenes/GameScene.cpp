@@ -71,8 +71,7 @@ namespace Scenes
 		m_actors->transformComponents[0].angle = playerAngle;
 		Actors::ActorEntitySystem::applyMovementForce(m_actors->forceComponents);
 
-		m_level->processLevelShift();
-		m_level->updateAllCellScaling();
+		m_level->updateLevel();
 		m_actors->moveActors(0.1f);
 		m_processCollisions();
 		m_actors->updateGraphics();

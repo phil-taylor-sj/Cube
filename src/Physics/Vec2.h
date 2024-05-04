@@ -47,6 +47,8 @@ namespace Physics
 		 */
 		Vec2<T> floor();
 
+		void copy(const Vec2<T>& vector);
+
 		/**
 		 * @brief Overload the addition operator (+) for vector addition.
 		 * 

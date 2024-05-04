@@ -2,18 +2,34 @@
 
 namespace Levels
 {
+
+	void LevelFactory::setActiveComponentTypes(
+		const std::vector<CellTypeComponent>& cellTypes, 
+		std::vector<CellEntity>& entities) 
+	{
+		for (int i = 0; i < cellTypes.size(); i++)
+		{
+
+			auto& activeTypes = entities[i].components; //bitset
+			activeTypes.set(CellComponentTypes::TYPE);
+			activeTypes.set(CellComponentTypes::GRAPHICS);
+			activeTypes.set(CellComponentTypes::COLLISION);
+			activeTypes.set(CellComponentTypes::TRANSFORM);
+			activeTypes.set(CellComponentTypes::MOVE);
+			if (cellTypes[i].type == CellTypes::ROOM)
+			{
+				activeTypes.set(CellComponentTypes::NUMBERS);
+				activeTypes.set(CellComponentTypes::MOVE);
+			}
+
+		}
+	}
+
 	void LevelFactory::loadAllLevelTextures()
 	{
 		std::string textureNames[9] = {
-			"YellowRoom",
-			"WhiteRoom",
-			"GreenRoom",
-			"BlueRoom",
-			"RedRoom",
-			"CornerVoid",
-			"BridgeVoid",
-			"EdgeVoid",
-			"BackgroundVoid"
+			"YellowRoom", "WhiteRoom", "GreenRoom", "BlueRoom", "RedRoom",
+			"CornerVoid", "BridgeVoid", "EdgeVoid", "BackgroundVoid"
 		};
 
 		for (std::string name : textureNames)
@@ -41,10 +57,8 @@ namespace Levels
 	void LevelFactory::assignCellTypes(const std::vector<std::vector<int>>& cellEntityGrid, std::vector<CellTypeComponent>& cellTypes)
 	{
 		std::map<std::string, CellColours> colours {
-			{"Yellow", CellColours::YELLOW},
-			{"White", CellColours::WHITE},
-			{"Green", CellColours::GREEN},
-			{"Blue", CellColours::BLUE},
+			{"Yellow", CellColours::YELLOW}, {"White", CellColours::WHITE},
+			{"Green", CellColours::GREEN}, {"Blue", CellColours::BLUE},
 			{"Red", CellColours::RED}
 		};
 
@@ -342,17 +356,28 @@ namespace Levels
 		}
 	}
 
+	void LevelFactory::addNumbers(
+		const CellTransformComponent& cellTransform, 
+		CellNumbersComponent& cellNumbers)
+	{
+		sf::Text& text = cellNumbers.text;
+		text.setFont(Assets::FontDict::getInstance()->getFont("Tuffy"));
+		text.setCharacterSize(48);
+		text.setOutlineColor(sf::Color::Black);
+		text.setOutlineThickness(2);
+		sf::FloatRect shape = text.getLocalBounds();
+		text.setOrigin(0.5 * shape.width, 0.5f * shape.height);
+		
+	}
+
 	const std::map<CellColours, std::string> LevelFactory::m_colourFilenames = {
-		{CellColours::YELLOW, "YellowRoom"},
-		{CellColours::WHITE, "WhiteRoom"},
-		{CellColours::GREEN, "GreenRoom"},
-		{CellColours::BLUE, "BlueRoom"},
+		{CellColours::YELLOW, "YellowRoom"}, {CellColours::WHITE, "WhiteRoom"},
+		{CellColours::GREEN, "GreenRoom"}, {CellColours::BLUE, "BlueRoom"},
 		{CellColours::RED, "RedRoom"}
 	};
 
 	const std::map<CellTypes, std::string> LevelFactory::m_voidFilenames = {
-		{CellTypes::CORNER_VOID, "CornerVoid"},
-		{CellTypes::EDGE_VOID, "EdgeVoid"},
+		{CellTypes::CORNER_VOID, "CornerVoid"}, {CellTypes::EDGE_VOID, "EdgeVoid"},
 		{CellTypes::BRIDGE_VOID, "BridgeVoid"}
 	};
 

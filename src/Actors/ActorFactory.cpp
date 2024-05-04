@@ -10,7 +10,7 @@ namespace Actors
 		switch (types.type)
 		{
 			case ActorTypes::PLAYER:
-				textureName = "PlayerPlaceholder";
+				textureName = "PlayerPistol";
 				break;
 			default:
 				return;
@@ -18,11 +18,11 @@ namespace Actors
 
 		std::map<ActorTypes, float> initialTextureAngles
 		{
-			{ActorTypes::PLAYER, 270.f}
+			{ActorTypes::PLAYER, 0.f}
 		};
 
 		graphics.sprite.setTexture(
-			Assets::TextureDict::getInstance()->getTexture("PlayerPlaceholder")
+			Assets::TextureDict::getInstance()->getTexture("PlayerPistol")
 		);
 
 		graphics.sprite.setOrigin(
@@ -41,7 +41,7 @@ namespace Actors
 	{
 		std::map<ActorTypes, std::array<float, 2>> relativeWidthsHeights
 		{
-			{ActorTypes::PLAYER, {2 * 0.0625f, 2 * 0.0625f}}
+			{ActorTypes::PLAYER, {3 * 2 * 0.0625f, 3 * 2 * 0.0625f}}
 		};
 
 		transform.relativeWidth = relativeWidthsHeights[types.type][0];
@@ -63,7 +63,7 @@ namespace Actors
 
 		collision.relativeBroadRadius = relativeBroadRadii[ActorTypes::PLAYER];
 		collision.broadCircle.setRadius(
-			std::max(transform.width, transform.height) * 0.5f * 
+		std::max(transform.width, transform.height) * 0.5f * 1/3 *
 			collision.relativeBroadRadius
 		);
 	}

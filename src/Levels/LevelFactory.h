@@ -7,12 +7,19 @@
 #include "Levels/CellComponents.h"
 #include "Utilities/GridGen.h"
 #include "Levels/CellTypes.h"
+#include "Assets/FontDict.h"
 
 namespace Levels
 {
 	class LevelFactory
 	{
 	public:
+
+		static void setActiveComponentTypes(
+			const std::vector<CellTypeComponent>& cellTypes,
+			std::vector<CellEntity>& entities
+		);
+
 		/**
 		 * @brief Add sf:Texture instances to each cell's sprites based upon its type.
 		 * @params cellTypes A vector array of CellTypeComponent instances.
@@ -34,6 +41,8 @@ namespace Levels
 		static void assignCellTypes(const std::vector<std::vector<int>>& cellEntityGrid, std::vector<CellTypeComponent>& cellTypes);
 		static void loadAllLevelTextures();
 	
+		static void addNumbers(const CellTransformComponent& cellTransform, CellNumbersComponent& cellNumbers);
+
 	private:
 		static void m_addWallCollisions(CellCollisionComponent& collision);
 		static void m_addFloorCollisions(const CellTypeComponent& type, CellCollisionComponent& collision);

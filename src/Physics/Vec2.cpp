@@ -34,6 +34,13 @@ namespace Physics
 	{
 		return Vec2<T>(std::floor(this->x),std::floor(this->y));
 	}
+
+	template <typename T>
+	void Vec2<T>::copy(const Vec2<T>& vector)
+	{
+		this->x = vector.x;
+		this->y = vector.y;
+	}
 	
 	template <typename T>
 	Vec2<T> Vec2<T>::operator + (const Vec2<T>& vector) const

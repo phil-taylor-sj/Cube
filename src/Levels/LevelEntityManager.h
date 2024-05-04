@@ -39,6 +39,9 @@ namespace Levels
 			COLUMN = 0,
 			ROW = 1
 		};
+
+		void updateLevel();
+
 		/**
 	     * @brief Set the common cell width for all cells in the level.
          * @param commonCellWidth The width of each cell.
@@ -109,6 +112,7 @@ namespace Levels
 		std::vector<CellForceComponent> m_cellForceComponents;
 		std::vector<CellMoveComponent> m_cellMoveComponents;
 		std::vector<CellGravityComponent> m_cellGravityComponents;
+		std::vector<CellNumbersComponent> m_cellNumbersComponents;
 
 		sf::Sprite m_backgroundSprite;
 		int m_xGridSize;
@@ -116,5 +120,7 @@ namespace Levels
 		int m_totalCells;
 		float m_relativeSpeed = 0.005f;
 		float m_commonCellWidth = 512.f;
+	
+		void m_buildCellNumbers();
 	};
 }

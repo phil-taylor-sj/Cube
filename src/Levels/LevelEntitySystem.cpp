@@ -8,7 +8,7 @@ namespace Levels
 	}
 
 	void LevelEntitySystem::getWallCollisions(
-		DetectedLevelCollisions& detectedCollisions,
+		DetectedLevelCollisions& detectedCollisions, 
 		const CellCollisionComponent& cellCollision,
 		const Physics::CircleParams& actorCircle
 	)
@@ -28,7 +28,7 @@ namespace Levels
 	}
 
 	void LevelEntitySystem::getFloorCollisions(
-		DetectedLevelCollisions& detectedCollisions,
+		DetectedLevelCollisions& detectedCollisions, 
 		const CellCollisionComponent& cellCollision,
 		const CellForceComponent& cellForce,
 		const Physics::CircleParams& actorCircle
@@ -280,5 +280,57 @@ namespace Levels
 		}
 	}
 
+	void LevelEntitySystem::updateCellNumbers(
+		CellNumbersComponent& numbers
+	)
+	{
+		numbers.timer += m_deltaTime;
+		if (numbers.timer < numbers.period)
+		{
+			return;
+		}
+	
+		numbers.timer = 0.f;  // TODO: Update to get remainder
+		//numbers.period = 1.5f + 2.f * ((rand() % 9) * 0.1f);
+		CellPanel current = numbers.currentPanel;
+		while (numbers.currentPanel == current)
+		{
+			numbers.currentPanel = m_panels[rand() % 9];
+		}
+		numbers.relativePosition = m_panelPositions[numbers.currentPanel];
+		numbers.currentIndex = (numbers.currentIndex < numbers.numbers.size() - 1)
+			? numbers.currentIndex + 1 
+			: 0;
+		numbers.text.setString(numbers.numbers[numbers.currentIndex]);
+		sf::FloatRect shape = numbers.text.getLocalBounds();
+		numbers.text.setOrigin(0.5 * shape.width, 0.5f * shape.height);
+	}
+
 	float LevelEntitySystem::m_deltaTime = 0.f;
+
+	float LevelEntitySystem::m_offset = 0.265625;
+
+	std::map<int, CellPanel> LevelEntitySystem::m_panels = {
+		{0, CellPanel::TOP_LEFT},
+		{1, CellPanel::TOP_MID},
+		{2, CellPanel::TOP_RIGHT},
+		{3, CellPanel::MID_LEFT},
+		{4, CellPanel::MID_MID},
+		{5, CellPanel::MID_RIGHT},
+		{6, CellPanel::BOT_LEFT},
+		{7, CellPanel::BOT_MID},
+		{8, CellPanel::BOT_RIGHT}
+	};
+
+	std::map<CellPanel, Physics::Vec2f> LevelEntitySystem::m_panelPositions = {
+		{CellPanel::TOP_LEFT,  Physics::Vec2f(-1.f * m_offset, -1.f * m_offset)},
+		{CellPanel::TOP_MID,   Physics::Vec2f(0.f * m_offset, -1.f * m_offset)},
+		{CellPanel::TOP_RIGHT, Physics::Vec2f(1.f * m_offset, -1.f * m_offset)},
+		{CellPanel::MID_LEFT,  Physics::Vec2f(-1.f * m_offset,  0.f * m_offset)},
+		{CellPanel::MID_MID,   Physics::Vec2f(0.f * m_offset,  0.f * m_offset)},
+		{CellPanel::MID_RIGHT, Physics::Vec2f(1.f * m_offset,  0.f * m_offset)},
+		{CellPanel::BOT_LEFT,  Physics::Vec2f(-1.f * m_offset,  1.f * m_offset)},
+		{CellPanel::BOT_MID,   Physics::Vec2f(0.f * m_offset,  1.f * m_offset)},
+		{CellPanel::BOT_RIGHT, Physics::Vec2f(1.f * m_offset,  1.f * m_offset)}
+	};
 }

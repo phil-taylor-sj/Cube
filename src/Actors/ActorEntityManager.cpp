@@ -175,7 +175,7 @@ namespace Actors
 	{
 		std::array<std::string, 1> texturesToLoad
 		{
-			"PlayerPlaceholder"
+			"PlayerPistol"
 		};
 
 		for (std::string name : texturesToLoad)
