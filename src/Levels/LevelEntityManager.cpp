@@ -112,6 +112,7 @@ namespace Levels
  
 		for (LevelMoveAction& action : m_currentMoveActions)
 		{
+
 			switch (action.getCurrentActionState())
 			{
 			case LevelMoveAction::STARTING:
@@ -151,6 +152,18 @@ namespace Levels
 			default:
 				break;
 			};
+
+
+			switch (action.getCurrentActionState())
+			{
+			case LevelMoveAction::DROPPING:
+			case LevelMoveAction::CLIMBING:
+				m_cellGraphicsComponents[action.getDropCellId()].isBackground = true;
+				break;
+			default:
+				m_cellGraphicsComponents[action.getDropCellId()].isBackground = false;
+				break;
+			};
 		}
 
 		// Remove actions which have completed (ended)
@@ -172,6 +185,13 @@ namespace Levels
 	void LevelEntityManager::renderBackground(sf::RenderWindow& window)
 	{
 		window.draw(m_backgroundSprite);
+		for (CellGraphicsComponent graphics : this->m_cellGraphicsComponents)
+		{
+			if (graphics.isBackground)
+			{
+				window.draw(graphics.sprite);
+			}
+		}
 	}
 
 
@@ -179,6 +199,10 @@ namespace Levels
 	{
 		for (int i = 0; i < m_totalCells; i++)
 		{
+			if (m_cellGraphicsComponents[i].isBackground)
+			{
+				continue;
+			}
 			window.draw(m_cellGraphicsComponents[i].sprite);
 			if (m_cellNumbersComponents[i].isActive)
 			{

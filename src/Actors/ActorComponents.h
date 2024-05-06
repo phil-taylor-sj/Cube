@@ -26,6 +26,7 @@ namespace Actors
 	{
 		sf::Sprite sprite;
 		bool isVisible = true;
+		bool isBackground = false;
 		float initialTextureAngle = 0.f;
 	};
 

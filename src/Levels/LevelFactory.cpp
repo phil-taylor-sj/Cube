@@ -131,6 +131,7 @@ namespace Levels
 		{
 			if (cellTypes[i].type == CellTypes::ROOM)
 			{
+				graphics[i].isBackground = false;
 				graphics[i].sprite.setTexture(
 					Assets::TextureDict::getInstance()->getTexture(
 						m_colourFilenames.at(cellTypes[i].colour)

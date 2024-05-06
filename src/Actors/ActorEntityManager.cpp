@@ -2,12 +2,24 @@
 
 namespace Actors
 {
-	void ActorEntityManager::renderActors(sf::RenderWindow& window)
+	void ActorEntityManager::renderForegroundActors(sf::RenderWindow& window)
 	{
-		window.draw(graphicsComponents[0].sprite);
+		//window.draw(graphicsComponents[0].sprite);
 		for (const ActorGraphicsComponent& graphics : graphicsComponents)
 		{
-			if (graphics.isVisible)
+			if (graphics.isVisible && !graphics.isBackground)
+			{
+				window.draw(graphics.sprite);
+			}
+		}
+	}
+
+	void ActorEntityManager::renderBackgroundActors(sf::RenderWindow& window)
+	{
+		//window.draw(graphicsComponents[0].sprite);
+		for (const ActorGraphicsComponent& graphics : graphicsComponents)
+		{
+			if (graphics.isVisible && graphics.isBackground)
 			{
 				window.draw(graphics.sprite);
 			}
@@ -49,6 +61,8 @@ namespace Actors
 
 			if (actor.components.test(Actors::ActorComponentTypes::GRAVITY))
 			{
+				graphics.isBackground = gravityComponents[actor.id].ActorState
+					!= ActorGravityComponent::STEADY;
 				float currentScale = gravityComponents[actor.id].currentScale;
 				float width = transformComponents[actor.id].width * currentScale;
 				float height = transformComponents[actor.id].height * currentScale;

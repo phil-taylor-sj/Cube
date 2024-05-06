@@ -34,7 +34,6 @@ namespace Levels
 		PANELS,
 		FORCE,
 		MOVE,
-
 		};
 	};
 
@@ -42,6 +41,7 @@ namespace Levels
 	{
 		sf::Sprite sprite;
 		bool isVisible = true;
+		bool isBackground = true;
 		float textureRotation = 0.f;
 	};
 

@@ -49,8 +49,9 @@ namespace Scenes
 		);
 		m_window->setView(*m_view);
 		m_level->renderBackground(*m_window);
+		m_actors->renderBackgroundActors(*m_window);
 		m_level->renderLevel(*m_window);
-		m_actors->renderActors(*m_window);
+		m_actors->renderForegroundActors(*m_window);
 	}
 
 	void GameScene::updateScene()
