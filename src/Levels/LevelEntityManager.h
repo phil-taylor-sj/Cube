@@ -113,6 +113,7 @@ namespace Levels
 		std::vector<CellMoveComponent> m_cellMoveComponents;
 		std::vector<CellGravityComponent> m_cellGravityComponents;
 		std::vector<CellNumbersComponent> m_cellNumbersComponents;
+		std::vector<CellGraphicsComponent> m_cellPanelsComponents;
 
 		sf::Sprite m_backgroundSprite;
 		int m_xGridSize;

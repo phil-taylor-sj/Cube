@@ -7,6 +7,11 @@ namespace Levels
 		m_deltaTime = deltaTime;
 	}
 
+	float LevelEntitySystem::getDeltaTime()
+	{
+		return m_deltaTime;
+	}
+
 	void LevelEntitySystem::getWallCollisions(
 		DetectedLevelCollisions& detectedCollisions, 
 		const CellCollisionComponent& cellCollision,
@@ -278,6 +283,18 @@ namespace Levels
 		default:
 			break;
 		}
+	}
+
+	void LevelEntitySystem::scaleCellSprite(sf::Sprite& sprite, float cellWidth)
+	{
+		sprite.setScale(
+			cellWidth / sprite.getLocalBounds().width,
+			cellWidth / sprite.getLocalBounds().height
+		);
+		sprite.setOrigin(
+			sprite.getLocalBounds().width * 0.5f,
+			sprite.getLocalBounds().height * 0.5f
+		);
 	}
 
 	void LevelEntitySystem::updateCellNumbers(

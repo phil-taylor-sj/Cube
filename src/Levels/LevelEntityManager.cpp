@@ -73,14 +73,7 @@ namespace Levels
 			
 			if (sprite.getLocalBounds().width != cellWidth)
 			{
-				sprite.setScale(
-					cellWidth / sprite.getLocalBounds().width,
-					cellWidth / sprite.getLocalBounds().height
-				);
-				sprite.setOrigin(
-					sprite.getLocalBounds().width * 0.5f,
-					sprite.getLocalBounds().height * 0.5f
-				);
+				LevelEntitySystem::scaleCellSprite(sprite, cellWidth);
 			}
 		}
 		updateAllCellPositions();
@@ -122,7 +115,12 @@ namespace Levels
 			switch (action.getCurrentActionState())
 			{
 			case LevelMoveAction::STARTING:
-				action.beginDrop(m_cellGravityComponents, m_cellCollisionComponents);
+				if (action.hasCountdownCompleted(
+					LevelEntitySystem::getDeltaTime(), m_cellPanelsComponents)
+					)
+				{
+					action.beginDrop(m_cellGravityComponents, m_cellCollisionComponents);
+				}
 				break;
 			case LevelMoveAction::DROPPING:
 				if (action.hasDropCompleted(m_cellGravityComponents))
@@ -185,6 +183,14 @@ namespace Levels
 			if (m_cellNumbersComponents[i].isActive)
 			{
 				window.draw(m_cellNumbersComponents[i].text);
+			}
+			if (m_cellPanelsComponents[i].isVisible)
+			{
+				sf::Sprite& panels = m_cellPanelsComponents[i].sprite;
+				CellTransformComponent& transform = m_cellTransformComponents[i];
+				panels.setPosition(transform.position.x, transform.position.y);
+				LevelEntitySystem::scaleCellSprite(panels, transform.cellWidth);
+				window.draw(panels);
 			}
 		}
 	};
@@ -250,6 +256,11 @@ namespace Levels
 		m_cellMoveComponents.resize(m_totalCells);
 		m_cellGravityComponents.resize(m_totalCells);
 		m_cellNumbersComponents.resize(m_totalCells);
+		m_cellPanelsComponents.resize(m_totalCells);
+		for (CellGraphicsComponent panels : m_cellPanelsComponents)
+		{
+			panels.isVisible = false;
+		}
 
 		int counter = 0;
 		for (int i = 0; i < m_xGridSize; i++)

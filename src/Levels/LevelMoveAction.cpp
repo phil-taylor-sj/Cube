@@ -2,6 +2,39 @@
 
 namespace Levels
 {
+
+	bool LevelMoveAction::hasCountdownCompleted(
+		float deltaTime, std::vector<CellGraphicsComponent>& panelsComponents)
+	{
+		this->m_dropTimer += deltaTime;
+		CellGraphicsComponent& panels = panelsComponents[this->m_cellToDrop];
+		int stage = floor(5.f * m_dropTimer / m_dropDelay);
+		panels.isVisible = true;
+		Assets::TextureDict* textures = Assets::TextureDict::getInstance();
+		switch (stage)
+		{
+		case 0:
+			panels.sprite.setTexture(textures->getTexture("PanelsBlank"));
+			break;
+		case 1:
+			panels.sprite.setTexture(textures->getTexture("PanelsDiamondOne"));
+			break;
+		case 2:
+			panels.sprite.setTexture(textures->getTexture("PanelsDiamondTwo"));
+			break;
+		case 3:
+			panels.sprite.setTexture(textures->getTexture("PanelsDiamondThree"));
+			break;
+		case 4:
+			panels.sprite.setTexture(textures->getTexture("PanelsDiamondFour"));
+			break;
+		default:
+			panels.isVisible = false;
+			break;
+		}
+		return !panels.isVisible;
+	}
+
 	bool LevelMoveAction::hasDropCompleted(
 		const std::vector<CellGravityComponent>& gravityComponents) const
 	{
@@ -120,8 +153,16 @@ namespace Levels
 
 	LevelMoveAction::LevelMoveAction(int rowOrColumn)
 	{
-		m_rowOrColumn = rowOrColumn;
+		this->m_rowOrColumn = rowOrColumn;
+		this->m_dropDelay = 4.f;
 	}
+
+	LevelMoveAction::LevelMoveAction(int rowOrColumn, float dropDelay)
+	{
+		this->m_rowOrColumn = rowOrColumn;
+		this->m_dropDelay = dropDelay;
+	}
+
 	
 	LevelMoveAction::~LevelMoveAction()
 	{

@@ -29,7 +29,7 @@ namespace Levels
 	{
 		std::string textureNames[9] = {
 			"YellowRoom", "WhiteRoom", "GreenRoom", "BlueRoom", "RedRoom",
-			"CornerVoid", "BridgeVoid", "EdgeVoid", "BackgroundVoid"
+			"CornerVoid", "BridgeVoid", "EdgeVoid", "BackgroundVoid",
 		};
 
 		for (std::string name : textureNames)

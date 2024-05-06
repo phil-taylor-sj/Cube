@@ -18,9 +18,10 @@ namespace Assets
 	{
 		if (m_textures.find(name) == m_textures.end())
 		{
-			throw std::invalid_argument(
-				"Key '" + name + "' not found in _textures map of TextureDict."
-			);
+			this->loadTexture(name);
+			//throw std::invalid_argument(
+			//	"Key '" + name + "' not found in _textures map of TextureDict."
+			//);
 		}
 
 		return m_textures[name];
@@ -28,9 +29,7 @@ namespace Assets
 
 	void TextureDict::loadTexture(std::string name)
 	{
-
-		// Specify the relative path to your image file
-   
+		// Specify the relative path to the image file
 		// Create the full path by concatenating the executable path and the relative image path
 		m_textures[name].loadFromFile(
 			m_exePath + "/" + m_relativePath + "resources/graphics/" + name + ".png");
