@@ -84,23 +84,30 @@ namespace Levels
 		int lastColumnIndex = cellGrid.size() - 2;
 		int firstRowIndex = 1;
 		int lastRowIndex = cellGrid[0].size() - 2;
-		int columnIndex = firstColumnIndex + rand() % (lastColumnIndex);
-		int rowIndex = firstRowIndex + rand() % (lastRowIndex);
-		
-		int primaryIndex = (axis == COLUMN) ? columnIndex : rowIndex;
+
+		int columnIndex = 0;
+		int rowIndex = 0;
+		int primaryIndex = 0;
 
 		// Check that the row/column index is not held by any existing action
-		if (moveActions.size() > 0)
+		bool idExists = true;
+		while(idExists == true)
 		{
-			for (const LevelMoveAction& action : moveActions)
+			idExists = false;
+			if (moveActions.size() > 0)
 			{
-				if (primaryIndex == action.getRowOrColumn())
+				columnIndex = firstColumnIndex + rand() % (lastColumnIndex);
+				rowIndex = firstRowIndex + rand() % (lastRowIndex);
+				primaryIndex = (axis == COLUMN) ? columnIndex : rowIndex;
+				for (const LevelMoveAction& action : moveActions)
 				{
-					return;
+					if (primaryIndex == action.getRowOrColumn())
+					{
+						idExists = true;
+					}
 				}
 			}
 		}
-
 		// Randomly selcted move direction along corresponding axis
 		CellMoveComponent::State direction = (axis == COLUMN) 
 			? (rand() % (2) == 0)

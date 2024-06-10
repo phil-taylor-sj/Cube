@@ -102,12 +102,16 @@ namespace Levels
 	{
 		if (m_currentMoveActions.size() == 0)
 		{
-			m_currentShiftAxis = (m_currentShiftAxis == LevelEntityManager::ROW) 
+			m_currentShiftAxis = (m_currentShiftAxis == LevelEntityManager::ROW)
 				? LevelEntityManager::COLUMN : LevelEntityManager::ROW;
-			LevelEntitySystem::createMoveAction(m_currentShiftAxis, m_cellEntityGrid,
-				m_cellMoveComponents, m_currentMoveActions);
-			LevelEntitySystem::updateCellIndicies(m_cellEntityGrid, m_cellTransformComponents,
-				m_cellMoveComponents, 0, m_cellEntityGrid.size() - 1);
+			for(int i = 0; i < 3; i++)
+			{
+				LevelEntitySystem::createMoveAction(m_currentShiftAxis, m_cellEntityGrid,
+					m_cellMoveComponents, m_currentMoveActions);
+				LevelEntitySystem::updateCellIndicies(m_cellEntityGrid, m_cellTransformComponents,
+					m_cellMoveComponents, 0, m_cellEntityGrid.size() - 1);
+			}
+		
 		}
  
 		for (LevelMoveAction& action : m_currentMoveActions)
