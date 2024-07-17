@@ -49,7 +49,9 @@ namespace Actors
 		actorCollision.rectangle.setPosition(actorTransform.position);
 	}
 
-	void ActorEntitySystem::adjustGravityMotion(ActorGravityComponent& gravity)
+	void ActorEntitySystem::adjustGravityMotion(
+		ActorGravityComponent& gravity, 
+		ActorTransformComponent& transform)
 	{
 		if (gravity.ActorState == ActorGravityComponent::STEADY)
 		{
@@ -67,6 +69,8 @@ namespace Actors
 			{
 				gravity.ActorState = ActorGravityComponent::VANISHED;
 			}
+			transform.position += (gravity.voidCentre - transform.position) * 0.004f;
+
 			break;
 		case ActorGravityComponent::VANISHED:
 			gravity.currentScale = 0.f;

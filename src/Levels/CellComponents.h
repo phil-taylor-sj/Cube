@@ -80,8 +80,11 @@ namespace Levels
 	{
 		std::array<CellStaticRectangle, 8> staticWalls;
 		std::vector<CellStaticRectangle> staticFloors;
+		CellStaticRectangle blocker;
+
 		Physics::Circle broadCircle;
 		float relativeBroadRadius;
+		bool isBlocked = false;
 		bool isFloorActive = true;
 		bool areCollisionsActive = true;
 	};

@@ -18,6 +18,14 @@ namespace Levels
 		const Physics::CircleParams& actorCircle
 	)
 	{
+		if (cellCollision.isBlocked == true)
+		{
+			if (Physics::checkIntersection(cellCollision.blocker.getRectangle(), actorCircle))
+			{
+				detectedCollisions.blockers.push_back(cellCollision.blocker.getRectangle());
+			}
+		}
+
 		if (cellCollision.areCollisionsActive == false)
 		{
 			return;
@@ -28,6 +36,15 @@ namespace Levels
 			if (Physics::checkIntersection(wallCollision.getRectangle(), actorCircle))
 			{
 				detectedCollisions.staticWalls.push_back(wallCollision.getRectangle());
+			}
+		}
+
+		
+		if (cellCollision.isBlocked == true)
+		{
+			if(Physics::checkIntersection(cellCollision.blocker.getRectangle(), actorCircle))
+			{
+				detectedCollisions.staticWalls.push_back(cellCollision.blocker.getRectangle());
 			}
 		}
 	}
@@ -93,12 +110,12 @@ namespace Levels
 		bool idExists = true;
 		while(idExists == true)
 		{
+			columnIndex = firstColumnIndex + rand() % (lastColumnIndex);
+			rowIndex = firstRowIndex + rand() % (lastRowIndex);
+			primaryIndex = (axis == COLUMN) ? columnIndex : rowIndex;
 			idExists = false;
 			if (moveActions.size() > 0)
 			{
-				columnIndex = firstColumnIndex + rand() % (lastColumnIndex);
-				rowIndex = firstRowIndex + rand() % (lastRowIndex);
-				primaryIndex = (axis == COLUMN) ? columnIndex : rowIndex;
 				for (const LevelMoveAction& action : moveActions)
 				{
 					if (primaryIndex == action.getRowOrColumn())

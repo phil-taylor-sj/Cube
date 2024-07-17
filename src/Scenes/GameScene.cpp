@@ -187,6 +187,7 @@ namespace Scenes
 				if (m_actors->gravityComponents[actorId].ActorState == 
 						Actors::ActorGravityComponent::STEADY && !levelCollisions.isFloorDetected)
 				{	
+					m_actors->gravityComponents[actorId].voidCentre = levelCollisions.voidCentre;
 					m_actors->gravityComponents[actorId].ActorState = 
 						Actors::ActorGravityComponent::FALLING;				
 				}
@@ -195,7 +196,8 @@ namespace Scenes
 					Actors::ActorGravityComponent::STEADY)
 				{
 					Actors::ActorEntitySystem::adjustGravityMotion(
-						m_actors->gravityComponents[actorId]);
+						m_actors->gravityComponents[actorId],
+						m_actors->transformComponents[actorId]);
 					continue;
 				}
 				
@@ -212,6 +214,16 @@ namespace Scenes
 					m_actors->transformComponents[actorId],
 					m_actors->collisionComponents[actorId],
 					levelCollisions.staticWalls
+				);
+			}
+
+			if (levelCollisions.blockers.size() > 0 &&
+				m_actors->typeComponents[actorId].type == Actors::ActorTypes::PLAYER)
+			{
+				Actors::ActorEntitySystem::applyWallCollisions(
+					m_actors->transformComponents[actorId],
+					m_actors->collisionComponents[actorId],
+					levelCollisions.blockers
 				);
 			}
 

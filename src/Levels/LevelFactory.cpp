@@ -169,6 +169,8 @@ namespace Levels
 	{
 		for (CellCollisionComponent& collision : cellCollisions)
 		{
+			collision.blocker.setRelativeDimensions(0.95, 0.95);
+			collision.blocker.setRelativePosition(0., 0.);
 			m_addWallCollisions(collision);
 		}
 
@@ -176,6 +178,7 @@ namespace Levels
 		{
 			m_addFloorCollisions(cellTypes[i], cellCollisions[i]);
 		}
+
 	}
 
 	void LevelFactory::m_addWallCollisions(CellCollisionComponent& collision)

@@ -124,6 +124,7 @@ namespace Levels
 					LevelEntitySystem::getDeltaTime(), m_cellPanelsComponents)
 					)
 				{
+					m_cellNumbersComponents[action.getDropCellId()].isActive = false;
 					action.beginDrop(m_cellGravityComponents, m_cellCollisionComponents);
 				}
 				break;
@@ -142,12 +143,15 @@ namespace Levels
 						(transform.cellIndices.x + 0.5f) * m_commonCellWidth,
 						(transform.cellIndices.y + 0.5f) * m_commonCellWidth
 					);
+					m_cellCollisionComponents[action.getDropCellId()].isBlocked = true;
 					action.beginRise(m_cellGravityComponents);
 				}
 				break;
 			case LevelMoveAction::CLIMBING:
 				if (action.hasRiseCompleted(m_cellGravityComponents))
 				{
+					m_cellNumbersComponents[action.getDropCellId()].isActive = true;
+					m_cellCollisionComponents[action.getDropCellId()].isBlocked = false;
 					action.endAction(m_cellCollisionComponents);
 				}
 				break;
@@ -239,12 +243,19 @@ namespace Levels
 		DetectedLevelCollisions detectedCollisions;
 		const Physics::CircleParams& actorCircle = actorCollision.broadCircle.getCircle();
 		int componentIndex = -1;
-		for (const CellCollisionComponent& cellCollision : m_cellCollisionComponents)
+		for (CellCollisionComponent& cellCollision : m_cellCollisionComponents)
 		{
 			componentIndex++;
 			if (!Physics::checkIntersection(cellCollision.broadCircle.getCircle(), actorCircle))
 			{
 				continue;
+			}
+			if (cellCollision.isBlocked == true)
+			{
+				cellCollision.blocker.setCellPosition(
+					this->m_cellTransformComponents[componentIndex].position
+				);
+				cellCollision.blocker.setCellWidth(this->m_commonCellWidth);
 			}
 			LevelEntitySystem::getWallCollisions(detectedCollisions, cellCollision, actorCircle);
 			LevelEntitySystem::getFloorCollisions(
@@ -252,8 +263,8 @@ namespace Levels
 			);
 			if (detectedCollisions.isFloorDetected == false)
 			{
-				detectedCollisions.voidCentre = 
-					(actorCircle.position / m_commonCellWidth).floor() + 0.5f;
+				detectedCollisions.voidCentre =
+					((actorCircle.position / m_commonCellWidth).floor() + 0.5f) * m_commonCellWidth;
 			}
 		}
 
