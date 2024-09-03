@@ -1,5 +1,7 @@
 #pragma once
 #include "Levels/CellComponents.h"
+#include "Assets/TextureDict.h"
+#include "Math.h"
 
 namespace Levels
 {
@@ -14,6 +16,9 @@ namespace Levels
 			CLIMBING = 3,
 			ENDED = 4
 		};
+
+		bool hasCountdownCompleted(
+			float deltaTime, std::vector<CellGraphicsComponent>& panelsComponents);
 
 		/**
 		 * @brief Check if the first cell has vanished before shifting.
@@ -55,14 +60,16 @@ namespace Levels
 		void addShiftCellId(int id);
 		void setShiftAction(CellMoveComponent::State shiftAction);
 		
-
 		LevelMoveAction(int rowOrColumn);
+		LevelMoveAction(int rowOrColumn, float dropDelay);
 		~LevelMoveAction();
 
 	private:
 		std::vector<int> m_cellsToShift;
 		int m_cellToDrop = 0;
 		int m_rowOrColumn = 0;
+		float m_dropTimer = 0.f;
+		float m_dropDelay = 4.f;
 		State m_actionState = STARTING;
 		CellMoveComponent::State m_shiftAction = CellMoveComponent::STATIC;
 	};

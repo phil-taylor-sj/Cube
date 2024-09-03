@@ -26,6 +26,7 @@ namespace Actors
 	{
 		sf::Sprite sprite;
 		bool isVisible = true;
+		bool isBackground = false;
 		float initialTextureAngle = 0.f;
 	};
 
@@ -74,5 +75,6 @@ namespace Actors
 		State ActorState = STEADY;
 		float currentScale = 1.f;
 		float verticalTime = 3.f;
+		Physics::Vec2f voidCentre = Physics::Vec2f(0.f, 0.f);
 	};
 }

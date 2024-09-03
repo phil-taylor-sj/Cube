@@ -23,7 +23,8 @@ namespace Actors
 		void unassignActor(int id);
 		void moveActors(float deltaTime);
 		void updateGraphics();
-		void renderActors(sf::RenderWindow& window);
+		void renderForegroundActors(sf::RenderWindow& window);
+		void renderBackgroundActors(sf::RenderWindow& window);
 		
 		void setReferenceLength(float length);
 		void updateReferenceLength(float length);

@@ -22,7 +22,10 @@ namespace Actors
 			Physics::Vec2f floorForce
 		);
 
-		static void adjustGravityMotion(ActorGravityComponent& gravity);
+		static void adjustGravityMotion(
+			ActorGravityComponent& gravity,
+			ActorTransformComponent& transform
+		);
 
 	private:
 		static float m_deltaTime;

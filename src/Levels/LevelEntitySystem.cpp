@@ -7,12 +7,25 @@ namespace Levels
 		m_deltaTime = deltaTime;
 	}
 
+	float LevelEntitySystem::getDeltaTime()
+	{
+		return m_deltaTime;
+	}
+
 	void LevelEntitySystem::getWallCollisions(
 		DetectedLevelCollisions& detectedCollisions, 
 		const CellCollisionComponent& cellCollision,
 		const Physics::CircleParams& actorCircle
 	)
 	{
+		if (cellCollision.isBlocked == true)
+		{
+			if (Physics::checkIntersection(cellCollision.blocker.getRectangle(), actorCircle))
+			{
+				detectedCollisions.blockers.push_back(cellCollision.blocker.getRectangle());
+			}
+		}
+
 		if (cellCollision.areCollisionsActive == false)
 		{
 			return;
@@ -23,6 +36,15 @@ namespace Levels
 			if (Physics::checkIntersection(wallCollision.getRectangle(), actorCircle))
 			{
 				detectedCollisions.staticWalls.push_back(wallCollision.getRectangle());
+			}
+		}
+
+		
+		if (cellCollision.isBlocked == true)
+		{
+			if(Physics::checkIntersection(cellCollision.blocker.getRectangle(), actorCircle))
+			{
+				detectedCollisions.staticWalls.push_back(cellCollision.blocker.getRectangle());
 			}
 		}
 	}
@@ -79,23 +101,30 @@ namespace Levels
 		int lastColumnIndex = cellGrid.size() - 2;
 		int firstRowIndex = 1;
 		int lastRowIndex = cellGrid[0].size() - 2;
-		int columnIndex = firstColumnIndex + rand() % (lastColumnIndex);
-		int rowIndex = firstRowIndex + rand() % (lastRowIndex);
-		
-		int primaryIndex = (axis == COLUMN) ? columnIndex : rowIndex;
+
+		int columnIndex = 0;
+		int rowIndex = 0;
+		int primaryIndex = 0;
 
 		// Check that the row/column index is not held by any existing action
-		if (moveActions.size() > 0)
+		bool idExists = true;
+		while(idExists == true)
 		{
-			for (const LevelMoveAction& action : moveActions)
+			columnIndex = firstColumnIndex + rand() % (lastColumnIndex);
+			rowIndex = firstRowIndex + rand() % (lastRowIndex);
+			primaryIndex = (axis == COLUMN) ? columnIndex : rowIndex;
+			idExists = false;
+			if (moveActions.size() > 0)
 			{
-				if (primaryIndex == action.getRowOrColumn())
+				for (const LevelMoveAction& action : moveActions)
 				{
-					return;
+					if (primaryIndex == action.getRowOrColumn())
+					{
+						idExists = true;
+					}
 				}
 			}
 		}
-
 		// Randomly selcted move direction along corresponding axis
 		CellMoveComponent::State direction = (axis == COLUMN) 
 			? (rand() % (2) == 0)
@@ -278,6 +307,18 @@ namespace Levels
 		default:
 			break;
 		}
+	}
+
+	void LevelEntitySystem::scaleCellSprite(sf::Sprite& sprite, float cellWidth)
+	{
+		sprite.setScale(
+			cellWidth / sprite.getLocalBounds().width,
+			cellWidth / sprite.getLocalBounds().height
+		);
+		sprite.setOrigin(
+			sprite.getLocalBounds().width * 0.5f,
+			sprite.getLocalBounds().height * 0.5f
+		);
 	}
 
 	void LevelEntitySystem::updateCellNumbers(

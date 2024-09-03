@@ -73,14 +73,7 @@ namespace Levels
 			
 			if (sprite.getLocalBounds().width != cellWidth)
 			{
-				sprite.setScale(
-					cellWidth / sprite.getLocalBounds().width,
-					cellWidth / sprite.getLocalBounds().height
-				);
-				sprite.setOrigin(
-					sprite.getLocalBounds().width * 0.5f,
-					sprite.getLocalBounds().height * 0.5f
-				);
+				LevelEntitySystem::scaleCellSprite(sprite, cellWidth);
 			}
 		}
 		updateAllCellPositions();
@@ -109,20 +102,31 @@ namespace Levels
 	{
 		if (m_currentMoveActions.size() == 0)
 		{
-			m_currentShiftAxis = (m_currentShiftAxis == LevelEntityManager::ROW) 
+			m_currentShiftAxis = (m_currentShiftAxis == LevelEntityManager::ROW)
 				? LevelEntityManager::COLUMN : LevelEntityManager::ROW;
-			LevelEntitySystem::createMoveAction(m_currentShiftAxis, m_cellEntityGrid,
-				m_cellMoveComponents, m_currentMoveActions);
-			LevelEntitySystem::updateCellIndicies(m_cellEntityGrid, m_cellTransformComponents,
-				m_cellMoveComponents, 0, m_cellEntityGrid.size() - 1);
+			for(int i = 0; i < 3; i++)
+			{
+				LevelEntitySystem::createMoveAction(m_currentShiftAxis, m_cellEntityGrid,
+					m_cellMoveComponents, m_currentMoveActions);
+				LevelEntitySystem::updateCellIndicies(m_cellEntityGrid, m_cellTransformComponents,
+					m_cellMoveComponents, 0, m_cellEntityGrid.size() - 1);
+			}
+		
 		}
  
 		for (LevelMoveAction& action : m_currentMoveActions)
 		{
+
 			switch (action.getCurrentActionState())
 			{
 			case LevelMoveAction::STARTING:
-				action.beginDrop(m_cellGravityComponents, m_cellCollisionComponents);
+				if (action.hasCountdownCompleted(
+					LevelEntitySystem::getDeltaTime(), m_cellPanelsComponents)
+					)
+				{
+					m_cellNumbersComponents[action.getDropCellId()].isActive = false;
+					action.beginDrop(m_cellGravityComponents, m_cellCollisionComponents);
+				}
 				break;
 			case LevelMoveAction::DROPPING:
 				if (action.hasDropCompleted(m_cellGravityComponents))
@@ -139,18 +143,33 @@ namespace Levels
 						(transform.cellIndices.x + 0.5f) * m_commonCellWidth,
 						(transform.cellIndices.y + 0.5f) * m_commonCellWidth
 					);
+					m_cellCollisionComponents[action.getDropCellId()].isBlocked = true;
 					action.beginRise(m_cellGravityComponents);
 				}
 				break;
 			case LevelMoveAction::CLIMBING:
 				if (action.hasRiseCompleted(m_cellGravityComponents))
 				{
+					m_cellNumbersComponents[action.getDropCellId()].isActive = true;
+					m_cellCollisionComponents[action.getDropCellId()].isBlocked = false;
 					action.endAction(m_cellCollisionComponents);
 				}
 				break;
 			case LevelMoveAction::ENDED:
 				break;
 			default:
+				break;
+			};
+
+
+			switch (action.getCurrentActionState())
+			{
+			case LevelMoveAction::DROPPING:
+			case LevelMoveAction::CLIMBING:
+				m_cellGraphicsComponents[action.getDropCellId()].isBackground = true;
+				break;
+			default:
+				m_cellGraphicsComponents[action.getDropCellId()].isBackground = false;
 				break;
 			};
 		}
@@ -174,6 +193,13 @@ namespace Levels
 	void LevelEntityManager::renderBackground(sf::RenderWindow& window)
 	{
 		window.draw(m_backgroundSprite);
+		for (CellGraphicsComponent graphics : this->m_cellGraphicsComponents)
+		{
+			if (graphics.isBackground)
+			{
+				window.draw(graphics.sprite);
+			}
+		}
 	}
 
 
@@ -181,10 +207,22 @@ namespace Levels
 	{
 		for (int i = 0; i < m_totalCells; i++)
 		{
+			if (m_cellGraphicsComponents[i].isBackground)
+			{
+				continue;
+			}
 			window.draw(m_cellGraphicsComponents[i].sprite);
 			if (m_cellNumbersComponents[i].isActive)
 			{
 				window.draw(m_cellNumbersComponents[i].text);
+			}
+			if (m_cellPanelsComponents[i].isVisible)
+			{
+				sf::Sprite& panels = m_cellPanelsComponents[i].sprite;
+				CellTransformComponent& transform = m_cellTransformComponents[i];
+				panels.setPosition(transform.position.x, transform.position.y);
+				LevelEntitySystem::scaleCellSprite(panels, transform.cellWidth);
+				window.draw(panels);
 			}
 		}
 	};
@@ -205,12 +243,19 @@ namespace Levels
 		DetectedLevelCollisions detectedCollisions;
 		const Physics::CircleParams& actorCircle = actorCollision.broadCircle.getCircle();
 		int componentIndex = -1;
-		for (const CellCollisionComponent& cellCollision : m_cellCollisionComponents)
+		for (CellCollisionComponent& cellCollision : m_cellCollisionComponents)
 		{
 			componentIndex++;
 			if (!Physics::checkIntersection(cellCollision.broadCircle.getCircle(), actorCircle))
 			{
 				continue;
+			}
+			if (cellCollision.isBlocked == true)
+			{
+				cellCollision.blocker.setCellPosition(
+					this->m_cellTransformComponents[componentIndex].position
+				);
+				cellCollision.blocker.setCellWidth(this->m_commonCellWidth);
 			}
 			LevelEntitySystem::getWallCollisions(detectedCollisions, cellCollision, actorCircle);
 			LevelEntitySystem::getFloorCollisions(
@@ -218,8 +263,8 @@ namespace Levels
 			);
 			if (detectedCollisions.isFloorDetected == false)
 			{
-				detectedCollisions.voidCentre = 
-					(actorCircle.position / m_commonCellWidth).floor() + 0.5f;
+				detectedCollisions.voidCentre =
+					((actorCircle.position / m_commonCellWidth).floor() + 0.5f) * m_commonCellWidth;
 			}
 		}
 
@@ -250,6 +295,11 @@ namespace Levels
 		m_cellMoveComponents.resize(m_totalCells);
 		m_cellGravityComponents.resize(m_totalCells);
 		m_cellNumbersComponents.resize(m_totalCells);
+		m_cellPanelsComponents.resize(m_totalCells);
+		for (CellGraphicsComponent panels : m_cellPanelsComponents)
+		{
+			panels.isVisible = false;
+		}
 
 		int counter = 0;
 		for (int i = 0; i < m_xGridSize; i++)

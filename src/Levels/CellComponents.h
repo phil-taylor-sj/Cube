@@ -26,13 +26,14 @@ namespace Levels
 	public:
 		static enum
 		{
-		TYPE = 0,
-		GRAPHICS = 1,
-		TRANSFORM = 2,
-		NUMBERS = 3,
-		COLLISION = 4,
-		FORCE = 5,
-		MOVE = 6
+		TYPE,
+		GRAPHICS,
+		TRANSFORM,
+		COLLISION,
+		NUMBERS,
+		PANELS,
+		FORCE,
+		MOVE,
 		};
 	};
 
@@ -40,6 +41,7 @@ namespace Levels
 	{
 		sf::Sprite sprite;
 		bool isVisible = true;
+		bool isBackground = true;
 		float textureRotation = 0.f;
 	};
 
@@ -78,8 +80,11 @@ namespace Levels
 	{
 		std::array<CellStaticRectangle, 8> staticWalls;
 		std::vector<CellStaticRectangle> staticFloors;
+		CellStaticRectangle blocker;
+
 		Physics::Circle broadCircle;
 		float relativeBroadRadius;
+		bool isBlocked = false;
 		bool isFloorActive = true;
 		bool areCollisionsActive = true;
 	};
@@ -140,6 +145,11 @@ namespace Levels
 		sf::Text text;
 		CellPanel currentPanel = CellPanel::TOP_LEFT;
 		Physics::Vec2f relativePosition = Physics::Vec2f(0.f, 0.f);
+	};
+
+	struct CellPanelsComponent
+	{
+		
 	};
 }
 

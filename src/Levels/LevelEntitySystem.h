@@ -15,6 +15,8 @@ namespace Levels
 	public:
 		static void setDeltaTime(float deltaTime);
 
+		static float getDeltaTime();
+
 		static void getWallCollisions(
 			DetectedLevelCollisions& detectedCollisions,
 			const CellCollisionComponent& cellCollision,
@@ -49,6 +51,8 @@ namespace Levels
 			std::vector<CellMoveComponent>& moveComponents,
 			int startIndex, int endIndex
 		);
+
+		static void scaleCellSprite(sf::Sprite& sprite, float cellWidth);
 
 		static void updateCellNumbers(
 			CellNumbersComponent& numbers

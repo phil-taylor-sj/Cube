@@ -29,7 +29,7 @@ namespace Levels
 	{
 		std::string textureNames[9] = {
 			"YellowRoom", "WhiteRoom", "GreenRoom", "BlueRoom", "RedRoom",
-			"CornerVoid", "BridgeVoid", "EdgeVoid", "BackgroundVoid"
+			"CornerVoid", "BridgeVoid", "EdgeVoid", "BackgroundVoid",
 		};
 
 		for (std::string name : textureNames)
@@ -131,6 +131,7 @@ namespace Levels
 		{
 			if (cellTypes[i].type == CellTypes::ROOM)
 			{
+				graphics[i].isBackground = false;
 				graphics[i].sprite.setTexture(
 					Assets::TextureDict::getInstance()->getTexture(
 						m_colourFilenames.at(cellTypes[i].colour)
@@ -168,6 +169,8 @@ namespace Levels
 	{
 		for (CellCollisionComponent& collision : cellCollisions)
 		{
+			collision.blocker.setRelativeDimensions(0.95, 0.95);
+			collision.blocker.setRelativePosition(0., 0.);
 			m_addWallCollisions(collision);
 		}
 
@@ -175,6 +178,7 @@ namespace Levels
 		{
 			m_addFloorCollisions(cellTypes[i], cellCollisions[i]);
 		}
+
 	}
 
 	void LevelFactory::m_addWallCollisions(CellCollisionComponent& collision)
