@@ -8,6 +8,7 @@
 #include "Utilities/GridGen.h"
 #include "Levels/CellTypes.h"
 #include "Assets/FontDict.h"
+#include "Actors/ActorConfig.h"
 
 namespace Levels
 {

@@ -10,7 +10,7 @@ namespace Actors
 		switch (types.type)
 		{
 			case ActorTypes::PLAYER:
-				textureName = "PlayerPistol";
+				textureName = "PlayerSheet";
 				break;
 			default:
 				return;
@@ -22,8 +22,9 @@ namespace Actors
 		};
 
 		graphics.sprite.setTexture(
-			Assets::TextureDict::getInstance()->getTexture("PlayerPistol")
+			Assets::TextureDict::getInstance()->getTexture(ActorConfig::imageName.at(types.type))
 		);
+		graphics.sprite.setTextureRect(sf::IntRect(0, 0, 128, 128));
 
 		graphics.sprite.setOrigin(
 			graphics.sprite.getLocalBounds().width * 0.5f,

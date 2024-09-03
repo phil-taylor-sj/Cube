@@ -3,6 +3,7 @@
 #include <array>
 #include "Actors/ActorComponents.h"
 #include "Assets/TextureDict.h"
+#include "Actors/ActorConfig.h"
 #include <set>
 
 namespace Actors
