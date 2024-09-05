@@ -61,6 +61,7 @@ namespace Scenes
 		m_cursorPosition.x -= 0.5f * m_window->getSize().x;
 		m_cursorPosition.y -= 0.5f * m_window->getSize().y;
 		
+		/*
 		float playerAngle = Utilities::VecMath<float>::angleBetweenVectors(
 			m_cursorPosition, Physics::Vec2f(100.f, 0.f)
 		);
@@ -68,8 +69,9 @@ namespace Scenes
 		{
 			playerAngle = 360.f - playerAngle;
 		}
+		**/
 
-		m_actors->transformComponents[0].angle = playerAngle;
+		m_actors->transformComponents[0].angle = m_actors->forceComponents[0].movementAngle;
 		Actors::ActorEntitySystem::applyMovementForce(m_actors->forceComponents);
 
 		m_level->updateLevel();
@@ -154,7 +156,7 @@ namespace Scenes
 			Actors::ActorGravityComponent::FALLING)
 		{
 			m_actors->forceComponents[0].isMoving = counter > 0;
-			m_actors->forceComponents[0].movementAngle = angle; 
+			if (counter > 0) {m_actors->forceComponents[0].movementAngle = angle;} 
 		}
 		else
 		{

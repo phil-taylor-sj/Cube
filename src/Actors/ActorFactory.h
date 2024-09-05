@@ -31,6 +31,11 @@ namespace Actors
 			const ActorTypeComponent& types,
 			ActorGravityComponent& gravity
 		);
+
+		static bool buildAnimationComponent(
+			const ActorTypeComponent& types,
+			ActorAnimationComponent& animation
+		);
 		
 	};
 

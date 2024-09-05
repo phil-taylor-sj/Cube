@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+
 #include "Actors/ActorEntity.h"
 #include "Actors/ActorComponents.h"
 #include "Actors/ActorTypes.h"
@@ -18,14 +19,16 @@ namespace Actors
 		std::vector<ActorCollisionComponent> collisionComponents;
 		std::vector<ActorForceComponent> forceComponents;
 		std::vector<ActorGravityComponent> gravityComponents;
+		std::vector<ActorAnimationComponent> animationComponents;
 
 		void assignActor(ActorTypes type, ActorSubtypes subtype);
 		void unassignActor(int id);
 		void moveActors(float deltaTime);
+		void animateActors();
 		void updateGraphics();
 		void renderForegroundActors(sf::RenderWindow& window);
 		void renderBackgroundActors(sf::RenderWindow& window);
-		
+
 		void setReferenceLength(float length);
 		void updateReferenceLength(float length);
 
