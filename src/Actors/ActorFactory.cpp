@@ -10,7 +10,7 @@ namespace Actors
 		switch (types.type)
 		{
 			case ActorTypes::PLAYER:
-				textureName = "PlayerPistol";
+				textureName = "PlayerSheet";
 				break;
 			default:
 				return;
@@ -18,12 +18,13 @@ namespace Actors
 
 		std::map<ActorTypes, float> initialTextureAngles
 		{
-			{ActorTypes::PLAYER, 0.f}
+			{ActorTypes::PLAYER, -90.f}
 		};
 
 		graphics.sprite.setTexture(
-			Assets::TextureDict::getInstance()->getTexture("PlayerPistol")
+			Assets::TextureDict::getInstance()->getTexture(ActorConfig::imageName.at(types.type))
 		);
+		graphics.sprite.setTextureRect(sf::IntRect(0, 0, 128, 128));
 
 		graphics.sprite.setOrigin(
 			graphics.sprite.getLocalBounds().width * 0.5f,
@@ -41,7 +42,7 @@ namespace Actors
 	{
 		std::map<ActorTypes, std::array<float, 2>> relativeWidthsHeights
 		{
-			{ActorTypes::PLAYER, {3 * 2 * 0.0625f, 3 * 2 * 0.0625f}}
+			{ActorTypes::PLAYER, {0.5 * 3 * 2 * 0.0625f, 0.5 * 3 * 2 * 0.0625f}}
 		};
 
 		transform.relativeWidth = relativeWidthsHeights[types.type][0];
@@ -88,6 +89,36 @@ namespace Actors
 		gravity.ActorState = ActorGravityComponent::STEADY;
 		gravity.currentScale = 1.f;
 		gravity.verticalTime = 2.f;
+		return true;
+
+	}
+
+	bool ActorFactory::buildAnimationComponent(
+		const ActorTypeComponent& types,
+		ActorAnimationComponent& animation
+	)
+	{
+		std::unique_ptr<ActorDistanceAnimation> ptr = std::make_unique<ActorDistanceAnimation>();
+		switch (types.type) {
+		case ActorTypes::PLAYER:
+			ptr->stride = 1.f; // relative to the room
+			ptr->textureBounds = std::vector<std::tuple<float, sf::IntRect>> {
+				std::make_tuple<float, sf::IntRect>(0.f, sf::IntRect(0, 0, 128, 128)),
+				std::make_tuple<float, sf::IntRect>(0.18f, sf::IntRect(128, 0, 128, 128)),
+				std::make_tuple<float, sf::IntRect>(0.36f, sf::IntRect(256, 0, 128, 128)),
+				std::make_tuple<float, sf::IntRect>(0.44f, sf::IntRect(0, 128, 128, 128)),
+				std::make_tuple<float, sf::IntRect>(0.62f, sf::IntRect(128, 128, 128, 128)),
+				std::make_tuple<float, sf::IntRect>(0.80f, sf::IntRect(256, 128, 128, 128))
+			};
+
+			ptr->application = ActorTypeComponent::ALIVE;
+			animation.animations.push_back(std::move(ptr));
+			break;
+		default:
+			return false;
+			break;
+		}
+		
 		return true;
 
 	}

@@ -18,7 +18,8 @@ namespace Actors
 			TRANSFORM,
 			FORCE,
 			COLLISION,
-			GRAVITY
+			GRAVITY,
+			ANIMATION
 		};
 	};
 
@@ -34,6 +35,14 @@ namespace Actors
 	{
 		ActorTypes type = ActorTypes::NONE;
 		ActorSubtypes subtype = ActorSubtypes::NONE;
+		static enum State
+		{
+			DEAD,
+			DYING,
+			FALLING,
+			ALIVE
+		};
+		State actorState = ALIVE;
 	};
 
 	struct ActorTransformComponent
@@ -76,5 +85,38 @@ namespace Actors
 		float currentScale = 1.f;
 		float verticalTime = 3.f;
 		Physics::Vec2f voidCentre = Physics::Vec2f(0.f, 0.f);
+	};
+
+
+
+	class ActorBaseAnimation
+	{
+	public:
+
+		virtual ~ActorBaseAnimation() = default;
+
+		ActorTypeComponent::State application = ActorTypeComponent::ALIVE;
+		std::string subtype = "none";
+		std::vector<std::tuple<float, sf::IntRect>> textureBounds{};
+		int currentIndex = 0;
+		bool update = false;
+	};
+
+	struct ActorDistanceAnimation : public ActorBaseAnimation
+	{
+		float distance = 0.f;
+		float stride = 64.f;
+	};
+
+	struct ActorTimedAnimation : public ActorBaseAnimation
+	{
+		float timer = 0.f;
+		float period = 0.f;
+
+	};
+
+	struct ActorAnimationComponent
+	{
+		std::vector<std::unique_ptr<ActorBaseAnimation>> animations;
 	};
 }

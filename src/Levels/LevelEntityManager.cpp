@@ -27,6 +27,7 @@ namespace Levels
 		updateAllCellScaling();
 	}
 
+
 	void LevelEntityManager::setCommonCellWidth(float commonCellWidth)
 	{
 		m_commonCellWidth = commonCellWidth;
@@ -41,15 +42,18 @@ namespace Levels
 		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
 	}
 
+
 	float LevelEntityManager::getCommonCellWidth()
 	{
 		return m_commonCellWidth;
 	}
 
+
 	Physics::Vec2i LevelEntityManager::getGridSize()
 	{
 		return Physics::Vec2i(m_xGridSize, m_yGridSize);
 	}
+
 
 	void LevelEntityManager::updateAllCellScaling()
 	{
@@ -78,6 +82,7 @@ namespace Levels
 		}
 		updateAllCellPositions();
 	}
+
 
 	void LevelEntityManager::updateAllCellPositions()
 	{
@@ -241,7 +246,9 @@ namespace Levels
 		const Actors::ActorCollisionComponent& actorCollision)
 	{
 		DetectedLevelCollisions detectedCollisions;
+		
 		const Physics::CircleParams& actorCircle = actorCollision.broadCircle.getCircle();
+
 		int componentIndex = -1;
 		for (CellCollisionComponent& cellCollision : m_cellCollisionComponents)
 		{
@@ -271,6 +278,7 @@ namespace Levels
 		return detectedCollisions;
 
 	}
+
 
 	LevelEntityManager::LevelEntityManager(int xNumberOfRooms, int yNumberOfRooms)
 	{
@@ -322,6 +330,7 @@ namespace Levels
 		LevelFactory::addCollisions(m_cellTypeComponents, m_cellCollisionComponents);
 		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
 	}
+
 
 	void LevelEntityManager::m_buildCellNumbers()
 	{

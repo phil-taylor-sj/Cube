@@ -32,17 +32,65 @@ namespace Actors
 		{
 			if (actor.isAssigned)
 			{
-				ActorForceComponent& forces = forceComponents[actor.id];
-				ActorTransformComponent& transform = transformComponents[actor.id];
-				ActorCollisionComponent& collision = collisionComponents[actor.id];
+				ActorForceComponent& forces = this->forceComponents[actor.id];
+				ActorTransformComponent& transform = this->transformComponents[actor.id];
+				ActorCollisionComponent& collision = this->collisionComponents[actor.id];
 
 				transform.position.x += deltaTime * forces.netForce.x;
 				transform.position.y += deltaTime * forces.netForce.y;
 
-				forces.netForce = Physics::Vec2f(0.f, 0.f);
-
 				collision.broadCircle.setPosition(transform.position);
 				collision.rectangle.setPosition(transform.position);
+
+				for (std::unique_ptr<ActorBaseAnimation>& animation : animationComponents[actor.id].animations)
+				{
+					if (ActorDistanceAnimation* derived = dynamic_cast<ActorDistanceAnimation*>(animation.get()))
+					{
+						derived->distance += deltaTime * forces.netForce.length() / (derived->stride * this->m_referenceLength);
+						if (derived->distance >= 1.f) 
+						{ 
+							derived->distance -= 1.0f; 
+							derived->currentIndex = 0;
+							derived->update = true;
+						}
+						else if (derived->currentIndex + 1 != derived->textureBounds.size())
+						{
+							if (derived->distance >= std::get<0>(derived->textureBounds[derived->currentIndex + 1]))
+							{
+								derived->currentIndex++;
+								derived->update = true;
+							}
+						}
+						if (forces.netForce.length() < 0.0001f) 
+						{
+							derived->distance = 0.f;
+							derived->currentIndex = 0;
+							derived->update = true;
+						}
+					}
+				}
+
+				forces.netForce = Physics::Vec2f(0.f, 0.f);
+			}
+		}
+		animateActors();
+	}
+
+	void ActorEntityManager::animateActors()
+	{
+		for (const ActorEntity& actor : entities)
+		{
+			if (!actor.components.test(ActorComponentTypes::ANIMATION)) { continue; }
+			for (std::unique_ptr<ActorBaseAnimation>& animation : animationComponents[actor.id].animations)
+			{
+				if (animation->application == typeComponents[actor.id].actorState
+					&& animation->update == true)
+				{
+					graphicsComponents[actor.id].sprite.setTextureRect(
+						std::get<1>(animation->textureBounds[animation->currentIndex])
+					);
+					animation->update = false;
+				}
 			}
 		}
 	}
@@ -83,6 +131,7 @@ namespace Actors
 		int id = m_findFreeEntity();
 		if (id >= 0)
 		{
+
 			entities[id].isAssigned = true;
 
 			entities[id].components.set(ActorComponentTypes::TYPE);
@@ -113,6 +162,12 @@ namespace Actors
 				typeComponents[id], gravityComponents[id]))
 			{
 				entities[id].components.set(ActorComponentTypes::GRAVITY);
+			}
+
+			if (ActorFactory::buildAnimationComponent(
+				typeComponents[id], animationComponents[id]))
+			{
+				entities[id].components.set(ActorComponentTypes::ANIMATION);
 			}
 			m_totalActors += 1;			
 		}
@@ -183,6 +238,7 @@ namespace Actors
 		collisionComponents.resize(newSize);
 		forceComponents.resize(newSize);
 		gravityComponents.resize(newSize);
+		animationComponents.resize(newSize);
 	}
 
 	void ActorEntityManager::m_loadAllTextures()
