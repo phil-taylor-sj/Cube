@@ -61,7 +61,7 @@ namespace Actors
 								derived->update = true;
 							}
 						}
-						if (forces.netForce.length() < 0.01f) 
+						if (forces.netForce.length() < 0.0001f) 
 						{
 							derived->distance = 0.f;
 							derived->currentIndex = 0;
