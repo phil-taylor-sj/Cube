@@ -2,36 +2,19 @@
 
 Cube is yet another step in the ongoing struggle to turn the 1997 cult classic into a viable game.
 
+<img src="https://raw.githubusercontent.com/phil-taylor-sj/images/main/vecplus-logo.png" alt="Logo" width="400"/>
+
 ## Structure
 
-### Actors
-
-An entity component system to hold all dynamic entities which not tied to a single cell (Room) including the player entity.
-
-### Assets
-
-A library comprised of singleton class objects to hold all texture, font and audio files.
-
-### Engine
-
-A library for the main game engine and input handler functionality.
-
-### Levels
-
-A separate entity manager for the level environment. Each room is represented by a separate entity in which all associated features (walls, screens, sensors, labels, etc.) are contained as components.
-
-### Physics
-
-A library to manage all collision detection and collision interaction functions. Includes a custom vector template class (Vec2) for storing and manipulating coordinates.
-
-### Scenes
-
-A library which contains discrete game scenes (title screen, active level, game over screen, etc.), which are interchangable in the game engine.
-
-### Utilities
-
-An auxillary library which contains all miscelaneous functions; predominantly mathematical and numerical processing, and procedural generation.
-
+| Library | Overview |
+| :--- | :--- |
+| Actor | An entity component system to hold all dynamic entities which not tied to a single cell (Room) including the player entity. |
+| Assets | A library comprised of singleton class objects to hold all texture, font and audio files.  |
+| Engine | A library for the main game engine and input handler functionality. |
+| Levels | A separate entity manager for the level environment. Each room is represented by a separate entity in which all associated features (walls, screens, sensors, labels, etc.) are contained as components. |
+| Physics | A library to manage all collision detection and collision interaction functions. Includes a custom vector template class (Vec2) for storing and manipulating coordinates. |
+| Scenes | A library which contains discrete game scenes (title screen, active level, game over screen, etc.), which are interchangable in the game engine. |
+| Utilities | An auxillary library which contains all miscelaneous functions; predominantly mathematical and numerical processing, and procedural generation. |
 
 ## Setup & Configuration
 
