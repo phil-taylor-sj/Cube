@@ -2,7 +2,7 @@
 
 Cube is yet another step in the ongoing struggle to turn the 1997 cult classic into a viable game.
 
-<img src="https://raw.githubusercontent.com/phil-taylor-sj/images/main/vecplus-logo.png" alt="Logo" width="400"/>
+<img src="https://raw.githubusercontent.com/phil-taylor-sj/images/main/cube-gameplay.png" alt="Logo" width="400"/>
 
 ## Structure
 
