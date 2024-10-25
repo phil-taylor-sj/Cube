@@ -3,7 +3,7 @@
 Cube is yet another step in the ongoing struggle to turn the 1997 cult classic into a viable game.
 
 <p align="center">
-	<img src="https://raw.githubusercontent.com/phil-taylor-sj/images/main/cube-gameplay.png" alt="Logo" width="900"/>
+	<img src="https://raw.githubusercontent.com/phil-taylor-sj/images/main/cube-gameplay.png" alt="Logo" width="1000"/>
 </p>
 
 ## Structure
