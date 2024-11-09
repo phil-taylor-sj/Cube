@@ -27,7 +27,7 @@ namespace Actors
 	{
 		for (const Physics::RectParams& wall : collidingWalls)
 		{
-			Physics::Vec2f correction =
+			vecp::Vec2f correction =
 				Physics::CollisionCorrections::getWallCorrection(
 					actorCollision.broadCircle.getCircle(), wall
 				);
@@ -41,7 +41,7 @@ namespace Actors
 	void ActorEntitySystem::applyFloorMovement(
 		ActorTransformComponent& actorTransform,
 		ActorCollisionComponent& actorCollision,
-		Physics::Vec2f floorForce
+		vecp::Vec2f floorForce
 	)
 	{
 		actorTransform.position += floorForce;

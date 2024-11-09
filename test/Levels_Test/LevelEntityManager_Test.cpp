@@ -45,7 +45,7 @@ namespace LevelEntityManager_Tests
 			level.getCircleCollisions(actorOne);
 		EXPECT_EQ(collisionsOne.staticWalls.size(), 0);
 	
-		actorOne.broadCircle.translate(Physics::Vec2f(1000.f, 1000.f));
+		actorOne.broadCircle.translate(vecp::Vec2f(1000.f, 1000.f));
 		Levels::DetectedLevelCollisions collisionsTwo =
 			level.getCircleCollisions(actorOne);
 		EXPECT_EQ(collisionsTwo.staticWalls.size(), 8);
@@ -58,7 +58,7 @@ namespace LevelEntityManager_Tests
 			level.getCircleCollisions(actorOne);
 		EXPECT_EQ(collisionsOne.staticWalls.size(), 8);	
 		
-		actorOne.broadCircle.translate(Physics::Vec2f(250.f, 0.f));
+		actorOne.broadCircle.translate(vecp::Vec2f(250.f, 0.f));
 		Levels::DetectedLevelCollisions collisionsTwo =
 			level.getCircleCollisions(actorOne);
 		EXPECT_EQ(collisionsTwo.staticWalls.size(), 2);

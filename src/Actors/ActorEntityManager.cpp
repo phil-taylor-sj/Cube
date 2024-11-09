@@ -46,7 +46,7 @@ namespace Actors
 				{
 					if (ActorDistanceAnimation* derived = dynamic_cast<ActorDistanceAnimation*>(animation.get()))
 					{
-						derived->distance += deltaTime * forces.netForce.length() / (derived->stride * this->m_referenceLength);
+						derived->distance += deltaTime * forces.netForce.mag() / (derived->stride * this->m_referenceLength);
 						if (derived->distance >= 1.f) 
 						{ 
 							derived->distance -= 1.0f; 
@@ -61,7 +61,7 @@ namespace Actors
 								derived->update = true;
 							}
 						}
-						if (forces.netForce.length() < 0.0001f) 
+						if (forces.netForce.mag() < 0.0001f) 
 						{
 							derived->distance = 0.f;
 							derived->currentIndex = 0;
@@ -70,7 +70,7 @@ namespace Actors
 					}
 				}
 
-				forces.netForce = Physics::Vec2f(0.f, 0.f);
+				forces.netForce = vecp::Vec2f(0.f, 0.f);
 			}
 		}
 		animateActors();

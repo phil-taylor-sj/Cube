@@ -5,6 +5,8 @@ add_library(Utilities OBJECT
     VecMath.cpp
 )
 
+target_link_libraries(Utilities VecPlus)
+
 target_include_directories(Utilities PUBLIC 
     ${PUBLIC_INCLUDE_DIR}
     ${SFML_INCLUDE_DIR}

@@ -6,6 +6,8 @@ add_library(Actors OBJECT
     ActorFactory.cpp
 )
 
+target_link_libraries(Actors VecPlus)
+
 target_include_directories(Actors PUBLIC 
     ${PUBLIC_INCLUDE_DIR}
     ${SFML_INCLUDE_DIR}

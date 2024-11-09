@@ -10,6 +10,9 @@ add_library(Levels OBJECT
 
  "DetectedLevelCollisions.cpp" "LevelMoveAction.cpp")
 
+ 
+target_link_libraries(Levels VecPlus)
+
 target_include_directories(Levels PUBLIC 
     ${PUBLIC_INCLUDE_DIR}
     ${SFML_INCLUDE_DIR}

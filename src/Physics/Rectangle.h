@@ -1,6 +1,8 @@
 #pragma once
 #include "Physics/Vec2.h"
 
+#include <VecPlus/Vec2.h>
+
 namespace Physics
 {
     /**
@@ -8,8 +10,8 @@ namespace Physics
      * @brief A structure representing parameters of a rectangular shape.
      */
 	struct RectParams {
-		Vec2f position;
-		Vec2f previousPosition;
+		vecp::Vec2f position;
+		vecp::Vec2f previousPosition;
 		float width;
 		float height;
 		float halfWidth;
@@ -28,7 +30,7 @@ namespace Physics
          * @brief Set the position of the Rectangle using a Vec2f.
          * @param position The new position of the Rectangle.
          */
-		void setPosition(Vec2f position);
+		void setPosition(vecp::Vec2f position);
 
 		/**
 		 * @brief Set the position of the Rectangle using individual x and y coordinates.
@@ -41,7 +43,7 @@ namespace Physics
          * @brief Translate the Rectangle by a specified delta position using a Vec2f.
          * @param deltaPosition The delta position to translate by.
          */
-        void translate(Vec2f deltaPosition);
+        void translate(vecp::Vec2f deltaPosition);
 
         /**
          * @brief Translate the Rectangle by specified delta x and y values.
@@ -100,7 +102,7 @@ namespace Physics
 		 * @param position The position of the Rectangle.
 		 * The width and height are set to 1, and the angle is 0.
 		 */
-		Rectangle(Vec2f position);
+		Rectangle(vecp::Vec2f position);
 		/**
          * @brief Constructor to create a Rectangle with specified x and y positions.
          * @param xPosition The x-coordinate of the Rectangle's position.
@@ -116,7 +118,7 @@ namespace Physics
          * @param height The height of the Rectangle.
          * The angle is set to 0.
          */
-		Rectangle(Vec2f position, float width, float height);
+		Rectangle(vecp::Vec2f position, float width, float height);
 		
 		/**
          * @brief Constructor to create a Rectangle with specified x and y positions, width, and height.

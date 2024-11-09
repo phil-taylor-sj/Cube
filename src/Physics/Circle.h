@@ -2,6 +2,8 @@
 #include <math.h>
 #include "Physics/Vec2.h"
 
+#include <VecPlus/Vec2.h>
+
 namespace Physics
 {
 	/**
@@ -9,8 +11,8 @@ namespace Physics
 	 * @brief Parameters for a circular object.
 	 */
 	struct CircleParams {
-		Vec2f position;
-		Vec2f previousPosition;
+		vecp::Vec2f position;
+		vecp::Vec2f previousPosition;
 		float radius;
 		float radiusSquared;
 	};
@@ -22,7 +24,7 @@ namespace Physics
 		 * @brief Set the x-y coordinates of the circle centre.
 		 * @param position Vector of new x-y coordinates.
 		 */
-		void setPosition(Vec2f position);
+		void setPosition(vecp::Vec2f position);
 
 		/**
 		 * @brief Set the x-y coordinates of the circle centre.
@@ -35,7 +37,7 @@ namespace Physics
 		 * @brief Translate the x-y corrdinates of the circle centre.
 		 * @param deltaPosition Distance by which to shift the centre along each axis.
 		 */
-		void translate(Vec2f deltaPosition);
+		void translate(vecp::Vec2f deltaPosition);
 		
 		/**
 		 * @brief Translate the x-y corrdinates of the circle centre.
@@ -55,7 +57,7 @@ namespace Physics
 		struct CircleParams getCircle() const;
 
 		Circle();
-		Circle(Vec2f position, float radius);
+		Circle(vecp::Vec2f position, float radius);
 		Circle(float xPosition, float yPosition, float radius);
 		~Circle();
 

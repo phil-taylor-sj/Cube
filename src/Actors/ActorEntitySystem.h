@@ -19,7 +19,7 @@ namespace Actors
 		static void applyFloorMovement(
 			ActorTransformComponent& actorTransform,
 			ActorCollisionComponent& actorCollision,
-			Physics::Vec2f floorForce
+			vecp::Vec2f floorForce
 		);
 
 		static void adjustGravityMotion(

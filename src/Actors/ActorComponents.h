@@ -47,7 +47,7 @@ namespace Actors
 
 	struct ActorTransformComponent
 	{
-		Physics::Vec2f position;
+		vecp::Vec2f position;
 		float angle;
 		float width = 1.f;
 		float height = 1.f;
@@ -57,7 +57,7 @@ namespace Actors
 
 	struct ActorForceComponent
 	{
-		Physics::Vec2f netForce;
+		vecp::Vec2f netForce;
 		bool isMoving = true;
 		float weight = 75.f;
 		float movement = 75.f;
@@ -84,7 +84,7 @@ namespace Actors
 		State ActorState = STEADY;
 		float currentScale = 1.f;
 		float verticalTime = 3.f;
-		Physics::Vec2f voidCentre = Physics::Vec2f(0.f, 0.f);
+		vecp::Vec2f voidCentre = vecp::Vec2f(0.f, 0.f);
 	};
 
 

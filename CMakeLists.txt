@@ -15,11 +15,22 @@ set(BIN_DIR bin)
 set(BUILD_BIN_DIR ${PROJECT_SOURCE_DIR}/build/bin)
 set(SFML_BIN_DIR ${PROJECT_SOURCE_DIR}/lib/SFML/bin)
 
-set(PUBLIC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src)
+set(PUBLIC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/include)
 set(SFML_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/lib/SFML/include)
 
 set(SFML_DIR lib/SFML/lib/cmake/SFML)
 find_package(SFML 2.6.1 COMPONENTS graphics window system REQUIRED)
+
+include(FetchContent)
+FetchContent_Declare(
+  VecPlus
+  GIT_REPOSITORY https://github.com/phil-taylor-sj/VecPlus.git
+  GIT_TAG vec-add-cmake
+)
+
+FetchContent_MakeAvailable(VecPlus)
+
+
 
 execute_process(
 	COMMAND ${CMAKE_COMMAND} -E make_directory ${BUILD_BIN_DIR}/Debug

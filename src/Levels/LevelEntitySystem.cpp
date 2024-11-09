@@ -211,7 +211,7 @@ namespace Levels
 			for (int j = 0; j < cellGrid[i].size(); j++)
 			{
 				int entityId = cellGrid[i][j];
-				Physics::Vec2i currentIndicies = Physics::Vec2i(i,j);
+				vecp::Vec2i currentIndicies = vecp::Vec2i(i,j);
 				transformComponents[entityId].cellIndices = currentIndicies;
 				moveComponents[entityId].destinationIndicies = currentIndicies;
 			}
@@ -261,7 +261,7 @@ namespace Levels
 		float commonCellWidth
 	)
 	{
-		Physics::Vec2f destination = Physics::Vec2f(
+		vecp::Vec2f destination = vecp::Vec2f(
 			(move.destinationIndicies.x + 0.5f) * commonCellWidth,
 			(move.destinationIndicies.y + 0.5f) * commonCellWidth
 		);
@@ -363,15 +363,15 @@ namespace Levels
 		{8, CellPanel::BOT_RIGHT}
 	};
 
-	std::map<CellPanel, Physics::Vec2f> LevelEntitySystem::m_panelPositions = {
-		{CellPanel::TOP_LEFT,  Physics::Vec2f(-1.f * m_offset, -1.f * m_offset)},
-		{CellPanel::TOP_MID,   Physics::Vec2f(0.f * m_offset, -1.f * m_offset)},
-		{CellPanel::TOP_RIGHT, Physics::Vec2f(1.f * m_offset, -1.f * m_offset)},
-		{CellPanel::MID_LEFT,  Physics::Vec2f(-1.f * m_offset,  0.f * m_offset)},
-		{CellPanel::MID_MID,   Physics::Vec2f(0.f * m_offset,  0.f * m_offset)},
-		{CellPanel::MID_RIGHT, Physics::Vec2f(1.f * m_offset,  0.f * m_offset)},
-		{CellPanel::BOT_LEFT,  Physics::Vec2f(-1.f * m_offset,  1.f * m_offset)},
-		{CellPanel::BOT_MID,   Physics::Vec2f(0.f * m_offset,  1.f * m_offset)},
-		{CellPanel::BOT_RIGHT, Physics::Vec2f(1.f * m_offset,  1.f * m_offset)}
+	std::map<CellPanel, vecp::Vec2f> LevelEntitySystem::m_panelPositions = {
+		{CellPanel::TOP_LEFT,  vecp::Vec2f(-1.f * m_offset, -1.f * m_offset)},
+		{CellPanel::TOP_MID,   vecp::Vec2f(0.f * m_offset, -1.f * m_offset)},
+		{CellPanel::TOP_RIGHT, vecp::Vec2f(1.f * m_offset, -1.f * m_offset)},
+		{CellPanel::MID_LEFT,  vecp::Vec2f(-1.f * m_offset,  0.f * m_offset)},
+		{CellPanel::MID_MID,   vecp::Vec2f(0.f * m_offset,  0.f * m_offset)},
+		{CellPanel::MID_RIGHT, vecp::Vec2f(1.f * m_offset,  0.f * m_offset)},
+		{CellPanel::BOT_LEFT,  vecp::Vec2f(-1.f * m_offset,  1.f * m_offset)},
+		{CellPanel::BOT_MID,   vecp::Vec2f(0.f * m_offset,  1.f * m_offset)},
+		{CellPanel::BOT_RIGHT, vecp::Vec2f(1.f * m_offset,  1.f * m_offset)}
 	};
 }

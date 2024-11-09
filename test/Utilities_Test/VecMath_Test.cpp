@@ -6,10 +6,10 @@ namespace VecMath_Tests
 	TEST(VecMath_angleBetweenVectors_Test,
 		Return_the_correct_angle_for_two_non_zero_vectors)
 	{
-		Physics::Vec2f vectorBase = Physics::Vec2f(1.f, 0.f);
-		Physics::Vec2f vectorOne = Physics::Vec2f(1.f, 1.f);
-		Physics::Vec2f vectorTwo = Physics::Vec2f(-1.f, 1.f);
-		Physics::Vec2f vectorThree = Physics::Vec2f(-1.f, -1.f);
+		vecp::Vec2f vectorBase = vecp::Vec2f(1.f, 0.f);
+		vecp::Vec2f vectorOne = vecp::Vec2f(1.f, 1.f);
+		vecp::Vec2f vectorTwo = vecp::Vec2f(-1.f, 1.f);
+		vecp::Vec2f vectorThree = vecp::Vec2f(-1.f, -1.f);
 
 		float resultOne = Utilities::VecMath<float>::angleBetweenVectors(
 			vectorBase, vectorOne

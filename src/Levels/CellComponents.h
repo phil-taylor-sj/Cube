@@ -91,15 +91,15 @@ namespace Levels
 
 	struct CellTransformComponent
 	{
-		Physics::Vec2f position = Physics::Vec2f(0.f, 0.f);
+		vecp::Vec2f position = vecp::Vec2f(0.f, 0.f);
 		float cellWidth;
 		float rotation;
-		Physics::Vec2i cellIndices = Physics::Vec2i(0, 0);
+		vecp::Vec2i cellIndices = vecp::Vec2i(0, 0);
 	};
 
 	struct CellForceComponent
 	{
-		Physics::Vec2f netForce;
+		vecp::Vec2f netForce;
 		bool isMoving = true;
 		float movement = 75.f;
 	};
@@ -116,7 +116,7 @@ namespace Levels
 		};
 
 		State cellState = STATIC;
-		Physics::Vec2i destinationIndicies = Physics::Vec2i(0, 0);
+		vecp::Vec2i destinationIndicies = vecp::Vec2i(0, 0);
 	};
 
 	struct CellGravityComponent
@@ -144,7 +144,7 @@ namespace Levels
 		float timer = 0.f;
 		sf::Text text;
 		CellPanel currentPanel = CellPanel::TOP_LEFT;
-		Physics::Vec2f relativePosition = Physics::Vec2f(0.f, 0.f);
+		vecp::Vec2f relativePosition = vecp::Vec2f(0.f, 0.f);
 	};
 
 	struct CellPanelsComponent

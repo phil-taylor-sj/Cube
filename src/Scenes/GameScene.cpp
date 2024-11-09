@@ -99,8 +99,8 @@ namespace Scenes
 		m_actors->assignActor(Actors::ActorTypes::PLAYER, Actors::ActorSubtypes::NONE);
 
 		
-		Physics::Vec2i gridSize = m_level->getGridSize() - 2;
-		m_actors->transformComponents[0].position = Physics::Vec2f(
+		vecp::Vec2i gridSize = m_level->getGridSize() - 2;
+		m_actors->transformComponents[0].position = vecp::Vec2f(
 			(rand() % gridSize.x + 1 + 0.5f) * m_level->getCommonCellWidth(),
 			(rand() % gridSize.y + 1 + 0.5f) * m_level->getCommonCellWidth()
 		);

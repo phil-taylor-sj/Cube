@@ -2,7 +2,7 @@
 
 namespace Physics
 {
-	void Rectangle::setPosition(Vec2f position)
+	void Rectangle::setPosition(vecp::Vec2f position)
 	{
 		m_params.previousPosition = m_params.position;
 		m_params.position = position;
@@ -11,10 +11,10 @@ namespace Physics
 	void Rectangle::setPosition(float xPosition, float yPosition)
 	{
 		m_params.previousPosition = m_params.position;
-		m_params.position = Vec2f(xPosition, yPosition);
+		m_params.position = vecp::Vec2f(xPosition, yPosition);
 	}
 
-	void Rectangle::translate(Vec2f deltaPosition)
+	void Rectangle::translate(vecp::Vec2f deltaPosition)
 	{
 		m_params.previousPosition = m_params.position;
 		m_params.position += deltaPosition;
@@ -66,13 +66,13 @@ namespace Physics
 
 	Rectangle::Rectangle()
 	{
-		m_params.position = Vec2f(0.f, 0.f);
+		m_params.position = vecp::Vec2f(0.f, 0.f);
 		m_params.angle = 0.f;
 		this->setWidth(1.f);
 		this->setHeight(1.f);
 	}
 
-	Rectangle::Rectangle(Vec2f position)
+	Rectangle::Rectangle(vecp::Vec2f position)
 	{
 		m_params.position = position;
 		m_params.angle = 0.f;
@@ -82,13 +82,13 @@ namespace Physics
 
 	Rectangle::Rectangle(float xPosition, float yPosition)
 	{
-		m_params.position = Vec2f(xPosition, yPosition);
+		m_params.position = vecp::Vec2f(xPosition, yPosition);
 		m_params.angle = 0.f;
 		this->setWidth(1.f);
 		this->setHeight(1.f);
 	}
 
-	Rectangle::Rectangle(Vec2f position, float width, float height)
+	Rectangle::Rectangle(vecp::Vec2f position, float width, float height)
 	{
 		m_params.position = position;
 		m_params.angle = 0.f;
@@ -101,7 +101,7 @@ namespace Physics
 		float width, float height
 	)
 	{
-		m_params.position = Vec2f(xPosition, yPosition);
+		m_params.position = vecp::Vec2f(xPosition, yPosition);
 		m_params.angle = 0.f;
 		this->setWidth(width);
 		this->setHeight(height);

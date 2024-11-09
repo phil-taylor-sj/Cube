@@ -4,7 +4,7 @@ namespace Utilities
 {
 	template <typename T>
 	T VecMath<T>::angleBetweenVectors(
-		Physics::Vec2f vectorOne, Physics::Vec2f vectorTwo
+		vecp::Vec2f vectorOne, vecp::Vec2f vectorTwo
 	)
 	{
 		double dotProduct = (vectorOne.x * vectorTwo.x) + (vectorOne.y * vectorTwo.y);
@@ -25,7 +25,7 @@ namespace Utilities
 
 	template <typename T>
 	T VecMath<T>::vectorMagnitude(
-		Physics::Vec2f vector
+		vecp::Vec2f vector
 	)
 	{
 		return sqrt(pow(vector.x, 2) + pow(vector.y, 2));

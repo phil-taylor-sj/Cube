@@ -13,8 +13,8 @@ namespace Levels
 		std::vector<Physics::RectParams> staticWalls;
 		std::vector<Physics::RectParams> blockers;
 		bool isFloorDetected = false;
-		Physics::Vec2f floorForce = Physics::Vec2f(0.f, 0.f);
-		Physics::Vec2f voidCentre = Physics::Vec2f(0.f, 0.f);
+		vecp::Vec2f floorForce = vecp::Vec2f(0.f, 0.f);
+		vecp::Vec2f voidCentre = vecp::Vec2f(0.f, 0.f);
 	
 		void append(const DetectedLevelCollisions& collisions);
 	};

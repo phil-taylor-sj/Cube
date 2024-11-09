@@ -58,7 +58,7 @@ namespace Levels
          * @brief Get the size of the grid in terms of the number of cells in x and y directions.
          * @return A Physics::Vec2i representing the grid size.
          */
-		Physics::Vec2i getGridSize();
+		vecp::Vec2i getGridSize();
 
 
 		void processLevelShift();

@@ -5,6 +5,7 @@
 #include "Assets/TextureDict.h"
 #include "Assets/FontDict.h"
 
+
 int main(int argc, char* argv[])
 {
 	std::string relativePath = "../../../";
