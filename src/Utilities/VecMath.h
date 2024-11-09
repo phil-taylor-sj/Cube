@@ -3,6 +3,8 @@
 #include "Math.h"
 #include <algorithm>
 
+#include <VecPlus/Vec2.h>
+
 namespace Utilities
 {
 	template <typename T>
@@ -10,7 +12,7 @@ namespace Utilities
 	{
 	public:
 		static T angleBetweenVectors(
-			Physics::Vec2f vectorOne, Physics::Vec2f vectorTwo);
-		static T vectorMagnitude(Physics::Vec2f vector);
+			vecp::Vec2f vectorOne, vecp::Vec2f vectorTwo);
+		static T vectorMagnitude(vecp::Vec2f vector);
 	};
 }

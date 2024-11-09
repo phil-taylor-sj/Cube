@@ -6,8 +6,9 @@ add_library(Physics OBJECT
     CollisionCorrections.cpp
     Rectangle.cpp
     Vec2.cpp
-
 )
+
+target_link_libraries(Physics VecPlus)
 
 target_include_directories(Physics PUBLIC 
     ${PUBLIC_INCLUDE_DIR}

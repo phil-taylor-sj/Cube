@@ -42,7 +42,7 @@ namespace Physics
      * various conditions, including the positions of the circle's center relative
      * to the rectangle and its boundaries.
      */
-    bool checkIntersection(Vec2f pointPosition, const RectParams& rectangleIn);
+    bool checkIntersection(vecp::Vec2f pointPosition, const RectParams& rectangleIn);
 
     /**
      * @brief Check if a circle intersects with a rectangle.

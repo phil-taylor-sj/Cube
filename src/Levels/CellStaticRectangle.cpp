@@ -4,10 +4,10 @@ namespace Levels
 {
 	void CellStaticRectangle ::setRelativePosition(float relativeX, float relativeY)
 	{
-		m_relativePosition = Physics::Vec2f(relativeX, relativeY);
+		m_relativePosition = vecp::Vec2f(relativeX, relativeY);
 	}
 
-	void CellStaticRectangle::setRelativePosition(Physics::Vec2f relativePosition)
+	void CellStaticRectangle::setRelativePosition(vecp::Vec2f relativePosition)
 	{
 		m_relativePosition = relativePosition;
 	}
@@ -31,11 +31,11 @@ namespace Levels
 
 	void CellStaticRectangle::setCellPosition(float xPosition, float yPosition)
 	{
-		m_cellPosition = Physics::Vec2f(xPosition, yPosition);
+		m_cellPosition = vecp::Vec2f(xPosition, yPosition);
 		m_updateRectangle();
 	}
 
-	void CellStaticRectangle::setCellPosition(Physics::Vec2f position)
+	void CellStaticRectangle::setCellPosition(vecp::Vec2f position)
 	{
 		m_cellPosition = position;
 		m_updateRectangle();
@@ -49,8 +49,8 @@ namespace Levels
 	CellStaticRectangle::CellStaticRectangle()
 	{
 		m_cellWidth = 10.f;
-		m_cellPosition = Physics::Vec2f(10.f, 10.f);
-		m_relativePosition = Physics::Vec2f(0.5f, 0.5f);
+		m_cellPosition = vecp::Vec2f(10.f, 10.f);
+		m_relativePosition = vecp::Vec2f(0.5f, 0.5f);
 		m_relativeWidth = 0.1f;
 		m_relativeHeight = 0.1f;
 		m_angle = 0.f;

@@ -34,7 +34,7 @@ namespace Levels
 		for (CellTransformComponent& transform : m_cellTransformComponents)
 		{
 			transform.cellWidth = commonCellWidth;
-			transform.position = Physics::Vec2f(
+			transform.position = vecp::Vec2f(
 				(transform.cellIndices.x + 0.5f) * transform.cellWidth,
 				(transform.cellIndices.y + 0.5f) * transform.cellWidth
 			);
@@ -49,9 +49,9 @@ namespace Levels
 	}
 
 
-	Physics::Vec2i LevelEntityManager::getGridSize()
+	vecp::Vec2i LevelEntityManager::getGridSize()
 	{
-		return Physics::Vec2i(m_xGridSize, m_yGridSize);
+		return vecp::Vec2i(m_xGridSize, m_yGridSize);
 	}
 
 
@@ -144,7 +144,7 @@ namespace Levels
 				{
 					CellTransformComponent& transform = 
 						m_cellTransformComponents[action.getDropCellId()];
-					transform.position = Physics::Vec2f(
+					transform.position = vecp::Vec2f(
 						(transform.cellIndices.x + 0.5f) * m_commonCellWidth,
 						(transform.cellIndices.y + 0.5f) * m_commonCellWidth
 					);
@@ -237,7 +237,7 @@ namespace Levels
 	{
 		for (CellForceComponent& force : m_cellForceComponents)
 		{
-			force.netForce = Physics::Vec2f(0.f, 0.f);
+			force.netForce = vecp::Vec2f(0.f, 0.f);
 		}
 	}
 
@@ -315,7 +315,7 @@ namespace Levels
 			for (int j = 0; j < m_yGridSize; j++)
 			{
 				m_cellEntityGrid[i][j] = counter;
-				m_cellTransformComponents[counter].cellIndices = Physics::Vec2i(i, j);
+				m_cellTransformComponents[counter].cellIndices = vecp::Vec2i(i, j);
 				counter += 1;
 			}
 		}

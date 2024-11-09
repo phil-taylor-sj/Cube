@@ -5,7 +5,7 @@ namespace Physics
 
     bool checkIntersection(const CircleParams& circleOne, const CircleParams& circleTwo)
     {
-        float centreSpacing = circleOne.position.distance(
+        float centreSpacing = circleOne.position.mag(
             circleTwo.position
         );
          
@@ -13,7 +13,7 @@ namespace Physics
         return centreSpacing <= totalRadius;
     }
 
-    bool checkIntersection(Physics::Vec2f pointPosition, const RectParams& rectangleIn)
+    bool checkIntersection(vecp::Vec2f pointPosition, const RectParams& rectangleIn)
     {
         RectParams rectangle = rectangleIn;
         pointPosition = pointPosition - rectangle.position;      
@@ -22,7 +22,7 @@ namespace Physics
         
         if (rectangle.angle > 0.f)
         {
-            pointPosition.applyRotation(-1.f * rectangle.angle);
+            pointPosition.rotate(-1.f * rectangle.angle);
         }
 
         return !(std::abs(pointPosition.x) > rectangle.halfWidth ||
@@ -38,7 +38,7 @@ namespace Physics
         {
             circle.position = circle.position - rectangle.position;
 
-            circle.position.applyRotation(-1.f * rectangle.angle);
+            circle.position.rotate(-1.f * rectangle.angle);
             
             rectangle.position.x = 0.f;
             rectangle.position.y = 0.f;
@@ -59,20 +59,20 @@ namespace Physics
         }
 
         // Calculate location of rectangle corners.
-        Vec2f leftUpper = rectangle.position  + 
-            Vec2f(-1.f* rectangle.halfWidth, -1.f * rectangle.halfHeight);
+        vecp::Vec2f leftUpper = rectangle.position  + 
+            vecp::Vec2f(-1.f* rectangle.halfWidth, -1.f * rectangle.halfHeight);
         
-        Vec2f leftLower = rectangle.position  + 
-            Vec2f(-1.f* rectangle.halfWidth, rectangle.halfHeight);
+        vecp::Vec2f leftLower = rectangle.position  + 
+            vecp::Vec2f(-1.f* rectangle.halfWidth, rectangle.halfHeight);
         
-        Vec2f rightUpper = rectangle.position + 
-            Vec2f(rectangle.halfWidth, -1.f * rectangle.halfHeight);
+        vecp::Vec2f rightUpper = rectangle.position + 
+            vecp::Vec2f(rectangle.halfWidth, -1.f * rectangle.halfHeight);
         
-        Vec2f rightLower = rectangle.position + 
-            Vec2f(rectangle.halfWidth, rectangle.halfHeight);
+        vecp::Vec2f rightLower = rectangle.position + 
+            vecp::Vec2f(rectangle.halfWidth, rectangle.halfHeight);
 
         // Check circle position against upper left corner.
-        float leftUpperDistance = circle.position.distance(leftUpper);
+        float leftUpperDistance = circle.position.mag(leftUpper);
         if (circle.position.x < leftUpper.x &&
             circle.position.y < leftUpper.y &&
             leftUpperDistance >= circle.radius)
@@ -82,7 +82,7 @@ namespace Physics
         }
 
         // Check circle position against lower left corner.
-        float leftLowerDistance = circle.position.distance(leftLower);
+        float leftLowerDistance = circle.position.mag(leftLower);
         if (circle.position.x < leftLower.x &&
             circle.position.y > leftLower.y &&
             leftLowerDistance >= circle.radius)
@@ -93,7 +93,7 @@ namespace Physics
 
 
         // Check circle position against upper right corner.
-        float rightUpperDistance = circle.position.distance(rightUpper);
+        float rightUpperDistance = circle.position.mag(rightUpper);
         if (circle.position.x > rightUpper.x &&
             circle.position.y < rightUpper.y &&
             rightUpperDistance >= circle.radius)
@@ -103,7 +103,7 @@ namespace Physics
         }
 
         // Check circle position against lower right corner.
-        float rightLowerDistance = circle.position.distance(rightLower);
+        float rightLowerDistance = circle.position.mag(rightLower);
         if (circle.position.x > rightLower.x &&
             circle.position.y > rightLower.y &&
             rightLowerDistance >= circle.radius)

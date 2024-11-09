@@ -18,7 +18,7 @@ namespace Circle_Tests
 	TEST(Circle_Constructor_Test,
 		Vec2f_argument_should_set_position_and_radius_to_specified_values)
 	{
-		phys::Circle circleOne = phys::Circle(phys::Vec2f(5.f, 3.f), 2.5f);
+		phys::Circle circleOne = phys::Circle(vecp::Vec2f(5.f, 3.f), 2.5f);
 		phys::CircleParams paramsOne = circleOne.getCircle();
 		ASSERT_EQ(paramsOne.position, phys::Vec2f(5.f, 3.f));
 		ASSERT_EQ(paramsOne.radius, 2.5f);
@@ -30,7 +30,7 @@ namespace Circle_Tests
 	{
 		phys::Circle circleOne = phys::Circle(5.f, 3.f, 2.5f);
 		phys::CircleParams paramsOne = circleOne.getCircle();
-		ASSERT_EQ(paramsOne.position, phys::Vec2f(5.f, 3.f));
+		ASSERT_EQ(paramsOne.position, vecp::Vec2f(5.f, 3.f));
 		ASSERT_EQ(paramsOne.radius, 2.5f);
 		ASSERT_EQ(paramsOne.radiusSquared, 6.25f);
 	}
@@ -40,7 +40,7 @@ namespace Circle_Tests
 	{
 		phys::Circle circleOne = phys::Circle(5.f, 3.f, 2.5f);
 		phys::CircleParams paramsOne = circleOne.getCircle();
-		ASSERT_EQ(paramsOne.position, phys::Vec2f(5.f, 3.f));
+		ASSERT_EQ(paramsOne.position, vecp::Vec2f(5.f, 3.f));
 		ASSERT_EQ(paramsOne.radius, 2.5f);
 		ASSERT_EQ(paramsOne.radiusSquared, 6.25f);
 	}

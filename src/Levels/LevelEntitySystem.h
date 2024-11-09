@@ -62,6 +62,6 @@ namespace Levels
 		static float m_deltaTime;
 		static std::map<int, CellPanel> m_panels;
 		static float m_offset;
-		static std::map<CellPanel, Physics::Vec2f> m_panelPositions;
+		static std::map<CellPanel, vecp::Vec2f> m_panelPositions;
 	};
 }

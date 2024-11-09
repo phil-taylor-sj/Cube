@@ -30,7 +30,7 @@ FetchContent_MakeAvailable(googletest)
 add_executable(${TEST_TARGET} ${TEST_SRCS} "Levels_Test/LevelEntityManager_Test.cpp")
 target_link_libraries(${TEST_TARGET} 
   gtest gtest_main gmock_main 
-  Physics Utilities Levels Assets Actors
+  VecPlus Physics Utilities Levels Assets Actors
   sfml-graphics sfml-window sfml-system)
 #Assets Collision Engine Obstacles States Utilities
 target_include_directories(${TEST_TARGET} PUBLIC 

@@ -1,5 +1,7 @@
 #pragma once
 #include <cmath>
+#include <VecPlus/Vec2.h>
+
 #include "Vec2.h"
 #include "Circle.h"
 #include "Rectangle.h"
@@ -25,7 +27,7 @@ namespace Physics
 		 * relative to the wall's local coordinate system. Depending on the collision
 		 * scenario, it returns the necessary correction vector to prevent overlap.
 		 */
-		static Vec2f getWallCorrection(
+		static vecp::Vec2f getWallCorrection(
 			CircleParams circle, RectParams wall);
 	}; 
 }

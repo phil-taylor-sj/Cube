@@ -22,6 +22,7 @@ set(MAIN_SRC Cube.cpp)
 # add_library(Obstacles ${OBSTACLES_SRCS})
 # add_library(Utilities ${UTILITIES_SRCS})
 
+
 add_subdirectory(Actors)
 add_subdirectory(Assets)
 add_subdirectory(Physics)
@@ -32,10 +33,11 @@ add_subdirectory(Utilities)
 
 set(TARGET Cube)
 add_executable(${TARGET} Cube.cpp)
-target_link_libraries(${TARGET} PRIVATE 
-    Actors Assets Physics Levels Engine Scenes Utilities
+target_link_libraries(${TARGET} PRIVATE
+    VecPlus Actors Assets Physics Levels Engine Scenes Utilities
     sfml-graphics sfml-window sfml-system
     )
+
 
 target_include_directories(${TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include) 
 
