@@ -79,6 +79,12 @@ namespace Scenes
 		m_processCollisions();
 		m_actors->updateGraphics();
 		m_level->clearForces();
+		m_actors->updateActorState();
+
+		if (m_actors->typeComponents[0].actorState == Actors::ActorTypeComponent::DEAD)
+		{
+			m_nextScene = SceneNames::GAME_OVER;
+		}
 	}
 
 	void GameScene::setDeltaTime(float deltaTime)

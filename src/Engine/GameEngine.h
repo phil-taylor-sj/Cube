@@ -6,6 +6,7 @@
 #include "Assets/TextureDict.h"
 #include "Scenes/GameScene.h"
 #include "Scenes/TitleScene.h"
+#include "Scenes/GameOverScene.h"
 #include "Engine/GameEngine.h"
 #include "Engine/Action.h"
 
