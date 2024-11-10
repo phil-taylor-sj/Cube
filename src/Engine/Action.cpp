@@ -2,7 +2,7 @@
 
 namespace Engine
 {
-	const Scenes::GameSceneActions& Action::getName() const
+	const Scenes::SceneActions& Action::getName() const
 	{
 		return m_name;
 	}
@@ -27,7 +27,7 @@ namespace Engine
 		return m_properties.count(property) > 0;
 	}
 
-	Action::Action(Scenes::GameSceneActions name, ActionType type)
+	Action::Action(Scenes::SceneActions name, ActionType type)
 	{
 		m_name = name;
 		m_type = type;

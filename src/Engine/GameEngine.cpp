@@ -50,8 +50,8 @@ namespace Engine
 		//if (typeid(*m_currentScene) == typeid(Scenes::GameScene))
 		if (m_currentScene != nullptr)
 		{
-			Scenes::GameSceneActions sceneAction = m_currentScene->checkInput(key);
-			if (sceneAction != Scenes::GameSceneActions::NONE)
+			Scenes::SceneActions sceneAction = m_currentScene->checkInput(key);
+			if (sceneAction != Scenes::SceneActions::NONE)
 			{
 				ActionType type = (eventType == sf::Event::KeyPressed) ? PRESS : RELEASE;
 				Action newAction = Action(sceneAction, type);
@@ -65,7 +65,7 @@ namespace Engine
 		if (typeid(*m_currentScene) == typeid(Scenes::GameScene))
 		{
 			Action newAction = Action(
-				Scenes::GameSceneActions::SET_CURSOR, Engine::ActionType::NONE
+				Scenes::SceneActions::SET_CURSOR, Engine::ActionType::NONE
 			);
 			newAction.setProperty("x", xCursor);
 			newAction.setProperty("y", yCursor);

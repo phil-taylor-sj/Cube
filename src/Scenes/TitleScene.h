@@ -12,28 +12,28 @@ namespace Scenes
 	class TitleScene : public Scene
 	{
 	public:
-		GameSceneActions checkInput(sf::Keyboard::Key) override;
+		SceneActions checkInput(sf::Keyboard::Key) override;
 		void processAction(Engine::Action) override;
 		void updateScene() override;
 		void renderScene() override;
 		void setDeltaTime(float deltaTime) override;
 
-		void setWindowSize(float xSize, float ySize);
-
 		TitleScene();
 
 	private:
-		vecp::Vec2f m_windowSize;
 		sf::Sprite m_currentBackground;
-		std::map<sf::Keyboard::Key, GameSceneActions> m_availableKeyActions
+		std::map<sf::Keyboard::Key, SceneActions> m_availableKeyActions
 		{
-			{ sf::Keyboard::Space, GameSceneActions::START},
-			{ sf::Keyboard::Escape, GameSceneActions::EXIT}
+			{ sf::Keyboard::Space, SceneActions::START},
+			{ sf::Keyboard::Escape, SceneActions::EXIT}
 		};
 		vecp::Vec2f m_cursorPosition;
 		sf::Text m_mainText;
+		sf::Text m_titleText;
 		float m_deltaTime = 0.001;
-		float m_textPeriod = 3.f;
+		float m_textPeriod = 2.f;
 		float m_textTime = 0.f;
+
+		void m_resizeBackground();
 	};
 }

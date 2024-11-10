@@ -11,7 +11,7 @@ namespace Scenes
     class Scene
     {
     public:
-        GameSceneActions virtual checkInput(sf::Keyboard::Key) = 0;
+        SceneActions virtual checkInput(sf::Keyboard::Key) = 0;
         void virtual processAction(Engine::Action action) = 0;
         void virtual updateScene() = 0;
         void virtual renderScene() = 0;

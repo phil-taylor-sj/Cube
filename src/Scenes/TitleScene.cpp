@@ -2,7 +2,7 @@
 
 namespace Scenes
 {
-	GameSceneActions TitleScene::checkInput(sf::Keyboard::Key key)
+	SceneActions TitleScene::checkInput(sf::Keyboard::Key key)
 	{
 		if (m_availableKeyActions.count(key) > 0)
 		{
@@ -10,7 +10,7 @@ namespace Scenes
 		}
 		else
 		{
-			return GameSceneActions::NONE;
+			return SceneActions::NONE;
 		}
 	}
 
@@ -18,10 +18,10 @@ namespace Scenes
 	{
 		switch (action.getName())
 		{
-		case GameSceneActions::START:
+		case SceneActions::START:
 			m_nextScene = SceneNames::LEVEL;
 			break;
-		case GameSceneActions::SET_CURSOR:
+		case SceneActions::SET_CURSOR:
 			if (action.checkProperty("x") && action.checkProperty("y"))
 			{
 				m_cursorPosition = vecp::Vec2f(
@@ -30,7 +30,7 @@ namespace Scenes
 				);
 			}
 			break;
-		case GameSceneActions::EXIT:
+		case SceneActions::EXIT:
 			m_window->close();
 			break;
 		default:
@@ -47,24 +47,21 @@ namespace Scenes
 
 	void TitleScene::updateScene()
 	{
+		m_resizeBackground();
 		m_textTime += m_deltaTime;
 		if (m_textTime > m_textPeriod)
 		{
 			m_textTime = 0.f;
 		}
-		int opacity = static_cast<int>(255.f * m_textTime / m_textPeriod);
+		int opacity = (m_textTime < 0.5f * m_textPeriod) ? 255.f : 0.f;
 		m_mainText.setColor(sf::Color(255, 255, 255, opacity));
-
+		m_mainText.setOutlineColor(sf::Color(0, 0, 0, opacity));
+		m_mainText.setOutlineThickness(3);
 	}
 
 	void TitleScene::setDeltaTime(float deltaTime)
 	{
 		m_deltaTime = deltaTime;
-	}
-
-	void TitleScene::setWindowSize(float xSize, float ySize)
-	{
-		m_windowSize = vecp::Vec2f(xSize, ySize);
 	}
 
 	TitleScene::TitleScene()
@@ -74,15 +71,25 @@ namespace Scenes
 			Assets::FontDict::getInstance()->getFont("Tuffy")
 		);
 		m_mainText.setString(sf::String("Press Space To Start"));
-		m_mainText.setPosition(100,100);
+		m_mainText.setPosition(500,500);
 
 		//m_mainText.setColor(sf::Color(255, 255, 255, 128));
 		
-
 		Assets::TextureDict::getInstance()->loadTexture("TitleBackground");
 		m_currentBackground.setTexture(
 			Assets::TextureDict::getInstance()->getTexture("TitleBackground")
 		);
+
+	}
+
+	void TitleScene::m_resizeBackground()
+	{
+		float scale = m_window->getSize().y / m_currentBackground.getGlobalBounds().height;
+		m_currentBackground.scale(scale, scale);		
+	
+		float width = m_currentBackground.getGlobalBounds().width;
+		float offset = (0.5f * width) - (0.5f * m_window->getSize().x);
+		m_currentBackground.setPosition(-offset, 0);
 	}
 
 }

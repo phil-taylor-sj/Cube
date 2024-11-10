@@ -16,18 +16,18 @@ namespace Engine
 	class Action
 	{
 	public:
-		const Scenes::GameSceneActions& getName() const;
+		const Scenes::SceneActions& getName() const;
 		const ActionType& getType() const;
 
 		void setProperty(std::string property, float value);
 		float getProperty(std::string property);
 		bool checkProperty(std::string property);
 
-		Action(Scenes::GameSceneActions name, ActionType type);
+		Action(Scenes::SceneActions name, ActionType type);
 		~Action();
 	
 	private:
-		Scenes::GameSceneActions m_name;
+		Scenes::SceneActions m_name;
 		ActionType m_type;
 		std::map<std::string, float> m_properties;
 	};
