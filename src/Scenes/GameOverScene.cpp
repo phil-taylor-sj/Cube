@@ -42,7 +42,7 @@ namespace Scenes
 		}
 
 		m_resizeBackground();
-		m_mainText.setPosition(0.5f * m_window->getSize().x, 0.8f * m_window->getSize().y);
+		m_mainText.setPosition(0.5f * m_window->getSize().x, 0.5f * m_window->getSize().y);
 
 		m_textTime += m_deltaTime;
 		m_textTime = std::min(m_textTime, m_textPeriod);

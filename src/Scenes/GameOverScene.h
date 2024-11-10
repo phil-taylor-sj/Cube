@@ -30,8 +30,8 @@ namespace Scenes
 		sf::Text m_mainText;
 		float m_deltaTime = 0.001;
 		float m_textTime = 0.f;
-		float m_textPeriod = 0.f;
-		float m_sceneTimeLimit = 1.f;
+		float m_textPeriod = 3.f;
+		float m_sceneTimeLimit = 5.f;
 		float m_sceneTime = 0.f;
 
 		void m_resizeBackground();
