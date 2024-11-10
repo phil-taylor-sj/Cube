@@ -8,15 +8,16 @@
 
 namespace Scenes
 {
-    template <typename T>
     class Scene
     {
     public:
-        T virtual checkInput(sf::Keyboard::Key) = 0;
-        void virtual processAction(Engine::Action<T> action) = 0;
+        GameSceneActions virtual checkInput(sf::Keyboard::Key) = 0;
+        void virtual processAction(Engine::Action action) = 0;
         void virtual updateScene() = 0;
         void virtual renderScene() = 0;
         void virtual setDeltaTime(float deltaTime) = 0;
+
+        SceneNames checkNextScene();
 
         void setRenderWindow(std::shared_ptr<sf::RenderWindow> window);
         void setView(std::shared_ptr<sf::View> view);
@@ -25,6 +26,7 @@ namespace Scenes
 
     protected:
         std::shared_ptr<sf::RenderWindow> m_window;
-        std::shared_ptr<sf::View> m_view; 
+        std::shared_ptr<sf::View> m_view;
+        SceneNames m_nextScene = SceneNames::NONE;
     };
 }

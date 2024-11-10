@@ -5,6 +5,7 @@
 #include "Engine/Inputs.h"
 #include "Assets/TextureDict.h"
 #include "Scenes/GameScene.h"
+#include "Scenes/TitleScene.h"
 #include "Engine/GameEngine.h"
 #include "Engine/Action.h"
 
@@ -28,7 +29,7 @@ namespace Engine
 		GameEngine();
 
 	private:
-		std::unique_ptr<Scenes::Scene<Scenes::GameSceneActions>> m_currentScene;
+		std::unique_ptr<Scenes::Scene> m_currentScene;
 		sf::Clock m_frameTimer;
 		float m_lastDeltaTime;
 	};

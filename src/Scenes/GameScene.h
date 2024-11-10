@@ -15,11 +15,11 @@
 
 namespace Scenes
 {
-	class GameScene : public Scene<GameSceneActions>
+	class GameScene : public Scene
 	{
 	public:
 		GameSceneActions checkInput(sf::Keyboard::Key) override;
-		void processAction(Engine::Action<GameSceneActions>) override;
+		void processAction(Engine::Action) override;
 		void updateScene() override;
 		void renderScene() override;
 		void setDeltaTime(float deltaTime) override;
@@ -48,7 +48,7 @@ namespace Scenes
 
 		Physics::Vec2f m_cursorPosition;
 
-		void m_setPlayerMovement(Engine::Action<GameSceneActions> action);
+		void m_setPlayerMovement(Engine::Action action);
 		void m_setPlayerAngle();
 		void m_processCollisions();
 	};

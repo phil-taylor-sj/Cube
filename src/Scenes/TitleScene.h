@@ -1,34 +1,39 @@
 #pragma once
 #include "Scenes/Scene.h"
-#include "Scenes/TitleSceneActions.h"
-#include "Physics/Vec2.h"
+#include "Scenes/GameSceneActions.h"
+#include "Assets/TextureDict.h"
+#include "Assets/FontDict.h"
+
+#include <VecPlus/Vec2.h>
+
 
 namespace Scenes
 {
-	class TitleScene : public Scene<TitleSceneActions>
+	class TitleScene : public Scene
 	{
 	public:
-		TitleSceneActions checkInput(sf::Keyboard::Key) override;
-		void processAction(Engine::Action<TitleSceneActions>) override;
+		GameSceneActions checkInput(sf::Keyboard::Key) override;
+		void processAction(Engine::Action) override;
 		void updateScene() override;
 		void renderScene() override;
 		void setDeltaTime(float deltaTime) override;
 
 		void setWindowSize(float xSize, float ySize);
-		SceneNames checkNextScene();
 
 		TitleScene();
 
 	private:
-		Physics::Vec2f m_windowSize;
+		vecp::Vec2f m_windowSize;
 		sf::Sprite m_currentBackground;
-		std::map<sf::Keyboard::Key, TitleSceneActions> m_availableKeyActions
+		std::map<sf::Keyboard::Key, GameSceneActions> m_availableKeyActions
 		{
-			{ sf::Keyboard::W, TitleSceneActions::START},
-			{ sf::Keyboard::Escape, TitleSceneActions::EXIT }
+			{ sf::Keyboard::Space, GameSceneActions::START},
+			{ sf::Keyboard::Escape, GameSceneActions::EXIT}
 		};
-		Physics::Vec2f m_cursorPosition;
-		SceneNames m_nextScene;
-		float m_deltaTime;
+		vecp::Vec2f m_cursorPosition;
+		sf::Text m_mainText;
+		float m_deltaTime = 0.001;
+		float m_textPeriod = 3.f;
+		float m_textTime = 0.f;
 	};
 }

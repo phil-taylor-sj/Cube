@@ -10,6 +10,7 @@ namespace Scenes
 		MOVE_DOWN,
 		MOVE_RIGHT,
 		MOVE_LEFT,
-		SET_CURSOR
+		SET_CURSOR,
+		START
 	};
 }

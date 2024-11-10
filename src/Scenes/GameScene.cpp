@@ -14,7 +14,7 @@ namespace Scenes
 		 }
 	 }
 
-	 void GameScene::processAction(Engine::Action<GameSceneActions> action)
+	 void GameScene::processAction(Engine::Action action)
 	 {
 		 switch (action.getName())
 		 {
@@ -106,7 +106,7 @@ namespace Scenes
 		);
 	}
 
-	void GameScene::m_setPlayerMovement(Engine::Action<GameSceneActions> action)
+	void GameScene::m_setPlayerMovement(Engine::Action action)
 	{
 		m_playerMoves[action.getName()] = (action.getType() == Engine::PRESS) ? true : false;
 
@@ -232,6 +232,8 @@ namespace Scenes
 
 			actorId++;	
 		}
+
+
 	}
 
 }
