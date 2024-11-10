@@ -43,11 +43,15 @@ namespace Scenes
 		m_window->setView(*m_view);
 		m_window->draw(m_currentBackground);
 		m_window->draw(m_mainText);
+		m_window->draw(m_titleText);
 	}
 
 	void TitleScene::updateScene()
 	{
 		m_resizeBackground();
+		m_titleText.setPosition(0.5f * m_window->getSize().x, 0.4f * m_window->getSize().y);
+		m_mainText.setPosition(0.5f * m_window->getSize().x, 0.8f * m_window->getSize().y);
+
 		m_textTime += m_deltaTime;
 		if (m_textTime > m_textPeriod)
 		{
@@ -72,6 +76,26 @@ namespace Scenes
 		);
 		m_mainText.setString(sf::String("Press Space To Start"));
 		m_mainText.setPosition(500,500);
+		m_mainText.setOrigin(
+			0.5f * m_mainText.getGlobalBounds().width,
+			0.5f * m_mainText.getGlobalBounds().height
+		);
+
+		m_titleText.setFont(
+			Assets::FontDict::getInstance()->getFont("Tuffy")
+		);
+
+		m_titleText.setString(sf::String("CUBE"));
+		m_titleText.setColor(sf::Color(0, 51, 102));
+		m_titleText.setOutlineColor(sf::Color(255, 255, 255));
+		m_titleText.setOutlineThickness(3);
+		m_titleText.setCharacterSize(100);
+		m_titleText.setOrigin(
+			0.5f * m_titleText.getGlobalBounds().width,
+			0.5f * m_titleText.getGlobalBounds().height
+		);
+
+
 
 		//m_mainText.setColor(sf::Color(255, 255, 255, 128));
 		
@@ -85,11 +109,11 @@ namespace Scenes
 	void TitleScene::m_resizeBackground()
 	{
 		float scale = m_window->getSize().y / m_currentBackground.getGlobalBounds().height;
-		m_currentBackground.scale(scale, scale);		
+		m_currentBackground.scale(scale, scale);
 	
 		float width = m_currentBackground.getGlobalBounds().width;
-		float offset = (0.5f * width) - (0.5f * m_window->getSize().x);
-		m_currentBackground.setPosition(-offset, 0);
+		//float offset = (0.5f * width) - (0.5f * m_window->getSize().x);
+		//m_currentBackground.setPosition(-offset, 0);	
 	}
 
 }
