@@ -13,6 +13,22 @@ namespace Engine
 		
 		while (window->isOpen())
 		{
+			Scenes::SceneNames nextScene = m_currentScene->checkNextScene();
+			if (nextScene != Scenes::SceneNames::NONE)
+			{
+				switch (nextScene)
+				{
+				case Scenes::SceneNames::LEVEL:
+					m_currentScene = std::make_unique<Scenes::GameScene>();
+					break;
+				default:
+					break;
+				}
+				m_currentScene->setRenderWindow(window);
+				m_currentScene->setView(playerView);
+			}
+			
+
 			m_frameTimer.restart();
 			m_currentScene->setDeltaTime(m_lastDeltaTime);
 
@@ -31,13 +47,14 @@ namespace Engine
 
 	void GameEngine::checkInput(sf::Keyboard::Key key, sf::Event::EventType eventType)
 	{
-		if (typeid(*m_currentScene) == typeid(Scenes::GameScene))
+		//if (typeid(*m_currentScene) == typeid(Scenes::GameScene))
+		if (m_currentScene != nullptr)
 		{
-			Scenes::GameSceneActions sceneAction = m_currentScene->checkInput(key);
-			if (sceneAction != Scenes::GameSceneActions::NONE)
+			Scenes::SceneActions sceneAction = m_currentScene->checkInput(key);
+			if (sceneAction != Scenes::SceneActions::NONE)
 			{
 				ActionType type = (eventType == sf::Event::KeyPressed) ? PRESS : RELEASE;
-				Action newAction = Action<Scenes::GameSceneActions>(sceneAction, type);
+				Action newAction = Action(sceneAction, type);
 				m_currentScene->processAction(newAction);
 			}
 		}
@@ -47,8 +64,8 @@ namespace Engine
 	{
 		if (typeid(*m_currentScene) == typeid(Scenes::GameScene))
 		{
-			Action newAction = Action<Scenes::GameSceneActions>(
-				Scenes::GameSceneActions::SET_CURSOR, Engine::ActionType::NONE
+			Action newAction = Action(
+				Scenes::SceneActions::SET_CURSOR, Engine::ActionType::NONE
 			);
 			newAction.setProperty("x", xCursor);
 			newAction.setProperty("y", yCursor);
@@ -71,7 +88,7 @@ namespace Engine
 		);
 		playerView->setViewport(sf::FloatRect(-0.f, -0.f, 1.f, 1.f));
 	
-		m_currentScene = std::make_unique<Scenes::GameScene>();
+		m_currentScene = std::make_unique<Scenes::TitleScene>();
 		m_currentScene->setRenderWindow(window);
 		m_currentScene->setView(playerView);
 	}

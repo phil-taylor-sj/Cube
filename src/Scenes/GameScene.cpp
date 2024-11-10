@@ -2,7 +2,7 @@
 
 namespace Scenes
 {
-	 GameSceneActions GameScene::checkInput(sf::Keyboard::Key key)
+	 SceneActions GameScene::checkInput(sf::Keyboard::Key key)
 	 {
 		 if (m_availableKeyActions.count(key) > 0)
 		 {
@@ -10,21 +10,21 @@ namespace Scenes
 		 }
 		 else
 		 {
-			 return GameSceneActions::NONE;
+			 return SceneActions::NONE;
 		 }
 	 }
 
-	 void GameScene::processAction(Engine::Action<GameSceneActions> action)
+	 void GameScene::processAction(Engine::Action action)
 	 {
 		 switch (action.getName())
 		 {
-			case GameSceneActions::MOVE_UP:
-			case GameSceneActions::MOVE_DOWN:
-			case GameSceneActions::MOVE_LEFT:
-			case GameSceneActions::MOVE_RIGHT:
+			case SceneActions::MOVE_UP:
+			case SceneActions::MOVE_DOWN:
+			case SceneActions::MOVE_LEFT:
+			case SceneActions::MOVE_RIGHT:
 				m_setPlayerMovement(action);
 				break;
-			case GameSceneActions::SET_CURSOR:
+			case SceneActions::SET_CURSOR:
 				if (action.checkProperty("x") && action.checkProperty("y"))
 				{
 					m_cursorPosition = Physics::Vec2f(
@@ -33,7 +33,7 @@ namespace Scenes
 						);
 				}
 				break;			
-			case GameSceneActions::EXIT:
+			case SceneActions::EXIT:
 				m_window->close();
 				break;
 			default:
@@ -106,18 +106,18 @@ namespace Scenes
 		);
 	}
 
-	void GameScene::m_setPlayerMovement(Engine::Action<GameSceneActions> action)
+	void GameScene::m_setPlayerMovement(Engine::Action action)
 	{
 		m_playerMoves[action.getName()] = (action.getType() == Engine::PRESS) ? true : false;
 
 		if (action.getType() == Engine::PRESS)
 		{	
-			std::map<GameSceneActions, GameSceneActions> opposites
+			std::map<SceneActions, SceneActions> opposites
 			{
-				{GameSceneActions::MOVE_UP, GameSceneActions::MOVE_DOWN},
-				{GameSceneActions::MOVE_DOWN, GameSceneActions::MOVE_UP},
-				{GameSceneActions::MOVE_LEFT, GameSceneActions::MOVE_RIGHT},
-				{GameSceneActions::MOVE_RIGHT, GameSceneActions::MOVE_LEFT}
+				{SceneActions::MOVE_UP, SceneActions::MOVE_DOWN},
+				{SceneActions::MOVE_DOWN, SceneActions::MOVE_UP},
+				{SceneActions::MOVE_LEFT, SceneActions::MOVE_RIGHT},
+				{SceneActions::MOVE_RIGHT, SceneActions::MOVE_LEFT}
 			};
 
 			m_playerMoves[opposites[action.getName()]] = false;
@@ -126,15 +126,15 @@ namespace Scenes
 
 	void GameScene::m_setPlayerAngle()
 	{
-		std::map<GameSceneActions, float> movementAngles
+		std::map<SceneActions, float> movementAngles
 		{
-			{GameSceneActions::MOVE_RIGHT, 0.f}, {GameSceneActions::MOVE_DOWN, 90.f},
-			{GameSceneActions::MOVE_LEFT, 180.f}, {GameSceneActions::MOVE_UP, 270.f}
+			{SceneActions::MOVE_RIGHT, 0.f}, {SceneActions::MOVE_DOWN, 90.f},
+			{SceneActions::MOVE_LEFT, 180.f}, {SceneActions::MOVE_UP, 270.f}
 		};
 
 		int counter = 0;
 		float angle = 0.f;
-		for (const std::pair<GameSceneActions, float>& action : movementAngles)
+		for (const std::pair<SceneActions, float>& action : movementAngles)
 		{
 			if (m_playerMoves[action.first])
 			{
@@ -143,8 +143,8 @@ namespace Scenes
 			}
 		}
 
-		if (m_playerMoves[GameSceneActions::MOVE_UP] &&
-			m_playerMoves[GameSceneActions::MOVE_RIGHT])
+		if (m_playerMoves[SceneActions::MOVE_UP] &&
+			m_playerMoves[SceneActions::MOVE_RIGHT])
 		{
 			angle += 360.f;
 		}
@@ -232,6 +232,8 @@ namespace Scenes
 
 			actorId++;	
 		}
+
+
 	}
 
 }

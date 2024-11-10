@@ -15,11 +15,11 @@
 
 namespace Scenes
 {
-	class GameScene : public Scene<GameSceneActions>
+	class GameScene : public Scene
 	{
 	public:
-		GameSceneActions checkInput(sf::Keyboard::Key) override;
-		void processAction(Engine::Action<GameSceneActions>) override;
+		SceneActions checkInput(sf::Keyboard::Key) override;
+		void processAction(Engine::Action) override;
 		void updateScene() override;
 		void renderScene() override;
 		void setDeltaTime(float deltaTime) override;
@@ -29,26 +29,26 @@ namespace Scenes
 	private:
 		std::unique_ptr<Levels::LevelEntityManager> m_level;
 		std::unique_ptr<Actors::ActorEntityManager> m_actors;
-		std::map<sf::Keyboard::Key, GameSceneActions> m_availableKeyActions 
+		std::map<sf::Keyboard::Key, SceneActions> m_availableKeyActions 
 		{
-			{ sf::Keyboard::W, GameSceneActions::MOVE_UP },
-			{ sf::Keyboard::S, GameSceneActions::MOVE_DOWN },
-			{ sf::Keyboard::A, GameSceneActions::MOVE_LEFT },
-			{ sf::Keyboard::D, GameSceneActions::MOVE_RIGHT },
-			{ sf::Keyboard::Escape, GameSceneActions::EXIT }
+			{ sf::Keyboard::W, SceneActions::MOVE_UP },
+			{ sf::Keyboard::S, SceneActions::MOVE_DOWN },
+			{ sf::Keyboard::A, SceneActions::MOVE_LEFT },
+			{ sf::Keyboard::D, SceneActions::MOVE_RIGHT },
+			{ sf::Keyboard::Escape, SceneActions::EXIT }
 		};
 	
-		std::map<GameSceneActions, bool> m_playerMoves
+		std::map<SceneActions, bool> m_playerMoves
 		{
-			{GameSceneActions::MOVE_UP, false},
-			{GameSceneActions::MOVE_DOWN, false},
-			{GameSceneActions::MOVE_LEFT, false},
-			{GameSceneActions::MOVE_RIGHT, false}
+			{SceneActions::MOVE_UP, false},
+			{SceneActions::MOVE_DOWN, false},
+			{SceneActions::MOVE_LEFT, false},
+			{SceneActions::MOVE_RIGHT, false}
 		};
 
 		Physics::Vec2f m_cursorPosition;
 
-		void m_setPlayerMovement(Engine::Action<GameSceneActions> action);
+		void m_setPlayerMovement(Engine::Action action);
 		void m_setPlayerAngle();
 		void m_processCollisions();
 	};
