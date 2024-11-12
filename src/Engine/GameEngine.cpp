@@ -21,9 +21,16 @@ namespace Engine
 				case Scenes::SceneNames::LEVEL:
 					m_currentScene = std::make_unique<Scenes::GameScene>();
 					break;
+				case Scenes::SceneNames::TITLE:
+					m_currentScene = std::make_unique<Scenes::TitleScene>();
+					break;
+				case Scenes::SceneNames::GAME_OVER:
+					m_currentScene = std::make_unique<Scenes::GameOverScene>();
+					break;
 				default:
 					break;
 				}
+				playerView->setCenter(0.5f * window->getSize().x, 0.5f * window->getSize().y);
 				m_currentScene->setRenderWindow(window);
 				m_currentScene->setView(playerView);
 			}

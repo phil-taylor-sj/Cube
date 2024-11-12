@@ -4,6 +4,7 @@ add_library(Scenes OBJECT
     Scene.cpp
     GameScene.cpp
     TitleScene.cpp
+    GameOverScene.cpp
  "SceneNames.h")
 
 

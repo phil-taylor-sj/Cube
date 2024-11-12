@@ -192,6 +192,17 @@ namespace Actors
 		m_referenceLength = length;
 	}
 
+	void ActorEntityManager::updateActorState()
+	{
+		for (ActorEntity actor : entities)
+		{
+			if (gravityComponents[actor.id].ActorState == ActorGravityComponent::VANISHED)
+			{
+				typeComponents[actor.id].actorState = ActorTypeComponent::DEAD;
+			}
+		}
+	}
+
 	ActorEntityManager::ActorEntityManager()
 	{
 		m_totalActors = 0;
@@ -253,4 +264,6 @@ namespace Actors
 			Assets::TextureDict::getInstance()->loadTexture(name);
 		}
 	}
+
+
 }

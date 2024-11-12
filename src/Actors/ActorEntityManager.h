@@ -29,6 +29,8 @@ namespace Actors
 		void renderForegroundActors(sf::RenderWindow& window);
 		void renderBackgroundActors(sf::RenderWindow& window);
 
+		void updateActorState();
+
 		void setReferenceLength(float length);
 		void updateReferenceLength(float length);
 
@@ -42,5 +44,6 @@ namespace Actors
 		int m_findFreeEntity();
 		void m_resizeVectors(int newSize);
 		void m_loadAllTextures();
+
 	};
 }
