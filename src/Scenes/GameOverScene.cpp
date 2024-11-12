@@ -42,11 +42,11 @@ namespace Scenes
 		}
 
 		m_resizeBackground();
-		m_mainText.setPosition(0.5f * m_window->getSize().x, 0.5f * m_window->getSize().y);
+		m_mainText.setPosition(0.5f * m_window->getSize().x, 0.2f * m_window->getSize().y);
 
 		m_textTime += m_deltaTime;
 		m_textTime = std::min(m_textTime, m_textPeriod);
-		int opacity = 225.f * m_textTime / m_textPeriod;
+		int opacity = 225.f * pow(m_textTime / m_textPeriod, 2);
 		m_mainText.setColor(sf::Color(255, 255, 255, opacity));
 		m_mainText.setOutlineColor(sf::Color(0, 0, 0, opacity));
 		m_mainText.setOutlineThickness(3);
@@ -63,12 +63,12 @@ namespace Scenes
 		m_mainText.setFont(
 			Assets::FontDict::getInstance()->getFont("Tuffy")
 		);
-		m_mainText.setString(sf::String("'There is no way out of here...'"));
-		m_mainText.setPosition(500, 500);
+		m_mainText.setString(sf::String("\"There is no way out of here...\""));
 		m_mainText.setOrigin(
 			0.5f * m_mainText.getGlobalBounds().width,
 			0.5f * m_mainText.getGlobalBounds().height
 		);
+		m_mainText.setCharacterSize(40);
 
 		//m_mainText.setColor(sf::Color(255, 255, 255, 128));
 
