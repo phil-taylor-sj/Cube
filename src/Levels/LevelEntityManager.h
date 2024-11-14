@@ -27,8 +27,8 @@
 namespace Levels
 {
 	/**
-	 * @class LevelEntityManager
-	 * @brief Manages entities and operations related to a game level.
+	 * \class LevelEntityManager
+	 * \brief Manages entities and operations related to a game level.
 	 */
 	class LevelEntityManager
 	{

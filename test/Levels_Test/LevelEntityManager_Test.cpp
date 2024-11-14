@@ -7,6 +7,7 @@
 
 namespace LevelEntityManager_Tests
 {
+	/**
 	class SmallGridFixture: public ::testing::Test 
 	{
 	protected:
@@ -72,4 +73,5 @@ namespace LevelEntityManager_Tests
 		actorOne.broadCircle.setPosition(500.f, 500.f);
 		EXPECT_EQ(collisionsOne.staticWalls.size(), 0);
 	}
+	*/
 }

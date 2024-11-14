@@ -5,6 +5,7 @@ namespace phys = Physics;
 
 namespace CollisionChecks_Tests
 {
+
     TEST(CollisionChecks_Intersects_Circles_Test,
         Two_circle_arguments_which_do_not_intersect_should_return_false)
     {
