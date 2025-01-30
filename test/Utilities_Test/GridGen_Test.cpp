@@ -3,119 +3,59 @@
 
 namespace GridGen_Tests
 { 
-	TEST(GridGen_randomiseGridColours_Test, 
-		Return_a_2D_array_of_the_specified_size) 
+	class GridColoursTestsFixture : public ::testing::TestWithParam<std::tuple<int, int>>
+	{
+	protected:
+		void SetUp() override
+		{
+			xSize = std::get<0>(GetParam());
+			ySize = std::get<0>(GetParam());
+		}			
+		int xSize, ySize;
+	};
+
+	class GridColoursTestSize_F : public GridColoursTestsFixture {};
+	TEST_P(GridColoursTestSize_F, CheckGridHasCorrectDimensions) 
 	{
 		std::vector<std::vector<std::string>> randomGridColours;
 
-		randomGridColours = GridGen::randomiseGridColours(1, 1);
-		ASSERT_EQ(randomGridColours.size() , 1);
+		randomGridColours = GridGen::randomiseGridColours(xSize, ySize);
+		ASSERT_EQ(randomGridColours.size() , xSize);
 		for (std::vector<std::string>& row : randomGridColours)
 		{
-			ASSERT_EQ(row.size(), 1);
-		}
-
-		randomGridColours = GridGen::randomiseGridColours(4, 4);
-		ASSERT_EQ(randomGridColours.size(), 4);
-		for (std::vector<std::string>& row : randomGridColours)
-		{
-			ASSERT_EQ(row.size(), 4);
-		}
-
-		randomGridColours = GridGen::randomiseGridColours(30, 30);
-		ASSERT_EQ(randomGridColours.size(), 30);
-		for (std::vector<std::string>& row : randomGridColours)
-		{
-			ASSERT_EQ(row.size(), 30);
-		}
-
-		randomGridColours = GridGen::randomiseGridColours(10, 35);
-		ASSERT_EQ(randomGridColours.size(), 10);
-		for (std::vector<std::string>& row : randomGridColours)
-		{
-			ASSERT_EQ(row.size(), 35);
+			ASSERT_EQ(row.size(), ySize);
 		}
 	}
 
-	TEST(GridGen_randomiseGridColours_Test, 
-		Returned_array_contains_no_matching_colours_in_adjacent_cells)
+	INSTANTIATE_TEST_SUITE_P(
+		CheckGridHasCorrectDimensions, GridColoursTestSize_F,
+		::testing::Values(
+			std::make_tuple<>(1, 1),
+			std::make_tuple<>(4, 4),
+			std::make_tuple<>(30, 30),
+			std::make_tuple<>(10, 35)
+		)
+	);
+
+	class GridColoursTestColours_F : public GridColoursTestsFixture {};
+	TEST_P(GridColoursTestColours_F, CheckNoAdjacentColoursMatch
+		)
 	{
 		std::vector<std::vector<std::string>> randomGridColours;
 
-		randomGridColours = GridGen::randomiseGridColours(4, 4);
-		for (int i = 1; i < 4; i++)
+		randomGridColours = GridGen::randomiseGridColours(xSize, ySize);
+		for (int i = 1; i < xSize; i++)
 		{
 			ASSERT_NE(
 				randomGridColours[i][0], randomGridColours[i - 1][0]);
 		}
-		for (int j = 1; j < 4; j++)
+		for (int j = 1; j < ySize; j++)
 		{
 			ASSERT_NE(
 				randomGridColours[0][j], randomGridColours[0][j - 1]);
 		}
-		for (int i = 1; i < 4; i++) {
-			for (int j = 1; j < 4; j++)
-			{
-				ASSERT_NE(
-					randomGridColours[i][j], randomGridColours[i - 1][j]);
-				ASSERT_NE(
-					randomGridColours[i][j], randomGridColours[i][j - 1]);
-			}
-		}
-
-		randomGridColours = GridGen::randomiseGridColours(30, 30);
-		for (int i = 1; i < 30; i++)
-		{
-			ASSERT_NE(
-				randomGridColours[i][0], randomGridColours[i - 1][0]);
-		}
-		for (int j = 1; j < 30; j++)
-		{
-			ASSERT_NE(
-				randomGridColours[0][j], randomGridColours[0][j - 1]);
-		}
-		for (int i = 1; i < 30; i++) {
-			for (int j = 1; j < 30; j++)
-			{
-				ASSERT_NE(
-					randomGridColours[i][j], randomGridColours[i - 1][j]);
-				ASSERT_NE(
-					randomGridColours[i][j], randomGridColours[i][j - 1]);
-			}
-		}
-		randomGridColours = GridGen::randomiseGridColours(25, 8);
-		for (int i = 1; i < 25; i++)
-		{
-			ASSERT_NE(
-				randomGridColours[i][0], randomGridColours[i - 1][0]);
-		}
-		for (int j = 1; j < 8; j++)
-		{
-			ASSERT_NE(
-				randomGridColours[0][j], randomGridColours[0][j - 1]);
-		}
-		for (int i = 1; i < 25; i++) {
-			for (int j = 1; j < 8; j++)
-			{
-				ASSERT_NE(
-					randomGridColours[i][j], randomGridColours[i - 1][j]);
-				ASSERT_NE(
-					randomGridColours[i][j], randomGridColours[i][j - 1]);
-			}
-		}
-		randomGridColours = GridGen::randomiseGridColours(3, 10);
-		for (int i = 1; i < 3; i++)
-		{
-			ASSERT_NE(
-				randomGridColours[i][0], randomGridColours[i - 1][0]);
-		}
-		for (int j = 1; j < 10; j++)
-		{
-			ASSERT_NE(
-				randomGridColours[0][j], randomGridColours[0][j - 1]);
-		}
-		for (int i = 1; i < 3; i++) {
-			for (int j = 1; j < 10; j++)
+		for (int i = 1; i < xSize; i++) {
+			for (int j = 1; j < ySize; j++)
 			{
 				ASSERT_NE(
 					randomGridColours[i][j], randomGridColours[i - 1][j]);
@@ -124,5 +64,16 @@ namespace GridGen_Tests
 			}
 		}
 	}
+
+	INSTANTIATE_TEST_SUITE_P(
+		CheckNoAdjacentColoursMatch, GridColoursTestColours_F,
+		::testing::Values(
+			std::make_tuple<>(4, 4),
+			std::make_tuple<>(30, 30),
+			std::make_tuple<>(25, 30),
+			std::make_tuple<>(3, 10)
+		)
+	);
+
 
 }
