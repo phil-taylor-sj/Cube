@@ -62,96 +62,46 @@ namespace CollisionChecks_Tests
         std::make_tuple<>(phys::Circle(225.5, -300., 100.), phys::Circle(225.5, -300., 50.))
     ));
 
-    TEST(CollisionChecks_Intersects_Rectangles_Test,
-        Two_aligned_rectangle_arguments_which_do_not_intersect_should_return_false
-    )
+
+    class CollosionAlignedRectanglesInteresctsFalse_F : public CollisionRectanglesTestFixture {};
+    TEST_P(CollosionAlignedRectanglesInteresctsFalse_F, CollisionAlginedIntersectingRectangles_ReturnsFalseTest)
     {
-        phys::Rectangle rectangleBase = phys::Rectangle(350., 350., 300., 100.);
-        phys::Rectangle rectangleOne = phys::Rectangle(350., 500., 400., 100.);
-        phys::Rectangle rectangleTwo = phys::Rectangle(550., 450., 50., 50.);
-        phys::Rectangle rectangleThree = phys::Rectangle(550., 450., 100., 100.);
-
-        EXPECT_FALSE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleOne.getRectangle()));
-        EXPECT_FALSE(phys::checkIntersection(rectangleOne.getRectangle(), rectangleBase.getRectangle()));
-
-        EXPECT_FALSE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleTwo.getRectangle()));
-        EXPECT_FALSE(phys::checkIntersection(rectangleTwo.getRectangle(), rectangleBase.getRectangle()));
-
-        EXPECT_FALSE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleThree.getRectangle()));
-        EXPECT_FALSE(phys::checkIntersection(rectangleThree.getRectangle(), rectangleBase.getRectangle()));
-
-        EXPECT_FALSE(
-            phys::checkIntersection(
-                phys::Rectangle(-350., -350., 300., 100.).getRectangle(),
-                phys::Rectangle(-350., -500., 400., 100.).getRectangle()
-            )
-        );
+        EXPECT_FALSE(phys::checkIntersection(rectangleOne.getRectangle(), rectangleTwo.getRectangle()));
+        EXPECT_FALSE(phys::checkIntersection(rectangleTwo.getRectangle(), rectangleOne.getRectangle())); 
     }
 
-    TEST(CollisionChecks_Intersects_Rectangles_Test,
-        Two_aligned_rectangle_arguments_which_intersect_should_return_true
-    )
+    INSTANTIATE_TEST_SUITE_P(CollisionAlignedIntersectingRectangles_ReturnsFalseTest, 
+        CollosionAlignedRectanglesInteresctsFalse_F, ::testing::Values(
+        // Rectangles don't intersect.
+        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(350., 500., 400., 100.)),
+        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(550., 450., 50., 50.)),
+        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(550., 450., 100., 100.)),
+        std::make_tuple<>(phys::Rectangle(-350., -350., 300., 100.), phys::Rectangle(-350., -500., 400., 100.))
+    ));
+
+    class CollosionAlignedRectanglesInteresctsTrue_F : public CollisionRectanglesTestFixture {};
+    TEST_P(CollosionAlignedRectanglesInteresctsTrue_F, CollisionAlignedIntersectingRectangles_ReturnsTrueTest)
     {
-        phys::Rectangle rectangleBase = phys::Rectangle(350., 350., 300., 100.);
-        phys::Rectangle rectangleOne = phys::Rectangle(550., 450., 110., 110.);
-        phys::Rectangle rectangleTwo = phys::Rectangle(350., 500., 400., 300.);
-        phys::Rectangle rectangleThree = phys::Rectangle(350., 500., 100., 300.);
-        phys::Rectangle rectangleFour = phys::Rectangle(350., 500., 100., 600.);
-        phys::Rectangle rectangleFive = phys::Rectangle(550., 450., 100.1, 100.1);
-        phys::Rectangle rectangleSix = phys::Rectangle(550., 450., 2000., 2000.);
-
-        EXPECT_TRUE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleOne.getRectangle()));
-        EXPECT_TRUE(phys::checkIntersection(rectangleOne.getRectangle(), rectangleBase.getRectangle()));
-
-        EXPECT_TRUE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleTwo.getRectangle()));
-        EXPECT_TRUE(phys::checkIntersection(rectangleTwo.getRectangle(), rectangleBase.getRectangle()));
-
-        EXPECT_TRUE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleThree.getRectangle()));
-        EXPECT_TRUE(phys::checkIntersection(rectangleThree.getRectangle(), rectangleBase.getRectangle()));
-
-        EXPECT_TRUE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleFour.getRectangle()));
-        EXPECT_TRUE(phys::checkIntersection(rectangleFour.getRectangle(), rectangleBase.getRectangle()));
-
-        EXPECT_TRUE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleFive.getRectangle()));
-        EXPECT_TRUE(phys::checkIntersection(rectangleFive.getRectangle(), rectangleBase.getRectangle()));
-
-        EXPECT_TRUE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleSix.getRectangle()));
-        EXPECT_TRUE(phys::checkIntersection(rectangleSix.getRectangle(), rectangleBase.getRectangle()));
-
-        EXPECT_TRUE(
-            phys::checkIntersection(
-                phys::Rectangle(-350., -350., 300., 100.).getRectangle(),
-                phys::Rectangle(-550., -450., 110., 110.).getRectangle()
-            )
-        );
+        EXPECT_TRUE(phys::checkIntersection(rectangleOne.getRectangle(), rectangleTwo.getRectangle()));
+        EXPECT_TRUE(phys::checkIntersection(rectangleTwo.getRectangle(), rectangleOne.getRectangle()));
     }
 
-    TEST(CollisionChecks_Intersects_Rectangles_Test,
-        One_aligned_rectangle_centred_within_another_aligned_rectangle_returns_true
-    )
-    {
-        phys::Rectangle rectangleBase = phys::Rectangle(350., 350., 300., 100.);
-        phys::Rectangle rectangleOne = phys::Rectangle(350., 350., 310., 110.);
-        phys::Rectangle rectangleTwo = phys::Rectangle(350., 350., 290., 90.);
-        phys::Rectangle rectangleThree = phys::Rectangle(300., 340., 50., 50.);
-        phys::Rectangle rectangleFour = phys::Rectangle(300., 340., 500., 200.);
-
-        EXPECT_TRUE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleOne.getRectangle()));
-        EXPECT_TRUE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleTwo.getRectangle()));
-
-        EXPECT_TRUE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleThree.getRectangle()));
-        EXPECT_TRUE(phys::checkIntersection(rectangleThree.getRectangle(), rectangleBase.getRectangle()));
-
-        EXPECT_TRUE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleFour.getRectangle()));
-        EXPECT_TRUE(phys::checkIntersection(rectangleFour.getRectangle(), rectangleBase.getRectangle()));
-
-        EXPECT_TRUE(
-            phys::checkIntersection(
-                phys::Rectangle(-350., -350., 300., 100.).getRectangle(),
-                phys::Rectangle(-300., -340., 400., 200.).getRectangle()
-            )
-        );
-    }
+    INSTANTIATE_TEST_SUITE_P(CollisionAlignedIntersecting_ReturnsTrueTest, CollosionAlignedRectanglesInteresctsTrue_F, ::testing::Values(
+        // Two aligned rectangles which intersect returns true.
+        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(550., 450., 110., 110.)),
+        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(350., 500., 400., 300.)),
+        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(350., 500., 100., 300.)),
+        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(350., 500., 100., 600.)),
+        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(550., 450., 100.1, 100.1)),
+        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(550., 450., 2000., 2000.)),
+        std::make_tuple<>(phys::Rectangle(-350., -350., 300., 100.), phys::Rectangle(-550., -450., 110., 110.)),
+        // One aligned rectangle centered within another aligned rectangle returns true.
+        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(350., 350., 310., 110.)),
+        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(350., 350., 290., 90.)),
+        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(300., 340., 50., 50.)),
+        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(300., 340., 500., 200.)),
+        std::make_tuple<>(phys::Rectangle(-350., -350., 300., 100.), phys::Rectangle(-300., -340., 400., 200.))
+    ));
 
     TEST(CollisionChecks_Intersects_Rectangles_Test,
         One_aligned_and_one_unaligned_rectangle_which_do_not_intersect_returns_false
