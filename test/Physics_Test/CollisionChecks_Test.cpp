@@ -6,63 +6,61 @@ namespace phys = Physics;
 namespace CollisionChecks_Tests
 {
 
-    TEST(CollisionChecks_Intersects_Circles_Test,
-        Two_circle_arguments_which_do_not_intersect_should_return_false)
+    class CollisionCirclesTestFixture : public ::testing::TestWithParam<std::tuple<phys::Circle, phys::Circle>>
     {
-        phys::Circle circleBase = phys::Circle(225.5, 300., 100.);
-        phys::Circle circleOne = phys::Circle(425., 397.2, 100.);
-        phys::Circle circleTwo = phys::Circle(420., 350., 100.);
-        phys::Circle circleThree = phys::Circle(370., 360., 50.);
+    protected:
+        void SetUp() override
+        {
+            circleOne = std::get<0>(GetParam());
+            circleTwo = std::get<1>(GetParam());
 
-        EXPECT_FALSE(phys::checkIntersection(circleBase.getCircle(), circleOne.getCircle()));
-        EXPECT_FALSE(phys::checkIntersection(circleBase.getCircle(), circleTwo.getCircle()));
-        EXPECT_FALSE(phys::checkIntersection(circleBase.getCircle(), circleThree.getCircle()));
+        }
+        phys::Circle circleOne, circleTwo;
+    };
 
-        EXPECT_FALSE(
-            phys::checkIntersection(
-                phys::Circle(-225.5, -300., 100.).getCircle(),
-                phys::Circle(-370., -360., 50.).getCircle()
-            )
-        );
+    class CollisionRectanglesTestFixture : public ::testing::TestWithParam<std::tuple<phys::Rectangle, phys::Rectangle>>
+    {
+    protected:
+        void SetUp() override
+        {
+            rectangleOne = std::get<0>(GetParam());
+            rectangleTwo = std::get<1>(GetParam());
+
+        }
+        phys::Rectangle rectangleOne, rectangleTwo;
+    };
+
+
+    class CollosionCirclesInteresctsFalse_F : public CollisionCirclesTestFixture {};
+    TEST_P(CollosionCirclesInteresctsFalse_F, CollisionIntersectingCircles_ReturnsFalseTest)
+    {
+        EXPECT_FALSE(phys::checkIntersection(circleOne.getCircle(), circleTwo.getCircle()));
     }
 
-    TEST(CollisionChecks_Intersects_Circles_Test,
-        Tcle_arguments_which_intersect_should_return_true
-    )
+    INSTANTIATE_TEST_SUITE_P(CollisionIntersectingCircles_ReturnsFalseTest, CollosionCirclesInteresctsFalse_F, ::testing::Values(
+        // Circles  don't intersect.
+        std::make_tuple<>(phys::Circle(225.5, 300., 100.), phys::Circle(425., 397.2, 100.)),
+        std::make_tuple<>(phys::Circle(225.5, 300., 100.), phys::Circle(420., 350., 100.)),
+        std::make_tuple<>(phys::Circle(225.5, 300., 100.), phys::Circle(370., 360., 50.)),
+        std::make_tuple<>(phys::Circle(-225.5, -300., 100.), phys::Circle(-370., -360., 50.))
+    ));
+
+    class CollosionCirclesInteresctsTrue_F : public CollisionCirclesTestFixture {};
+    TEST_P(CollosionCirclesInteresctsTrue_F, CollisionIntersectingCircles_ReturnsTrueTest)
     {
-        phys::Circle circleBase = phys::Circle(225.5, 300., 100.);
-        phys::Circle circleOne = phys::Circle(415., 350., 100.);
-        phys::Circle circleTwo = phys::Circle(365., 300., 50.);
-
-        EXPECT_TRUE(phys::checkIntersection(circleBase.getCircle(), circleOne.getCircle()));
-        EXPECT_TRUE(phys::checkIntersection(circleBase.getCircle(), circleTwo.getCircle()));
-
-        EXPECT_TRUE(
-            phys::checkIntersection(
-                phys::Circle(-225.5, -300., 100.).getCircle(),
-                phys::Circle(-365., -300., 50.).getCircle()
-            )
-        );
+        EXPECT_TRUE(phys::checkIntersection(circleOne.getCircle(), circleTwo.getCircle()));
     }
 
-    TEST(CollisionChecks_Intersects_Circles_Test,
-        Two_circle_arguments_sharing_an_origin_should_return_true
-    )
-    {
-        phys::Circle circleBase = phys::Circle(225.5, 300., 100.);
-        phys::Circle circleOne = phys::Circle(225.5, 300., 100.);
-        phys::Circle circleTwo = phys::Circle(225.5, 300., 50.);
-
-        EXPECT_TRUE(phys::checkIntersection(circleBase.getCircle(), circleOne.getCircle()));
-        EXPECT_TRUE(phys::checkIntersection(circleBase.getCircle(), circleTwo.getCircle()));
-
-        EXPECT_TRUE(
-            phys::checkIntersection(
-                phys::Circle(225.5, -300., 100.).getCircle(),
-                phys::Circle(225.5, -300., 50.).getCircle()
-            )
-        );
-    }
+    INSTANTIATE_TEST_SUITE_P(CollisionIntersectingCircles_ReturnsTrueTest, CollosionCirclesInteresctsTrue_F, ::testing::Values(
+        // Circles that intersect but don't share an origin.
+        std::make_tuple<>(phys::Circle(225.5, 300., 100.), phys::Circle(415., 350., 100.)),
+        std::make_tuple<>(phys::Circle(225.5, 300., 100.), phys::Circle(365., 300., 50.)),
+        std::make_tuple<>(phys::Circle(-225.5, -300., 100.), phys::Circle(-365., -300., 50.)),
+        // Circles that share an origin.
+        std::make_tuple<>(phys::Circle(225.5, 300., 100.), phys::Circle(225.5, 300., 100.)),
+        std::make_tuple<>(phys::Circle(225.5, 300., 100.), phys::Circle(225.5, 300., 50.)),
+        std::make_tuple<>(phys::Circle(225.5, -300., 100.), phys::Circle(225.5, -300., 50.))
+    ));
 
     TEST(CollisionChecks_Intersects_Rectangles_Test,
         Two_aligned_rectangle_arguments_which_do_not_intersect_should_return_false
