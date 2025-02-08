@@ -6,7 +6,7 @@ namespace Levels
 {
 	struct CellEntity
 	{
-		std::bitset<8> components;
+		std::bitset<12> components;
 		int cellId;
 	};
 }

@@ -2,6 +2,7 @@
 
 namespace Levels
 {
+
 	void LevelEntityManager::updateLevel() 
 	{
 		processLevelShift();
@@ -27,7 +28,8 @@ namespace Levels
 		updateAllCellScaling();
 	}
 
-
+	// This setter function not only sets the value of the cell (room) dimensions
+	// but it automaticallyre scales all Transform and Collision Components.
 	void LevelEntityManager::setCommonCellWidth(float commonCellWidth)
 	{
 		m_commonCellWidth = commonCellWidth;
@@ -40,9 +42,11 @@ namespace Levels
 			);
 		}
 		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
+	
+		this->m_scaleFixedWidthComponents();
 	}
 
-
+	// A simple, humble Getter function.
 	float LevelEntityManager::getCommonCellWidth()
 	{
 		return m_commonCellWidth;
@@ -57,24 +61,19 @@ namespace Levels
 
 	void LevelEntityManager::updateAllCellScaling()
 	{
-		m_backgroundSprite.setScale(
-			m_commonCellWidth * m_xGridSize / m_backgroundSprite.getLocalBounds().width,
-			m_commonCellWidth * m_yGridSize / m_backgroundSprite.getLocalBounds().height
-		);
 
 		for (int i = 0; i < m_totalCells; i++)
 		{
 			CellTransformComponent& transform = m_cellTransformComponents[i];
 			CellGravityComponent& gravity = m_cellGravityComponents[i];
-			sf::Sprite& sprite = m_cellGraphicsComponents[i].sprite;
-			
 			float cellWidth = transform.cellWidth * gravity.currentScale;
+			
 			if (gravity.CellState == CellGravityComponent::STEADY)
 			{
 				cellWidth = transform.cellWidth;
-
 			};
-			
+
+			sf::Sprite& sprite = m_cellGraphicsComponents[i].sprite;
 			if (sprite.getLocalBounds().width != cellWidth)
 			{
 				LevelEntitySystem::scaleCellSprite(sprite, cellWidth);
@@ -92,13 +91,17 @@ namespace Levels
 			float y = m_cellTransformComponents[i].position.y;
 
 			m_cellGraphicsComponents[i].sprite.setPosition(x, y);
+			m_cellPanelsComponents[i].sprite.setPosition(x, y);
 
 			CellNumbersComponent& numbers = m_cellNumbersComponents[i];
 			LevelEntitySystem::updateCellNumbers(numbers);
-			numbers.text.setPosition(
-				x + m_commonCellWidth * numbers.relativePosition.x, 
-				y + m_commonCellWidth * numbers.relativePosition.y
-			);
+			
+			sf::Vector2f position{
+				x + m_commonCellWidth * numbers.relativePosition.x,
+				y + m_commonCellWidth * numbers.relativePosition.y 
+			};
+			numbers.text.setPosition(position);
+			numbers.panelBackground.setPosition(position);
 		}
 	}
 
@@ -194,7 +197,8 @@ namespace Levels
 		}
 	}
 
-
+	// Render a texture of repeated bottomless voids as the lowest layer of the level.
+	// This must be called before LevelEntityManager::renderLevel during each draw window.
 	void LevelEntityManager::renderBackground(sf::RenderWindow& window)
 	{
 		window.draw(m_backgroundSprite);
@@ -207,7 +211,8 @@ namespace Levels
 		}
 	}
 
-
+	// Render all entities on top of the previously rendered background texture.
+	// This must be called after LevelEntityManager::renderBackground during each draw loop.
 	void LevelEntityManager::renderLevel(sf::RenderWindow& window)
 	{
 		for (int i = 0; i < m_totalCells; i++)
@@ -220,19 +225,22 @@ namespace Levels
 			if (m_cellNumbersComponents[i].isActive)
 			{
 				window.draw(m_cellNumbersComponents[i].text);
+				window.draw(m_cellNumbersComponents[i].panelBackground);
 			}
 			if (m_cellPanelsComponents[i].isVisible)
 			{
 				sf::Sprite& panels = m_cellPanelsComponents[i].sprite;
 				CellTransformComponent& transform = m_cellTransformComponents[i];
 				panels.setPosition(transform.position.x, transform.position.y);
-				LevelEntitySystem::scaleCellSprite(panels, transform.cellWidth);
+				LevelEntitySystem::scaleCellSprite(m_cellPanelsComponents[i].sprite, transform.cellWidth);
 				window.draw(panels);
 			}
 		}
 	};
 
-
+	// Resets the forces (set to 0.f) which drive the movement of Cell entities.
+	// This function should be called at the beginning of each draw loop.
+	// This function must be called before LevelEntity::updateLevel().
 	void LevelEntityManager::clearForces()
 	{
 		for (CellForceComponent& force : m_cellForceComponents)
@@ -240,7 +248,6 @@ namespace Levels
 			force.netForce = vecp::Vec2f(0.f, 0.f);
 		}
 	}
-
 
 	DetectedLevelCollisions LevelEntityManager::getCircleCollisions(
 		const Actors::ActorCollisionComponent& actorCollision)
@@ -329,6 +336,8 @@ namespace Levels
 		LevelFactory::addTextures(m_cellTypeComponents, m_cellGraphicsComponents);
 		LevelFactory::addCollisions(m_cellTypeComponents, m_cellCollisionComponents);
 		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
+	
+		this->m_scaleFixedWidthComponents();
 	}
 
 
@@ -342,6 +351,50 @@ namespace Levels
 					m_cellNumbersComponents[i]);
 			}
 				
+		}
+	}
+
+	void LevelEntityManager::m_scaleFixedWidthComponents()
+	{
+		m_backgroundSprite.setScale(
+			m_commonCellWidth * m_xGridSize / m_backgroundSprite.getLocalBounds().width,
+			m_commonCellWidth * m_yGridSize / m_backgroundSprite.getLocalBounds().height
+		);
+
+		for (int id = 0; id < this->m_totalCells; id++)
+		{
+			// Scale the single square panels for the number text display.
+			CellEntity& entity = this->m_cellEntities[id];
+			if (entity.components.test(CellComponentTypes::NUMBERS))
+			{
+				float panelWidth = 0.2f * m_commonCellWidth;
+				sf::RectangleShape panel = m_cellNumbersComponents[id].panelBackground;
+				panel.setSize(sf::Vector2f(panelWidth, panelWidth));
+				panel.setOrigin(0.5f * panelWidth, 0.5f * panelWidth);
+			}
+
+			// Scale the main sprite of each cell.
+			if (!entity.components.test(CellComponentTypes::MOVE))
+			{
+				LevelEntitySystem::scaleCellSprite(m_cellGraphicsComponents[id].sprite, m_commonCellWidth);
+			}
+
+			if (entity.components.test(CellComponentTypes::COLLISION))
+			{
+				CellCollisionComponent& collision = m_cellCollisionComponents[id];
+				CellTransformComponent& transform = m_cellTransformComponents[id];
+				
+				collision.broadCircle.setRadius(collision.relativeBroadRadius * m_commonCellWidth);
+				for (CellStaticRectangle& wall : collision.staticWalls)
+				{
+					wall.setCellWidth(transform.cellWidth);
+				}
+				for (CellStaticRectangle& floor : collision.staticFloors)
+				{
+					floor.setCellPosition(transform.position);
+					floor.setCellWidth(transform.cellWidth);
+				}
+			}
 		}
 	}
 

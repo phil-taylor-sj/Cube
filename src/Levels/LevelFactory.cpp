@@ -15,7 +15,6 @@ namespace Levels
 			activeTypes.set(CellComponentTypes::GRAPHICS);
 			activeTypes.set(CellComponentTypes::COLLISION);
 			activeTypes.set(CellComponentTypes::TRANSFORM);
-			activeTypes.set(CellComponentTypes::MOVE);
 			if (cellTypes[i].type == CellTypes::ROOM)
 			{
 				activeTypes.set(CellComponentTypes::NUMBERS);
@@ -370,8 +369,12 @@ namespace Levels
 		text.setOutlineColor(sf::Color::Black);
 		text.setOutlineThickness(2);
 		sf::FloatRect shape = text.getLocalBounds();
-		text.setOrigin(0.5 * shape.width, 0.5f * shape.height);
-		
+		text.setOrigin(0.5f * shape.width, 0.5f * shape.height);
+
+		sf::RectangleShape& panel = cellNumbers.panelBackground;
+		sf::FloatRect panelShape = panel.getLocalBounds();
+		panel.setOrigin(0.5f * shape.width, 0.5f * shape.height);
+		panel.setFillColor(sf::Color::Black);		
 	}
 
 	const std::map<CellColours, std::string> LevelFactory::m_colourFilenames = {

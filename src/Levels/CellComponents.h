@@ -138,6 +138,7 @@ namespace Levels
 	struct CellNumbersComponent
 	{
 		std::vector<std::string> numbers = {"101", "102", "103"};
+		sf::RectangleShape panelBackground{sf::Vector2f(1.f, 1.f)};
 		bool isActive = true;
 		int currentIndex = 0;
 		float period = 2.f;

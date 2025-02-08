@@ -345,6 +345,7 @@ namespace Levels
 		numbers.text.setString(numbers.numbers[numbers.currentIndex]);
 		sf::FloatRect shape = numbers.text.getLocalBounds();
 		numbers.text.setOrigin(0.5 * shape.width, 0.5f * shape.height);
+
 	}
 
 	float LevelEntitySystem::m_deltaTime = 0.f;

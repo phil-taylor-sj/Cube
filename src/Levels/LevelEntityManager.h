@@ -63,7 +63,14 @@ namespace Levels
 
 		void processLevelShift();
 
-
+		/**
+		 * @brief Render the background texture for the level.
+		 * 
+		 * This must be called before LevelEntityManager::renderLevel during each draw window.
+		 *
+		 * @param window The SFML RenderWindow on which to render the level.
+		 
+		 */
 		void renderBackground(sf::RenderWindow& window);
 
 		/**
@@ -123,5 +130,6 @@ namespace Levels
 		float m_commonCellWidth = 512.f;
 	
 		void m_buildCellNumbers();
+		void m_scaleFixedWidthComponents();
 	};
 }
