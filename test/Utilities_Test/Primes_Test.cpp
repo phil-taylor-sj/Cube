@@ -72,7 +72,6 @@ namespace Primes_Tests
 		std::make_tuple(27, std::vector<unsigned int>{999})
 	));
 
-
 	TEST(Primes_getPrimes, returns_a_list_contianing_all_three_digit_prime_numbers_if_true)
 	{
 		std::vector<unsigned int> output = Utilities::Primes::getPrimes(true);
@@ -90,8 +89,7 @@ namespace Primes_Tests
 		};
 
 		ASSERT_EQ(expected.size(), output.size());
-		ASSERT_EQ(expected, output);
-	
+		ASSERT_EQ(expected, output);	
 	}
 
 }

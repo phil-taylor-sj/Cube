@@ -6,30 +6,67 @@ namespace phys = Physics;
 namespace CollisionChecks_Tests
 {
 
-    class CollisionCirclesTestFixture : public ::testing::TestWithParam<std::tuple<phys::Circle, phys::Circle>>
+    class CollisionCirclesTestFixture : 
+        public ::testing::TestWithParam<std::tuple<phys::Circle, phys::Circle>>
     {
     protected:
         void SetUp() override
         {
-            circleOne = std::get<0>(GetParam());
-            circleTwo = std::get<1>(GetParam());
+            this->circleOne = std::get<0>(GetParam());
+            this->circleTwo = std::get<1>(GetParam());
 
         }
         phys::Circle circleOne, circleTwo;
     };
 
-    class CollisionRectanglesTestFixture : public ::testing::TestWithParam<std::tuple<phys::Rectangle, phys::Rectangle>>
+    class CollisionRectanglesTestFixture : 
+        public ::testing::TestWithParam<std::tuple<phys::Rectangle, phys::Rectangle>>
     {
     protected:
         void SetUp() override
         {
-            rectangleOne = std::get<0>(GetParam());
-            rectangleTwo = std::get<1>(GetParam());
+            this->rectangleOne = std::get<0>(GetParam());
+            this->rectangleTwo = std::get<1>(GetParam());
 
         }
         phys::Rectangle rectangleOne, rectangleTwo;
     };
 
+    class CollisionUnalignedRectanglesTestFixture : 
+        public ::testing::TestWithParam<std::tuple<phys::Rectangle, float, phys::Rectangle, float>>
+    {
+    protected:
+        void SetUp() override
+        {
+            this->rectangleOne = std::get<0>(GetParam());
+            this->angleOne = std::get<1>(GetParam());
+
+            this->rectangleTwo = std::get<2>(GetParam());
+            this->angleTwo = std::get<3>(GetParam());
+        }
+        phys::Rectangle rectangleOne, rectangleTwo;
+        float angleOne, angleTwo;
+    };
+
+    class CollisionCircleRectangleTestFixture :
+        public ::testing::TestWithParam<std::tuple<phys::Circle, phys::Rectangle, float>>
+    {
+    protected:
+        void SetUp() override
+        {
+            this->circle = std::get<0>(GetParam());
+            this->rectangle = std::get<1>(GetParam());
+
+        }
+        phys::Circle circle;
+        phys::Rectangle rectangle;
+        float angle;
+    };
+
+
+    // --------------------------------------------------------------------------------------
+    //            Testing collision detection between two circles
+    // --------------------------------------------------------------------------------------
 
     class CollosionCirclesInteresctsFalse_F : public CollisionCirclesTestFixture {};
     TEST_P(CollosionCirclesInteresctsFalse_F, CollisionIntersectingCircles_ReturnsFalseTest)
@@ -39,10 +76,10 @@ namespace CollisionChecks_Tests
 
     INSTANTIATE_TEST_SUITE_P(CollisionIntersectingCircles_ReturnsFalseTest, CollosionCirclesInteresctsFalse_F, ::testing::Values(
         // Circles  don't intersect.
-        std::make_tuple<>(phys::Circle(225.5, 300., 100.), phys::Circle(425., 397.2, 100.)),
-        std::make_tuple<>(phys::Circle(225.5, 300., 100.), phys::Circle(420., 350., 100.)),
-        std::make_tuple<>(phys::Circle(225.5, 300., 100.), phys::Circle(370., 360., 50.)),
-        std::make_tuple<>(phys::Circle(-225.5, -300., 100.), phys::Circle(-370., -360., 50.))
+        std::make_tuple<>(phys::Circle(225.5f, 300.f, 100.f), phys::Circle(425.f, 397.2f, 100.f)),
+        std::make_tuple<>(phys::Circle(225.5f, 300.f, 100.f), phys::Circle(420.f, 350.f, 100.f)),
+        std::make_tuple<>(phys::Circle(225.5f, 300.f, 100.f), phys::Circle(370.f, 360.f, 50.f)),
+        std::make_tuple<>(phys::Circle(-225.5f, -300.f, 100.f), phys::Circle(-370.f, -360.f, 50.f))
     ));
 
     class CollosionCirclesInteresctsTrue_F : public CollisionCirclesTestFixture {};
@@ -53,15 +90,18 @@ namespace CollisionChecks_Tests
 
     INSTANTIATE_TEST_SUITE_P(CollisionIntersectingCircles_ReturnsTrueTest, CollosionCirclesInteresctsTrue_F, ::testing::Values(
         // Circles that intersect but don't share an origin.
-        std::make_tuple<>(phys::Circle(225.5, 300., 100.), phys::Circle(415., 350., 100.)),
-        std::make_tuple<>(phys::Circle(225.5, 300., 100.), phys::Circle(365., 300., 50.)),
-        std::make_tuple<>(phys::Circle(-225.5, -300., 100.), phys::Circle(-365., -300., 50.)),
+        std::make_tuple<>(phys::Circle(225.5f, 300.f, 100.f), phys::Circle(415.f, 350.f, 100.f)),
+        std::make_tuple<>(phys::Circle(225.5f, 300.f, 100.f), phys::Circle(365.f, 300.f, 50.f)),
+        std::make_tuple<>(phys::Circle(-225.5f, -300.f, 100.f), phys::Circle(-365.f, -300.f, 50.)),
         // Circles that share an origin.
-        std::make_tuple<>(phys::Circle(225.5, 300., 100.), phys::Circle(225.5, 300., 100.)),
-        std::make_tuple<>(phys::Circle(225.5, 300., 100.), phys::Circle(225.5, 300., 50.)),
-        std::make_tuple<>(phys::Circle(225.5, -300., 100.), phys::Circle(225.5, -300., 50.))
+        std::make_tuple<>(phys::Circle(225.5f, 300.f, 100.f), phys::Circle(225.5f, 300.f, 100.f)),
+        std::make_tuple<>(phys::Circle(225.5f, 300.f, 100.f), phys::Circle(225.5f, 300.f, 50.f)),
+        std::make_tuple<>(phys::Circle(225.5f, -300.f, 100.f), phys::Circle(225.5f, -300.f, 50.f))
     ));
 
+    // --------------------------------------------------------------------------------------
+    //            Testing collision detection between two rectangles
+    // --------------------------------------------------------------------------------------
 
     class CollosionAlignedRectanglesInteresctsFalse_F : public CollisionRectanglesTestFixture {};
     TEST_P(CollosionAlignedRectanglesInteresctsFalse_F, CollisionAlginedIntersectingRectangles_ReturnsFalseTest)
@@ -73,10 +113,10 @@ namespace CollisionChecks_Tests
     INSTANTIATE_TEST_SUITE_P(CollisionAlignedIntersectingRectangles_ReturnsFalseTest, 
         CollosionAlignedRectanglesInteresctsFalse_F, ::testing::Values(
         // Rectangles don't intersect.
-        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(350., 500., 400., 100.)),
-        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(550., 450., 50., 50.)),
-        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(550., 450., 100., 100.)),
-        std::make_tuple<>(phys::Rectangle(-350., -350., 300., 100.), phys::Rectangle(-350., -500., 400., 100.))
+        std::make_tuple<>(phys::Rectangle(350.f, 350.f, 300.f, 100.f), phys::Rectangle(350.f, 500.f, 400.f, 100.f)),
+        std::make_tuple<>(phys::Rectangle(350.f, 350.f, 300.f, 100.f), phys::Rectangle(550.f, 450.f, 50.f, 50.f)),
+        std::make_tuple<>(phys::Rectangle(350.f, 350.f, 300.f, 100.f), phys::Rectangle(550.f, 450.f, 100.f, 100.f)),
+        std::make_tuple<>(phys::Rectangle(-350.f, -350.f, 300.f, 100.f), phys::Rectangle(-350.f, -500.f, 400.f, 100.f))
     ));
 
     class CollosionAlignedRectanglesInteresctsTrue_F : public CollisionRectanglesTestFixture {};
@@ -88,116 +128,67 @@ namespace CollisionChecks_Tests
 
     INSTANTIATE_TEST_SUITE_P(CollisionAlignedIntersecting_ReturnsTrueTest, CollosionAlignedRectanglesInteresctsTrue_F, ::testing::Values(
         // Two aligned rectangles which intersect returns true.
-        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(550., 450., 110., 110.)),
-        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(350., 500., 400., 300.)),
-        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(350., 500., 100., 300.)),
-        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(350., 500., 100., 600.)),
-        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(550., 450., 100.1, 100.1)),
-        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(550., 450., 2000., 2000.)),
-        std::make_tuple<>(phys::Rectangle(-350., -350., 300., 100.), phys::Rectangle(-550., -450., 110., 110.)),
+        std::make_tuple<>(phys::Rectangle(350.f, 350.f, 300.f, 100.f), phys::Rectangle(550.f, 450.f, 110.f, 110.f)),
+        std::make_tuple<>(phys::Rectangle(350.f, 350.f, 300.f, 100.f), phys::Rectangle(350.f, 500.f, 400.f, 300.f)),
+        std::make_tuple<>(phys::Rectangle(350.f, 350.f, 300.f, 100.f), phys::Rectangle(350.f, 500.f, 100.f, 300.f)),
+        std::make_tuple<>(phys::Rectangle(350.f, 350.f, 300.f, 100.f), phys::Rectangle(350.f, 500.f, 100.f, 600.f)),
+        std::make_tuple<>(phys::Rectangle(350.f, 350.f, 300.f, 100.f), phys::Rectangle(550.f, 450.f, 100.1f, 100.1f)),
+        std::make_tuple<>(phys::Rectangle(350.f, 350.f, 300.f, 100.f), phys::Rectangle(550.f, 450.f, 2000.f, 2000.f)),
+        std::make_tuple<>(phys::Rectangle(-350.f, -350.f, 300.f, 100.f), phys::Rectangle(-550.f, -450.f, 110.f, 110.f)),
         // One aligned rectangle centered within another aligned rectangle returns true.
-        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(350., 350., 310., 110.)),
-        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(350., 350., 290., 90.)),
-        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(300., 340., 50., 50.)),
-        std::make_tuple<>(phys::Rectangle(350., 350., 300., 100.), phys::Rectangle(300., 340., 500., 200.)),
-        std::make_tuple<>(phys::Rectangle(-350., -350., 300., 100.), phys::Rectangle(-300., -340., 400., 200.))
+        std::make_tuple<>(phys::Rectangle(350.f, 350.f, 300.f, 100.f), phys::Rectangle(350.f, 350.f, 310.f, 110.f)),
+        std::make_tuple<>(phys::Rectangle(350.f, 350.f, 300.f, 100.f), phys::Rectangle(350.f, 350.f, 290.f, 90.f)),
+        std::make_tuple<>(phys::Rectangle(350.f, 350.f, 300.f, 100.f), phys::Rectangle(300.f, 340.f, 50.f, 50.f)),
+        std::make_tuple<>(phys::Rectangle(350.f, 350.f, 300.f, 100.f), phys::Rectangle(300.f, 340.f, 500.f, 200.f)),
+        std::make_tuple<>(phys::Rectangle(-350.f, -350.f, 300.f, 100.f), phys::Rectangle(-300.f, -340.f, 400.f, 200.f))
     ));
 
-    TEST(CollisionChecks_Intersects_Rectangles_Test,
-        One_aligned_and_one_unaligned_rectangle_which_do_not_intersect_returns_false
-    )
+    class CollosionUnalignedRectanglesInteresctsFalse_F : public CollisionUnalignedRectanglesTestFixture {};
+    TEST_P(CollosionUnalignedRectanglesInteresctsFalse_F, CollisionUnalignedIntersectingRectangles_ReturnsFalseTest)
     {
-        phys::Rectangle rectangleBase = phys::Rectangle(750., 675., 500., 150.);
-        phys::Rectangle rectangleOne = phys::Rectangle(1100., 750., 100., 300.);
+        rectangleOne.setAngle(angleOne);
+        rectangleTwo.setAngle(angleTwo);
 
-        phys::Rectangle rectangleTwo = phys::Rectangle(-750., -675., 500., 150.);
-        phys::Rectangle rectangleThree = phys::Rectangle(-1100., -750., 100., 300.);
-
-        rectangleBase.setAngle(20);
-        rectangleTwo.setAngle(20);
-
-        EXPECT_FALSE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleOne.getRectangle()));
-        EXPECT_FALSE(phys::checkIntersection(rectangleOne.getRectangle(), rectangleBase.getRectangle()));
-
-        EXPECT_FALSE(phys::checkIntersection(rectangleTwo.getRectangle(), rectangleThree.getRectangle()));
-        EXPECT_FALSE(phys::checkIntersection(rectangleThree.getRectangle(), rectangleTwo.getRectangle()));
+        EXPECT_FALSE(phys::checkIntersection(rectangleOne.getRectangle(), rectangleTwo.getRectangle()));
+        EXPECT_FALSE(phys::checkIntersection(rectangleTwo.getRectangle(), rectangleOne.getRectangle()));
     }
 
-    TEST(CollisionChecks_Intersects_Rectangles_Test,
-        One_aligned_and_one_unaligned_rectangle_which_intersect_returns_true
-    )
+    INSTANTIATE_TEST_SUITE_P(CollisionUnalignedIntersectingRectangles_ReturnsFalseTest,
+        CollosionUnalignedRectanglesInteresctsFalse_F, ::testing::Values(
+            // One aligned rectangle and one unaligned rectangle which do not intersect.
+            std::make_tuple<>(phys::Rectangle(750.f, 675.f, 500.f, 150.f), 20.f, phys::Rectangle(1100.f, 750.f, 100.f, 300.f), 0.f),
+            std::make_tuple<>(phys::Rectangle(-750.f, -675.f, 500.f, 150.f), 20.f, phys::Rectangle(-1100.f, -750.f, 100.f, 300.f), 0.f),
+            // Two unaligned rectangles which do not intersect.
+            std::make_tuple<>(phys::Rectangle(750.f, 675.f, 500.f, 150.f), 350.f, phys::Rectangle(1100.f, 750.f, 100.f, 300.f), 70.f),
+            std::make_tuple<>(phys::Rectangle(750.f, 675.f, 500.f, 150.f), 350.f, phys::Rectangle(900.f, 780.f, 100.f, 300.f), 80.f),
+            std::make_tuple<>(phys::Rectangle(750.f, 675.f, 500.f, 150.f), 350.f, phys::Rectangle(-750.f, -675.f, 500.f, 150.f), 350.f),
+            std::make_tuple<>(phys::Rectangle(750.f, 675.f, 500.f, 150.f), 350.f, phys::Rectangle(-1100.f, -750.f, 100.f, 300.f), 70.f)
+        ));
+
+    class CollosionUnalignedRectanglesInteresctsTrue_F : public CollisionUnalignedRectanglesTestFixture {};
+    TEST_P(CollosionUnalignedRectanglesInteresctsTrue_F, CollisionUnalignedIntersectingRectangles_ReturnsTrueTest)
     {
-        phys::Rectangle rectangleBase = phys::Rectangle(750., 675., 500., 150.);
-        phys::Rectangle rectangleOne = phys::Rectangle(1100., 750., 100., 300.);
+        rectangleOne.setAngle(angleOne);
+        rectangleTwo.setAngle(angleTwo);
 
-        phys::Rectangle rectangleTwo = phys::Rectangle(-750., -675., 500., 150.);
-        phys::Rectangle rectangleThree = phys::Rectangle(-1100., -750., 100., 300.);
-
-        rectangleOne.setAngle(70.);
-        rectangleThree.setAngle(70.);
-
-        EXPECT_TRUE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleOne.getRectangle()));
-        EXPECT_TRUE(phys::checkIntersection(rectangleOne.getRectangle(), rectangleBase.getRectangle()));
-
-        EXPECT_TRUE(phys::checkIntersection(rectangleTwo.getRectangle(), rectangleThree.getRectangle()));
-        EXPECT_TRUE(phys::checkIntersection(rectangleThree.getRectangle(), rectangleTwo.getRectangle()));
+        EXPECT_TRUE(phys::checkIntersection(rectangleOne.getRectangle(), rectangleTwo.getRectangle()));
+        EXPECT_TRUE(phys::checkIntersection(rectangleTwo.getRectangle(), rectangleOne.getRectangle()));
     }
 
-    TEST(CollisionChecks_Intersects_Rectangles_Test,
-        Two_unaligned_rectangles_which_do_not_intersect_returns_false
-    )
-    {
-        phys::Rectangle rectangleBase = phys::Rectangle(750., 675., 500., 150.);
-        phys::Rectangle rectangleOne = phys::Rectangle(1100., 750., 100., 300.);
-        phys::Rectangle rectangleTwo = phys::Rectangle(900., 780., 100., 300.);
+    INSTANTIATE_TEST_SUITE_P(CollisionUnalignedIntersectingRectangles_ReturnsFalseTest,
+        CollosionUnalignedRectanglesInteresctsTrue_F, ::testing::Values(
+            // One aligned rectangle and one unaligned rectangle which intersect.
+            std::make_tuple<>(phys::Rectangle(750.f, 675.f, 500.f, 150.f), 0.f, phys::Rectangle(1100.f, 750.f, 100.f, 300.f), 70.f),
+            std::make_tuple<>(phys::Rectangle(-750.f, -675.f, 500.f, 150.f), 0.f, phys::Rectangle(-1100.f, -750.f, 100.f, 300.f), 70.f),
+            // Two unaligned rectangles which intersect.
+            std::make_tuple<>(phys::Rectangle(750.f, 675.f, 500.f, 150.f), 20.f, phys::Rectangle(1100.f, 750.f, 100.f, 300.f), 70.f),
+            std::make_tuple<>(phys::Rectangle(750.f, 675.f, 500.f, 150.f), 350.f, phys::Rectangle(900.f, 780.f, 100.f, 300.f), 170.f),
+            std::make_tuple<>(phys::Rectangle(-750.f, -675.f, 500.f, 150.), 20.f, phys::Rectangle(-1100.f, -750.f, 100.f, 300.f), 70.f)
+        ));
 
-        phys::Rectangle rectangleThree = phys::Rectangle(-750., -675., 500., 150.);
-        phys::Rectangle rectangleFour = phys::Rectangle(-1100., -750., 100., 300.);
-
-        rectangleBase.setAngle(350.);
-        rectangleOne.setAngle(70.);
-        rectangleTwo.setAngle(80.);
-        rectangleThree.setAngle(350.);
-        rectangleFour.setAngle(70.);
-
-        EXPECT_FALSE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleOne.getRectangle()));
-        EXPECT_FALSE(phys::checkIntersection(rectangleOne.getRectangle(), rectangleBase.getRectangle()));
-
-        EXPECT_FALSE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleTwo.getRectangle()));
-        EXPECT_FALSE(phys::checkIntersection(rectangleTwo.getRectangle(), rectangleBase.getRectangle()));
-
-        EXPECT_FALSE(phys::checkIntersection(rectangleThree.getRectangle(), rectangleFour.getRectangle()));
-        EXPECT_FALSE(phys::checkIntersection(rectangleFour.getRectangle(), rectangleThree.getRectangle()));
-    }
-
-    TEST(CollisionChecks_Intersects_Rectangles_Test,
-        Two_unaligned_rectangles_which_intersect_returns_true
-    )
-    {
-        phys::Rectangle rectangleBase = phys::Rectangle(750., 675., 500., 150.);
-        phys::Rectangle rectangleOne = phys::Rectangle(1100., 750., 100., 300.);
-        phys::Rectangle rectangleTwo = phys::Rectangle(900., 780., 100., 300.);
-
-        phys::Rectangle rectangleThree = phys::Rectangle(-750., -675., 500., 150.);
-        phys::Rectangle rectangleFour = phys::Rectangle(-1100., -750., 100., 300.);
-
-        rectangleBase.setAngle(20.);
-        rectangleOne.setAngle(70.);
-        rectangleTwo.setAngle(170.);
-
-        rectangleThree.setAngle(20.);
-        rectangleFour.setAngle(70.);
-
-        EXPECT_TRUE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleOne.getRectangle()));
-        EXPECT_TRUE(phys::checkIntersection(rectangleOne.getRectangle(), rectangleBase.getRectangle()));
-
-        rectangleBase.setAngle(350.);
-        EXPECT_TRUE(phys::checkIntersection(rectangleBase.getRectangle(), rectangleTwo.getRectangle()));
-        EXPECT_TRUE(phys::checkIntersection(rectangleTwo.getRectangle(), rectangleBase.getRectangle()));
-
-        EXPECT_TRUE(phys::checkIntersection(rectangleThree.getRectangle(), rectangleFour.getRectangle()));
-        EXPECT_TRUE(phys::checkIntersection(rectangleFour.getRectangle(), rectangleThree.getRectangle()));
-    }
+    // --------------------------------------------------------------------------------------
+    //            Testing collision detection between a circle and a rectangle
+    // --------------------------------------------------------------------------------------
 
     TEST(CollisionChecks_Intersects_Rectangle_Circle_Test,
         An_aligned_rectangle_and_a_circle_which_do_not_intersect_returns_false
