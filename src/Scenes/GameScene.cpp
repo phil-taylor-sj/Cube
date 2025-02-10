@@ -95,8 +95,11 @@ namespace Scenes
 
 	GameScene::GameScene()
 	{
-		m_level = std::make_unique<Levels::LevelEntityManager>(4, 4);
-		m_level->setCommonCellWidth(512.f);
+		Levels::LevelSettings settings{};
+		settings.size.x = 4;
+		settings.size.y = 4;
+		settings.cellWidth = 512.f;
+		m_level = std::make_unique<Levels::LevelEntityManager>(settings);
 		m_level->updateAllCellScaling();
 
 		// Make an actor for the player (always set to index 0)

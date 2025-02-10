@@ -373,8 +373,8 @@ namespace Levels
 
 		sf::RectangleShape& panel = cellNumbers.panelBackground;
 		sf::FloatRect panelShape = panel.getLocalBounds();
-		panel.setOrigin(0.5f * shape.width, 0.5f * shape.height);
-		panel.setFillColor(sf::Color::Black);		
+		//panel.setOrigin(0.5f * shape.width, 0.5f * shape.height);
+		panel.setFillColor(sf::Color(0, 0, 0, 200));
 	}
 
 	const std::map<CellColours, std::string> LevelFactory::m_colourFilenames = {

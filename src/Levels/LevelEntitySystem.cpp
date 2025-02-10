@@ -334,10 +334,11 @@ namespace Levels
 		numbers.timer = 0.f;  // TODO: Update to get remainder
 		//numbers.period = 1.5f + 2.f * ((rand() % 9) * 0.1f);
 		CellPanel current = numbers.currentPanel;
-		while (numbers.currentPanel == current)
-		{
+		//while (numbers.currentPanel == current)
+		//{
 			numbers.currentPanel = m_panels[rand() % 9];
-		}
+		//}
+		numbers.currentPanel = m_panels[4];
 		numbers.relativePosition = m_panelPositions[numbers.currentPanel];
 		numbers.currentIndex = (numbers.currentIndex < numbers.numbers.size() - 1)
 			? numbers.currentIndex + 1 

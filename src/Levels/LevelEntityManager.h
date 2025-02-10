@@ -26,6 +26,12 @@
 
 namespace Levels
 {
+	struct LevelSettings
+	{
+		float cellWidth{512.f};
+		vecp::Vec2i size{4, 4};
+	};
+
 	/**
 	 * \class LevelEntityManager
 	 * \brief Manages entities and operations related to a game level.
@@ -42,11 +48,6 @@ namespace Levels
 
 		void updateLevel();
 
-		/**
-	     * @brief Set the common cell width for all cells in the level.
-         * @param commonCellWidth The width of each cell.
-         */
-		void setCommonCellWidth(float comonCellWidth);
 
 		/**
          * @brief Get the common cell width for all cells in the level.
@@ -104,7 +105,7 @@ namespace Levels
          * @param xNumberOfRooms The number of rooms in the x-direction.
          * @param yNumberOfRooms The number of rooms in the y-direction.
          */
-		LevelEntityManager(int xNumberOfRooms, int yNumberOfRooms);
+		LevelEntityManager(LevelSettings settings);
 
 	private:
 		ShiftAxis m_currentShiftAxis = ROW;
@@ -123,8 +124,7 @@ namespace Levels
 		std::vector<CellGraphicsComponent> m_cellPanelsComponents;
 
 		sf::Sprite m_backgroundSprite;
-		int m_xGridSize;
-		int m_yGridSize;
+		vecp::Vec2i m_gridSize{4, 4};
 		int m_totalCells;
 		float m_relativeSpeed = 0.005f;
 		float m_commonCellWidth = 512.f;

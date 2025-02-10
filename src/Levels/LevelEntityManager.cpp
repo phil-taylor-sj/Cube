@@ -3,48 +3,32 @@
 namespace Levels
 {
 
+
 	void LevelEntityManager::updateLevel() 
 	{
 		processLevelShift();
 
 		srand(time(NULL));
-		for (int i = 0; i < m_totalCells; i++)
+		for (int id = 0; id < m_totalCells; id++)
 		{
-			if (m_cellGravityComponents[i].CellState != CellGravityComponent::STEADY)
+			if (m_cellGravityComponents[id].CellState != CellGravityComponent::STEADY)
 			{
-				LevelEntitySystem::adjustGravityMotion(m_cellGravityComponents[i]);
+				LevelEntitySystem::adjustGravityMotion(m_cellGravityComponents[id]);
 			}
 
-			if (m_cellMoveComponents[i].cellState != CellMoveComponent::STATIC)
+			if (m_cellMoveComponents[id].cellState != CellMoveComponent::STATIC)
 			{
 				LevelEntitySystem::applyMovement(
-					m_cellMoveComponents[i], m_cellTransformComponents[i],
-					m_cellForceComponents[i], m_relativeSpeed, m_commonCellWidth
+					m_cellMoveComponents[id], m_cellTransformComponents[id],
+					m_cellForceComponents[id], m_relativeSpeed, m_commonCellWidth
 				);
 			}
-			LevelEntitySystem::updateCellNumbers(m_cellNumbersComponents[i]);
+			LevelEntitySystem::updateCellNumbers(m_cellNumbersComponents[id]);
 		}
 		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
 		updateAllCellScaling();
 	}
 
-	// This setter function not only sets the value of the cell (room) dimensions
-	// but it automaticallyre scales all Transform and Collision Components.
-	void LevelEntityManager::setCommonCellWidth(float commonCellWidth)
-	{
-		m_commonCellWidth = commonCellWidth;
-		for (CellTransformComponent& transform : m_cellTransformComponents)
-		{
-			transform.cellWidth = commonCellWidth;
-			transform.position = vecp::Vec2f(
-				(transform.cellIndices.x + 0.5f) * transform.cellWidth,
-				(transform.cellIndices.y + 0.5f) * transform.cellWidth
-			);
-		}
-		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
-	
-		this->m_scaleFixedWidthComponents();
-	}
 
 	// A simple, humble Getter function.
 	float LevelEntityManager::getCommonCellWidth()
@@ -55,7 +39,7 @@ namespace Levels
 
 	vecp::Vec2i LevelEntityManager::getGridSize()
 	{
-		return vecp::Vec2i(m_xGridSize, m_yGridSize);
+		return m_gridSize;
 	}
 
 
@@ -224,8 +208,8 @@ namespace Levels
 			window.draw(m_cellGraphicsComponents[i].sprite);
 			if (m_cellNumbersComponents[i].isActive)
 			{
-				window.draw(m_cellNumbersComponents[i].text);
 				window.draw(m_cellNumbersComponents[i].panelBackground);
+				window.draw(m_cellNumbersComponents[i].text);
 			}
 			if (m_cellPanelsComponents[i].isVisible)
 			{
@@ -287,18 +271,22 @@ namespace Levels
 	}
 
 
-	LevelEntityManager::LevelEntityManager(int xNumberOfRooms, int yNumberOfRooms)
+	LevelEntityManager::LevelEntityManager(LevelSettings settings)
 	{
-		m_xGridSize = std::max(xNumberOfRooms, 2) + 2;
-		m_yGridSize = std::max(yNumberOfRooms, 2) + 2;
-		m_commonCellWidth = 512.f;
+		m_gridSize = vecp::Vec2i(
+			std::max(settings.size.x, 2) + 2,
+			std::max(settings.size.y, 2) + 2
+		);
+		m_commonCellWidth = settings.cellWidth;
 
-		m_totalCells = m_xGridSize * m_yGridSize;
+		m_totalCells = m_gridSize.x * m_gridSize.y;
 
-		m_cellEntityGrid.resize(m_xGridSize);
+
+		// Update the vector sizes for all entities and components.
+		m_cellEntityGrid.resize(m_gridSize.x);
 		for (std::vector<int>& row : m_cellEntityGrid)
 		{
-			row.resize(m_yGridSize);
+			row.resize(m_gridSize.y);
 		}
 
 		m_cellEntities.resize(m_totalCells);
@@ -311,15 +299,19 @@ namespace Levels
 		m_cellGravityComponents.resize(m_totalCells);
 		m_cellNumbersComponents.resize(m_totalCells);
 		m_cellPanelsComponents.resize(m_totalCells);
+
+		// The maze start off static, so initailly no overlaying panels will be displayed.
 		for (CellGraphicsComponent panels : m_cellPanelsComponents)
 		{
 			panels.isVisible = false;
 		}
 
+		// Assign an id to each entity which corresponds to its universal position in
+		// the component vectors.
 		int counter = 0;
-		for (int i = 0; i < m_xGridSize; i++)
+		for (int i = 0; i < m_gridSize.x; i++)
 		{
-			for (int j = 0; j < m_yGridSize; j++)
+			for (int j = 0; j < m_gridSize.y; j++)
 			{
 				m_cellEntityGrid[i][j] = counter;
 				m_cellTransformComponents[counter].cellIndices = vecp::Vec2i(i, j);
@@ -327,16 +319,27 @@ namespace Levels
 			}
 		}
 
+		// Assign the type of each cell entity depending on its location in the grid.
+		// Mark the active components of each cell entity, as determined by its type.
+		// In the case of rooms, also assign its colour. 
 		LevelFactory::assignCellTypes(m_cellEntityGrid, m_cellTypeComponents);
 		LevelFactory::setActiveComponentTypes(m_cellTypeComponents, m_cellEntities);
+		
+		// For each cell entity of type 'Room', assign it set of three, three-digit numbers.
 		this->m_buildCellNumbers();
 
+		// Assign the main sprite to each cell depending on its type.
+		// Also construct the underlying background texture. 
 		LevelFactory::loadAllLevelTextures();
-		LevelFactory::createBackground(m_backgroundSprite, m_xGridSize, m_yGridSize);
+		LevelFactory::createBackground(m_backgroundSprite, m_gridSize.x, m_gridSize.y);
 		LevelFactory::addTextures(m_cellTypeComponents, m_cellGraphicsComponents);
+		
+		// Create and configure the collision components of each cell entity, as determined by 
+		// its type.
 		LevelFactory::addCollisions(m_cellTypeComponents, m_cellCollisionComponents);
 		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
 	
+		// Finally, scale all revelant component properties.
 		this->m_scaleFixedWidthComponents();
 	}
 
@@ -357,8 +360,8 @@ namespace Levels
 	void LevelEntityManager::m_scaleFixedWidthComponents()
 	{
 		m_backgroundSprite.setScale(
-			m_commonCellWidth * m_xGridSize / m_backgroundSprite.getLocalBounds().width,
-			m_commonCellWidth * m_yGridSize / m_backgroundSprite.getLocalBounds().height
+			m_commonCellWidth * m_gridSize.x / m_backgroundSprite.getLocalBounds().width,
+			m_commonCellWidth * m_gridSize.y / m_backgroundSprite.getLocalBounds().height
 		);
 
 		for (int id = 0; id < this->m_totalCells; id++)
@@ -367,8 +370,8 @@ namespace Levels
 			CellEntity& entity = this->m_cellEntities[id];
 			if (entity.components.test(CellComponentTypes::NUMBERS))
 			{
-				float panelWidth = 0.2f * m_commonCellWidth;
-				sf::RectangleShape panel = m_cellNumbersComponents[id].panelBackground;
+				float panelWidth = 0.22f * m_commonCellWidth;
+				sf::RectangleShape& panel = m_cellNumbersComponents[id].panelBackground;
 				panel.setSize(sf::Vector2f(panelWidth, panelWidth));
 				panel.setOrigin(0.5f * panelWidth, 0.5f * panelWidth);
 			}
@@ -379,6 +382,17 @@ namespace Levels
 				LevelEntitySystem::scaleCellSprite(m_cellGraphicsComponents[id].sprite, m_commonCellWidth);
 			}
 
+			// Set all cell positions in their respective transform components.
+			for (CellTransformComponent& transform : m_cellTransformComponents)
+			{
+				transform.cellWidth = m_commonCellWidth;
+				transform.position = vecp::Vec2f(
+					(transform.cellIndices.x + 0.5f) * transform.cellWidth,
+					(transform.cellIndices.y + 0.5f) * transform.cellWidth
+				);
+			}
+
+			// Scale all walls and floors of each cell.
 			if (entity.components.test(CellComponentTypes::COLLISION))
 			{
 				CellCollisionComponent& collision = m_cellCollisionComponents[id];
@@ -399,6 +413,26 @@ namespace Levels
 	}
 
 }
+
+
+// This setter function not only sets the value of the cell (room) dimensions
+// but it automaticallyre scales all Transform and Collision Components.
+//void LevelEntityManager::setCommonCellWidth(float commonCellWidth)
+//{
+//	m_commonCellWidth = commonCellWidth;
+//	for (CellTransformComponent& transform : m_cellTransformComponents)
+//	{
+//		transform.cellWidth = commonCellWidth;
+//		transform.position = vecp::Vec2f(
+//			(transform.cellIndices.x + 0.5f) * transform.cellWidth,
+//			(transform.cellIndices.y + 0.5f) * transform.cellWidth
+//		);
+//	}
+//	LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
+//
+//	this->m_scaleFixedWidthComponents();
+//}
+
 
 //std::shared_ptr<Cell> testRoom = std::make_shared<Cell>();
 //std::shared_ptr<Room> testCell = std::dynamic_pointer_cast<Room>(testCell);
