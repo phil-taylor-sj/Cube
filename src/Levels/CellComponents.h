@@ -82,6 +82,8 @@ namespace Levels
 		std::vector<CellStaticRectangle> staticFloors;
 		CellStaticRectangle blocker;
 
+		std::vector<CellStaticRectangle> sensors{2};
+
 		Physics::Circle broadCircle;
 		float relativeBroadRadius;
 		bool isBlocked = false;
@@ -151,6 +153,12 @@ namespace Levels
 	struct CellPanelsComponent
 	{
 		
+	};
+
+	struct CellTrapComponent
+	{
+		bool isTrapped = false;
+		bool isActive = false;
 	};
 }
 

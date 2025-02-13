@@ -56,13 +56,16 @@ namespace Levels
 		float getCommonCellWidth();
 		
 		/**
+		 * @brief Identify and supply an appropiate set of starting coordiantes for the player.
+		 * @return a vecp::Vec2f representing the staring coordinates.
+		 */
+		vecp::Vec2f getStartingPosition(int count = 0);
+
+		/**
          * @brief Get the size of the grid in terms of the number of cells in x and y directions.
-         * @return A Physics::Vec2i representing the grid size.
+         * @return A vecp::Vec2i representing the grid size.
          */
 		vecp::Vec2i getGridSize();
-
-
-		void processLevelShift();
 
 		/**
 		 * @brief Render the background texture for the level.
@@ -82,15 +85,6 @@ namespace Levels
 
 		void clearForces();
 
-		/**
-         * @brief Update the scaling of all cell sprites based on their cell width.
-         */
-		void updateAllCellScaling();
-
-		/**
-         * @brief Update the positions of all cell sprites based on their cell transform data.
-         */
-		void updateAllCellPositions();
 
 		/**
          * @brief Get circle collisions between an actor and cells in the level.
@@ -122,14 +116,29 @@ namespace Levels
 		std::vector<CellGravityComponent> m_cellGravityComponents;
 		std::vector<CellNumbersComponent> m_cellNumbersComponents;
 		std::vector<CellGraphicsComponent> m_cellPanelsComponents;
+		std::vector<CellTrapComponent> m_cellTrapComponents;
 
 		sf::Sprite m_backgroundSprite;
 		vecp::Vec2i m_gridSize{4, 4};
 		int m_totalCells;
 		float m_relativeSpeed = 0.005f;
 		float m_commonCellWidth = 512.f;
-	
+		int m_goalId = 0;
+
 		void m_buildCellNumbers();
+
+		/**
+		 * @brief Update the scaling of all cell sprites based on their cell width.
+		 */
+		void m_updateAllCellScaling();
+
+		/**
+		 * @brief Update the positions of all cell sprites based on their cell transform data.
+		 */
+		void m_updateAllCellPositions();
+		
+		void m_processLevelShift();
+
 		void m_scaleFixedWidthComponents();
 	};
 }

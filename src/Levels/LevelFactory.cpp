@@ -176,8 +176,11 @@ namespace Levels
 		for (int i = 0; i < cellCollisions.size(); i++)
 		{
 			m_addFloorCollisions(cellTypes[i], cellCollisions[i]);
+			if (cellTypes[i].type != CellTypes::ROOM)
+			{
+				m_addSensorCollisions(cellCollisions[i]);
+			}
 		}
-
 	}
 
 	void LevelFactory::m_addWallCollisions(CellCollisionComponent& collision)
@@ -222,6 +225,7 @@ namespace Levels
 				wallPositions[i][0], wallPositions[i][1]
 			);
 		}
+
 	}
 
 	void LevelFactory::m_addFloorCollisions(
@@ -335,28 +339,19 @@ namespace Levels
 		}
 	}
 
-	void LevelFactory::updateCollisions(
-		const std::vector<CellTransformComponent>& cellTransforms,
-		std::vector<CellCollisionComponent>& cellCollisions)
+	void LevelFactory::m_addSensorCollisions(
+		CellCollisionComponent& collision)
 	{
-		for (int i = 0; i < cellCollisions.size(); i++)
-		{
-			cellCollisions[i].broadCircle.setPosition(cellTransforms[i].position);
-			cellCollisions[i].broadCircle.setRadius(
-				cellCollisions[i].relativeBroadRadius *
-				cellTransforms[i].cellWidth
-			);
-			for (CellStaticRectangle& wall : cellCollisions[i].staticWalls)
-			{
-				wall.setCellPosition(cellTransforms[i].position);
-				wall.setCellWidth(cellTransforms[i].cellWidth);
-			}
-			for (CellStaticRectangle& floor : cellCollisions[i].staticFloors)
-			{
-				floor.setCellPosition(cellTransforms[i].position);
-				floor.setCellWidth(cellTransforms[i].cellWidth);
-			}
+		std::vector<CellStaticRectangle>& sensors = collision.sensors;
+		sensors.resize(2);
+		for (int i = 0; i < 2; i++)
+		{	
+			float sqrt2 = 1.41421;
+			sensors[i].setRelativePosition(0.f, 0.f);
+			sensors[i].setRelativeDimensions(0.95f * sqrt2, 0.02f);
 		}
+		sensors[0].setAngle(45.f);
+		sensors[1].setAngle(-45.f);
 	}
 
 	void LevelFactory::addNumbers(

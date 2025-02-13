@@ -58,6 +58,11 @@ namespace Levels
 			CellNumbersComponent& numbers
 		);
 
+		static void updateCollisions(
+			const std::vector<CellTransformComponent>& cellTransforms,
+			std::vector<CellCollisionComponent>& cellCollisions
+		);
+
 	private:
 		static float m_deltaTime;
 		static std::map<int, CellPanel> m_panels;

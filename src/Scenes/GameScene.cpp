@@ -100,7 +100,6 @@ namespace Scenes
 		settings.size.y = 4;
 		settings.cellWidth = 512.f;
 		m_level = std::make_unique<Levels::LevelEntityManager>(settings);
-		m_level->updateAllCellScaling();
 
 		// Make an actor for the player (always set to index 0)
 		m_actors = std::make_unique<Actors::ActorEntityManager>();

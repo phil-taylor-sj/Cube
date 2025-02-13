@@ -35,18 +35,18 @@ namespace Levels
 			sf::Sprite& backgroundSprite, float xGridSize, float yGridSize);
 
 		static void addCollisions(const std::vector<CellTypeComponent>& cellTypes, std::vector<CellCollisionComponent>& cellCollisions);
-		static void updateCollisions(
-			const std::vector<CellTransformComponent>& cellTransforms,
-			std::vector<CellCollisionComponent>& cellCollisions
-		);
+		
 		static void assignCellTypes(const std::vector<std::vector<int>>& cellEntityGrid, std::vector<CellTypeComponent>& cellTypes);
 		static void loadAllLevelTextures();
 	
 		static void addNumbers(const CellTransformComponent& cellTransform, CellNumbersComponent& cellNumbers);
 
+		
+
 	private:
 		static void m_addWallCollisions(CellCollisionComponent& collision);
 		static void m_addFloorCollisions(const CellTypeComponent& type, CellCollisionComponent& collision);
+		static void m_addSensorCollisions(CellCollisionComponent& collision);
 
 		static const std::map<CellColours, std::string> m_colourFilenames;
 		static const std::map<CellTypes, std::string> m_voidFilenames;

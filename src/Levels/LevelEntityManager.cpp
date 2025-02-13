@@ -6,7 +6,7 @@ namespace Levels
 
 	void LevelEntityManager::updateLevel() 
 	{
-		processLevelShift();
+		m_processLevelShift();
 
 		srand(time(NULL));
 		for (int id = 0; id < m_totalCells; id++)
@@ -25,10 +25,39 @@ namespace Levels
 			}
 			LevelEntitySystem::updateCellNumbers(m_cellNumbersComponents[id]);
 		}
-		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
-		updateAllCellScaling();
+		LevelEntitySystem::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
+		m_updateAllCellScaling();
+		m_updateAllCellPositions();
 	}
 
+
+	vecp::Vec2f LevelEntityManager::getStartingPosition(int count)
+	{
+		if (count++ > 20) 
+		{
+			return vecp::Vec2f(m_commonCellWidth * 1.5f, m_commonCellWidth * 1.5f);
+		}
+
+		vecp::Vec2i indices = vecp::Vec2i(
+			1 + rand() % (m_gridSize.x - 2),
+			1 + rand() % (m_gridSize.y - 2)
+			);
+		
+		int cellId = m_cellEntityGrid[indices.x][indices.y];
+		
+		vecp::Vec2f goalPosition = m_cellTransformComponents[m_goalId].position;
+		vecp::Vec2f startPosition = m_cellTransformComponents[cellId].position;
+		
+		float goalDistance = (goalPosition - startPosition).mag();
+		float halfWidth = 0.5f * (float)m_gridSize.x * m_commonCellWidth;
+
+		if (m_cellTrapComponents[cellId].isTrapped || goalDistance < halfWidth)
+		{
+			startPosition = getStartingPosition(count);
+		}
+
+		return startPosition;
+	}
 
 	// A simple, humble Getter function.
 	float LevelEntityManager::getCommonCellWidth()
@@ -42,144 +71,6 @@ namespace Levels
 		return m_gridSize;
 	}
 
-
-	void LevelEntityManager::updateAllCellScaling()
-	{
-
-		for (int i = 0; i < m_totalCells; i++)
-		{
-			CellTransformComponent& transform = m_cellTransformComponents[i];
-			CellGravityComponent& gravity = m_cellGravityComponents[i];
-			float cellWidth = transform.cellWidth * gravity.currentScale;
-			
-			if (gravity.CellState == CellGravityComponent::STEADY)
-			{
-				cellWidth = transform.cellWidth;
-			};
-
-			sf::Sprite& sprite = m_cellGraphicsComponents[i].sprite;
-			if (sprite.getLocalBounds().width != cellWidth)
-			{
-				LevelEntitySystem::scaleCellSprite(sprite, cellWidth);
-			}
-		}
-		updateAllCellPositions();
-	}
-
-
-	void LevelEntityManager::updateAllCellPositions()
-	{
-		for (int i = 0; i < m_totalCells; i++)
-		{ 
-			float x = m_cellTransformComponents[i].position.x;
-			float y = m_cellTransformComponents[i].position.y;
-
-			m_cellGraphicsComponents[i].sprite.setPosition(x, y);
-			m_cellPanelsComponents[i].sprite.setPosition(x, y);
-
-			CellNumbersComponent& numbers = m_cellNumbersComponents[i];
-			LevelEntitySystem::updateCellNumbers(numbers);
-			
-			sf::Vector2f position{
-				x + m_commonCellWidth * numbers.relativePosition.x,
-				y + m_commonCellWidth * numbers.relativePosition.y 
-			};
-			numbers.text.setPosition(position);
-			numbers.panelBackground.setPosition(position);
-		}
-	}
-
-
-	void LevelEntityManager::processLevelShift()
-	{
-		if (m_currentMoveActions.size() == 0)
-		{
-			m_currentShiftAxis = (m_currentShiftAxis == LevelEntityManager::ROW)
-				? LevelEntityManager::COLUMN : LevelEntityManager::ROW;
-			for(int i = 0; i < 3; i++)
-			{
-				LevelEntitySystem::createMoveAction(m_currentShiftAxis, m_cellEntityGrid,
-					m_cellMoveComponents, m_currentMoveActions);
-				LevelEntitySystem::updateCellIndicies(m_cellEntityGrid, m_cellTransformComponents,
-					m_cellMoveComponents, 0, m_cellEntityGrid.size() - 1);
-			}
-		
-		}
- 
-		for (LevelMoveAction& action : m_currentMoveActions)
-		{
-
-			switch (action.getCurrentActionState())
-			{
-			case LevelMoveAction::STARTING:
-				if (action.hasCountdownCompleted(
-					LevelEntitySystem::getDeltaTime(), m_cellPanelsComponents)
-					)
-				{
-					m_cellNumbersComponents[action.getDropCellId()].isActive = false;
-					action.beginDrop(m_cellGravityComponents, m_cellCollisionComponents);
-				}
-				break;
-			case LevelMoveAction::DROPPING:
-				if (action.hasDropCompleted(m_cellGravityComponents))
-				{
-					action.beginShift(m_cellMoveComponents);
-				}
-				break;
-			case LevelMoveAction::SHIFTING:
-				if (action.hasShiftCompleted(m_cellMoveComponents))
-				{
-					CellTransformComponent& transform = 
-						m_cellTransformComponents[action.getDropCellId()];
-					transform.position = vecp::Vec2f(
-						(transform.cellIndices.x + 0.5f) * m_commonCellWidth,
-						(transform.cellIndices.y + 0.5f) * m_commonCellWidth
-					);
-					m_cellCollisionComponents[action.getDropCellId()].isBlocked = true;
-					action.beginRise(m_cellGravityComponents);
-				}
-				break;
-			case LevelMoveAction::CLIMBING:
-				if (action.hasRiseCompleted(m_cellGravityComponents))
-				{
-					m_cellNumbersComponents[action.getDropCellId()].isActive = true;
-					m_cellCollisionComponents[action.getDropCellId()].isBlocked = false;
-					action.endAction(m_cellCollisionComponents);
-				}
-				break;
-			case LevelMoveAction::ENDED:
-				break;
-			default:
-				break;
-			};
-
-
-			switch (action.getCurrentActionState())
-			{
-			case LevelMoveAction::DROPPING:
-			case LevelMoveAction::CLIMBING:
-				m_cellGraphicsComponents[action.getDropCellId()].isBackground = true;
-				break;
-			default:
-				m_cellGraphicsComponents[action.getDropCellId()].isBackground = false;
-				break;
-			};
-		}
-
-		// Remove actions which have completed (ended)
-		for (std::vector<LevelMoveAction>::iterator iter 
-			= m_currentMoveActions.begin(); iter != m_currentMoveActions.end();)
-		{
-			if (iter->getCurrentActionState() == LevelMoveAction::ENDED)
-			{
-				iter = m_currentMoveActions.erase(iter);
-			}
-			else
-			{
-				++iter;
-			}
-		}
-	}
 
 	// Render a texture of repeated bottomless voids as the lowest layer of the level.
 	// This must be called before LevelEntityManager::renderLevel during each draw window.
@@ -299,6 +190,7 @@ namespace Levels
 		m_cellGravityComponents.resize(m_totalCells);
 		m_cellNumbersComponents.resize(m_totalCells);
 		m_cellPanelsComponents.resize(m_totalCells);
+		m_cellPanelsComponents.resize(m_totalCells);
 
 		// The maze start off static, so initailly no overlaying panels will be displayed.
 		for (CellGraphicsComponent panels : m_cellPanelsComponents)
@@ -337,7 +229,7 @@ namespace Levels
 		// Create and configure the collision components of each cell entity, as determined by 
 		// its type.
 		LevelFactory::addCollisions(m_cellTypeComponents, m_cellCollisionComponents);
-		LevelFactory::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
+		LevelEntitySystem::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
 	
 		// Finally, scale all revelant component properties.
 		this->m_scaleFixedWidthComponents();
@@ -354,6 +246,143 @@ namespace Levels
 					m_cellNumbersComponents[i]);
 			}
 				
+		}
+	}
+
+	void LevelEntityManager::m_updateAllCellScaling()
+	{
+
+		for (int i = 0; i < m_totalCells; i++)
+		{
+			CellTransformComponent& transform = m_cellTransformComponents[i];
+			CellGravityComponent& gravity = m_cellGravityComponents[i];
+			float cellWidth = transform.cellWidth * gravity.currentScale;
+
+			if (gravity.CellState == CellGravityComponent::STEADY)
+			{
+				cellWidth = transform.cellWidth;
+			};
+
+			sf::Sprite& sprite = m_cellGraphicsComponents[i].sprite;
+			if (sprite.getLocalBounds().width != cellWidth)
+			{
+				LevelEntitySystem::scaleCellSprite(sprite, cellWidth);
+			}
+		}
+
+	}
+
+
+	void LevelEntityManager::m_updateAllCellPositions()
+	{
+		for (int i = 0; i < m_totalCells; i++)
+		{
+			float x = m_cellTransformComponents[i].position.x;
+			float y = m_cellTransformComponents[i].position.y;
+
+			m_cellGraphicsComponents[i].sprite.setPosition(x, y);
+			m_cellPanelsComponents[i].sprite.setPosition(x, y);
+
+			CellNumbersComponent& numbers = m_cellNumbersComponents[i];
+			LevelEntitySystem::updateCellNumbers(numbers);
+
+			sf::Vector2f position{
+				x + m_commonCellWidth * numbers.relativePosition.x,
+				y + m_commonCellWidth * numbers.relativePosition.y
+			};
+			numbers.text.setPosition(position);
+			numbers.panelBackground.setPosition(position);
+		}
+	}
+
+	void LevelEntityManager::m_processLevelShift()
+	{
+		if (m_currentMoveActions.size() == 0)
+		{
+			m_currentShiftAxis = (m_currentShiftAxis == LevelEntityManager::ROW)
+				? LevelEntityManager::COLUMN : LevelEntityManager::ROW;
+			for (int i = 0; i < 3; i++)
+			{
+				LevelEntitySystem::createMoveAction(m_currentShiftAxis, m_cellEntityGrid,
+					m_cellMoveComponents, m_currentMoveActions);
+				LevelEntitySystem::updateCellIndicies(m_cellEntityGrid, m_cellTransformComponents,
+					m_cellMoveComponents, 0, m_cellEntityGrid.size() - 1);
+			}
+
+		}
+
+		for (LevelMoveAction& action : m_currentMoveActions)
+		{
+
+			switch (action.getCurrentActionState())
+			{
+			case LevelMoveAction::STARTING:
+				if (action.hasCountdownCompleted(
+					LevelEntitySystem::getDeltaTime(), m_cellPanelsComponents)
+					)
+				{
+					m_cellNumbersComponents[action.getDropCellId()].isActive = false;
+					action.beginDrop(m_cellGravityComponents, m_cellCollisionComponents);
+				}
+				break;
+			case LevelMoveAction::DROPPING:
+				if (action.hasDropCompleted(m_cellGravityComponents))
+				{
+					action.beginShift(m_cellMoveComponents);
+				}
+				break;
+			case LevelMoveAction::SHIFTING:
+				if (action.hasShiftCompleted(m_cellMoveComponents))
+				{
+					CellTransformComponent& transform =
+						m_cellTransformComponents[action.getDropCellId()];
+					transform.position = vecp::Vec2f(
+						(transform.cellIndices.x + 0.5f) * m_commonCellWidth,
+						(transform.cellIndices.y + 0.5f) * m_commonCellWidth
+					);
+					m_cellCollisionComponents[action.getDropCellId()].isBlocked = true;
+					action.beginRise(m_cellGravityComponents);
+				}
+				break;
+			case LevelMoveAction::CLIMBING:
+				if (action.hasRiseCompleted(m_cellGravityComponents))
+				{
+					m_cellNumbersComponents[action.getDropCellId()].isActive = true;
+					m_cellCollisionComponents[action.getDropCellId()].isBlocked = false;
+					action.endAction(m_cellCollisionComponents);
+				}
+				break;
+			case LevelMoveAction::ENDED:
+				break;
+			default:
+				break;
+			};
+
+
+			switch (action.getCurrentActionState())
+			{
+			case LevelMoveAction::DROPPING:
+			case LevelMoveAction::CLIMBING:
+				m_cellGraphicsComponents[action.getDropCellId()].isBackground = true;
+				break;
+			default:
+				m_cellGraphicsComponents[action.getDropCellId()].isBackground = false;
+				break;
+			};
+		}
+
+		// Remove actions which have completed (ended)
+		for (std::vector<LevelMoveAction>::iterator iter
+			= m_currentMoveActions.begin(); iter != m_currentMoveActions.end();)
+		{
+			if (iter->getCurrentActionState() == LevelMoveAction::ENDED)
+			{
+				iter = m_currentMoveActions.erase(iter);
+			}
+			else
+			{
+				++iter;
+			}
 		}
 	}
 
@@ -403,12 +432,17 @@ namespace Levels
 				{
 					wall.setCellWidth(transform.cellWidth);
 				}
+				for (CellStaticRectangle& sensor : collision.sensors)
+				{
+					sensor.setCellWidth(transform.cellWidth);
+				}
 				for (CellStaticRectangle& floor : collision.staticFloors)
 				{
 					floor.setCellPosition(transform.position);
 					floor.setCellWidth(transform.cellWidth);
 				}
 			}
+
 		}
 	}
 

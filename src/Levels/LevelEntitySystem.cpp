@@ -349,6 +349,24 @@ namespace Levels
 
 	}
 
+	void LevelEntitySystem::updateCollisions(
+		const std::vector<CellTransformComponent>& cellTransforms,
+		std::vector<CellCollisionComponent>& cellCollisions)
+	{
+		for (int i = 0; i < cellCollisions.size(); i++)
+		{
+			cellCollisions[i].broadCircle.setPosition(cellTransforms[i].position);
+			for (CellStaticRectangle& wall : cellCollisions[i].staticWalls)
+			{
+				wall.setCellPosition(cellTransforms[i].position);
+			}
+			for (CellStaticRectangle& floor : cellCollisions[i].staticFloors)
+			{
+				floor.setCellPosition(cellTransforms[i].position);
+			}
+		}
+	}
+
 	float LevelEntitySystem::m_deltaTime = 0.f;
 
 	float LevelEntitySystem::m_offset = 0.265625;
