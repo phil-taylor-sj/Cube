@@ -123,7 +123,15 @@ namespace Levels
 			{CellSubtypes::UPPER_LEFT, 90.f},
 			{CellSubtypes::UPPER_RIGHT, 180.f},
 			{CellSubtypes::LOWER_LEFT, 0.f},
-			{CellSubtypes::LOWER_RIGHT, 270.f}
+			{CellSubtypes::LOWER_RIGHT, 270.f},
+			{CellSubtypes::BRIDGE_UPPER_LEFT, 0.f},
+			{CellSubtypes::BRIDGE_UPPER_RIGHT, 180.f},
+			{CellSubtypes::BRIDGE_LEFT_UPPER, 0.f},
+			{CellSubtypes::BRIDGE_LEFT_LOWER, 0.f},
+			{CellSubtypes::BRIDGE_LOWER_LEFT, 0.f},
+			{CellSubtypes::BRIDGE_LOWER_RIGHT, 0.f},
+			{CellSubtypes::BRIDGE_RIGHT_UPPER, 180.f},
+			{CellSubtypes::BRIDGE_RIGHT_LOWER, 0.f}
 		};
 
 		for (int i = 0; i < cellTypes.size(); i++)
@@ -159,6 +167,69 @@ namespace Levels
 
 			}
 		}
+	}
+
+	int LevelFactory::selectGoalLocation(
+		const std::vector<std::vector<int>>& entityGrid,
+		std::vector<CellTypeComponent>& cellTypes
+	)
+	{
+		int xSize = entityGrid.size();
+		int ySize = entityGrid[0].size();
+		
+		int goalId = 0;
+		int voidOneId = 0;
+		int voidTwoId = 0;
+		
+		int xIndex = 0;
+		int yIndex = 0;
+
+		int randomDirection = rand() % 4;
+
+		switch (randomDirection)
+		{
+		case 0: // left
+			yIndex = 2 + rand() % (ySize - 2);
+			goalId = entityGrid[0][yIndex];
+			voidOneId = entityGrid[0][yIndex + 1];
+			voidTwoId = entityGrid[0][yIndex - 1];
+			cellTypes[voidOneId].subtype = CellSubtypes::BRIDGE_LEFT_UPPER;
+			cellTypes[voidTwoId].subtype = CellSubtypes::BRIDGE_LEFT_LOWER;
+			break;
+		case 1: // right
+			yIndex = 2 + rand() % (ySize - 2);
+			goalId = entityGrid[xSize - 1][yIndex];
+			voidOneId = entityGrid[xSize -1][yIndex + 1];
+			voidTwoId = entityGrid[xSize - 1][yIndex - 1];
+			cellTypes[voidOneId].subtype = CellSubtypes::BRIDGE_RIGHT_UPPER;
+			cellTypes[voidTwoId].subtype = CellSubtypes::BRIDGE_RIGHT_LOWER;
+			break;
+		case 2: // top
+			xIndex = 2 + rand() % (xSize - 2);
+			goalId = entityGrid[xIndex][0];
+			voidOneId = entityGrid[xIndex + 1][0];
+			voidTwoId = entityGrid[xIndex - 1][0];
+			cellTypes[voidOneId].subtype = CellSubtypes::BRIDGE_UPPER_RIGHT;
+			cellTypes[voidTwoId].subtype = CellSubtypes::BRIDGE_UPPER_LEFT;
+			break;
+		case 3: // bottom
+			xIndex = 2 + rand() % (xSize - 2);
+			goalId = entityGrid[xIndex][ySize - 1];
+			voidOneId = entityGrid[xIndex + 1][ySize - 1];
+			voidTwoId = entityGrid[xIndex - 1][ySize - 1];
+			cellTypes[voidTwoId].subtype = CellSubtypes::BRIDGE_LOWER_RIGHT;
+			cellTypes[voidTwoId].subtype = CellSubtypes::BRIDGE_LOWER_LEFT;
+			break;
+		}
+
+		cellTypes[goalId].type = CellTypes::ROOM;
+		cellTypes[goalId].subtype = CellSubtypes::GOAL;
+		cellTypes[goalId].colour = CellColours::WHITE;
+
+		cellTypes[voidOneId].type = CellTypes::BRIDGE_VOID;
+		cellTypes[voidOneId].type = CellTypes::BRIDGE_VOID;
+		
+		return goalId; 
 	}
 
 	void LevelFactory::addCollisions(

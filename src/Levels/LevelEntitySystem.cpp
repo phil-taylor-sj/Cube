@@ -367,6 +367,7 @@ namespace Levels
 		}
 	}
 
+
 	float LevelEntitySystem::m_deltaTime = 0.f;
 
 	float LevelEntitySystem::m_offset = 0.265625;

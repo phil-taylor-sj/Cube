@@ -5,6 +5,7 @@
 #include "Assets/TextureDict.h"
 #include "Levels/CellEntity.h"
 #include "Levels/CellComponents.h"
+
 #include "Utilities/GridGen.h"
 #include "Levels/CellTypes.h"
 #include "Assets/FontDict.h"
@@ -41,6 +42,10 @@ namespace Levels
 	
 		static void addNumbers(const CellTransformComponent& cellTransform, CellNumbersComponent& cellNumbers);
 
+		static int LevelFactory::selectGoalLocation(
+			const std::vector<std::vector<int>>& entityGrid,
+			std::vector<CellTypeComponent>& cellTypes
+		);
 		
 
 	private:

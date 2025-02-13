@@ -14,7 +14,8 @@ namespace Levels
 	enum class CellSubtypes
 	{
 		NONE,
-		UPPER_LEFT,
+		GOAL,
+		UPPER_LEFT, 
 		UPPER_RIGHT,
 		LOWER_LEFT,
 		LOWER_RIGHT,
@@ -30,7 +31,6 @@ namespace Levels
 		BRIDGE_LOWER_RIGHT,
 		BRIDGE_RIGHT_UPPER,
 		BRIDGE_RIGHT_LOWER
-
 	};
 
 	enum class CellColours

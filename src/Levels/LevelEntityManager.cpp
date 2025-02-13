@@ -215,6 +215,7 @@ namespace Levels
 		// Mark the active components of each cell entity, as determined by its type.
 		// In the case of rooms, also assign its colour. 
 		LevelFactory::assignCellTypes(m_cellEntityGrid, m_cellTypeComponents);
+		m_goalId = LevelFactory::selectGoalLocation(m_cellEntityGrid, m_cellTypeComponents);
 		LevelFactory::setActiveComponentTypes(m_cellTypeComponents, m_cellEntities);
 		
 		// For each cell entity of type 'Room', assign it set of three, three-digit numbers.
