@@ -23,7 +23,10 @@ namespace Levels
 					m_cellForceComponents[id], m_relativeSpeed, m_commonCellWidth
 				);
 			}
-			LevelEntitySystem::updateCellNumbers(m_cellNumbersComponents[id]);
+			if (m_cellEntities[id].components.test(CellComponentTypes::NUMBERS))
+			{
+				LevelEntitySystem::updateCellNumbers(m_cellNumbersComponents[id]);
+			}
 		}
 		LevelEntitySystem::updateCollisions(m_cellTransformComponents, m_cellCollisionComponents);
 		m_updateAllCellScaling();
@@ -206,6 +209,7 @@ namespace Levels
 			for (int j = 0; j < m_gridSize.y; j++)
 			{
 				m_cellEntityGrid[i][j] = counter;
+				m_cellEntities[counter].cellId = counter;
 				m_cellTransformComponents[counter].cellIndices = vecp::Vec2i(i, j);
 				counter += 1;
 			}
@@ -244,6 +248,7 @@ namespace Levels
 
 	void LevelEntityManager::m_buildCellNumbers()
 	{
+		LevelFactory::selectTrappedRooms(m_cellEntities, m_cellTrapComponents);
 		for (int i = 0; i < m_totalCells; i++) 
 		{
 			if (m_cellEntities[i].components.test(CellComponentTypes::NUMBERS))
@@ -251,8 +256,8 @@ namespace Levels
 				LevelFactory::addNumbers(m_cellTransformComponents[i], 
 					m_cellNumbersComponents[i]);
 			}
-				
 		}
+		LevelFactory::assignNumbers(m_cellEntities, m_cellTrapComponents, m_cellNumbersComponents);
 	}
 
 	void LevelEntityManager::m_updateAllCellScaling()
@@ -290,7 +295,7 @@ namespace Levels
 			m_cellPanelsComponents[i].sprite.setPosition(x, y);
 
 			CellNumbersComponent& numbers = m_cellNumbersComponents[i];
-			LevelEntitySystem::updateCellNumbers(numbers);
+			//LevelEntitySystem::updateCellNumbers(numbers);
 
 			sf::Vector2f position{
 				x + m_commonCellWidth * numbers.relativePosition.x,

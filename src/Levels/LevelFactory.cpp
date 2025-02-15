@@ -19,6 +19,10 @@ namespace Levels
 			{
 				activeTypes.set(CellComponentTypes::NUMBERS);
 				activeTypes.set(CellComponentTypes::MOVE);
+				if (cellTypes[i].subtype != CellSubtypes::GOAL)
+				{
+					activeTypes.set(CellComponentTypes::TRAP);
+				}
 			}
 
 		}
@@ -242,6 +246,100 @@ namespace Levels
 		return goalId; 
 	}
 
+	int LevelFactory::selectTrappedRooms(
+		const std::vector<CellEntity>& entities,
+		std::vector<CellTrapComponent>& cellTraps)
+	{
+		auto isAvailable  = [](const CellEntity& entity) 
+			{
+				return entity.components.test(CellComponentTypes::TRAP);
+			};
+
+		// Identify the total number of rooms with active trap components.
+		int numRooms = std::count_if(entities.begin(), entities.end(), isAvailable);
+
+		// Create a vector of available rooms, and extract cell ids.
+		std::vector<int> rooms(numRooms);
+		int count = 0;
+		for (const CellEntity& entity : entities)
+		{
+			if (isAvailable(entity))
+			{
+				rooms[count++] = entity.cellId;
+			}
+		}
+
+		// Randomly shffulle the ids of available rooms.
+		std::random_device random;
+		std::mt19937 generator(random());
+		std::shuffle(rooms.begin(), rooms.end(), generator);
+
+		// Assign traps to 1/6th of the available rooms.
+		int numTraps = std::floor(numRooms / 6);
+		for (int i = 0; i < numTraps; i++)
+		{
+			cellTraps[rooms[i]].isTrapped = true;
+		}
+
+		return numTraps;
+	}
+
+	void LevelFactory::assignNumbers(
+		const std::vector<CellEntity>& entities,
+		const std::vector<CellTrapComponent>& traps,
+		std::vector<CellNumbersComponent>& numbers
+	)
+	{
+		srand(time(NULL));
+		std::vector<unsigned int> primePowers = Utilities::Primes::getPrimes(true);
+		std::vector<unsigned int> nonPrimePowers = Utilities::Primes::getPrimes(false);
+
+		auto getRandom = [](std::vector<unsigned int>& nums) {
+			std::ostringstream oss;
+			oss << std::setw(3) << std::setfill('0') << nums[rand() % nums.size()];
+			return oss.str();
+			};
+
+		for (const CellEntity& entity : entities)
+		{
+			if (!entity.components.test(CellComponentTypes::NUMBERS))
+			{
+				//continue;
+			}
+
+			numbers[entity.cellId].numbers.resize(3);
+			int numNums = numbers[entity.cellId].numbers.size();
+			for (int i = 0; i < numNums; i++)
+			{
+				numbers[entity.cellId].numbers[i] = getRandom(nonPrimePowers);
+			}
+
+			if (traps[entity.cellId].isActive)
+			{
+				numbers[entity.cellId].numbers[rand() % numNums] = getRandom(primePowers);
+			}
+		}
+
+	}
+
+	void LevelFactory::addNumbers(
+		const CellTransformComponent& cellTransform,
+		CellNumbersComponent& cellNumbers)
+	{
+		sf::Text& text = cellNumbers.text;
+		text.setFont(Assets::FontDict::getInstance()->getFont("Tuffy"));
+		text.setCharacterSize(48);
+		text.setOutlineColor(sf::Color::Black);
+		text.setOutlineThickness(2);
+		sf::FloatRect shape = text.getLocalBounds();
+		text.setOrigin(0.5f * shape.width, 0.5f * shape.height);
+
+		sf::RectangleShape& panel = cellNumbers.panelBackground;
+		sf::FloatRect panelShape = panel.getLocalBounds();
+		//panel.setOrigin(0.5f * shape.width, 0.5f * shape.height);
+		panel.setFillColor(sf::Color(0, 0, 0, 200));
+	}
+
 	void LevelFactory::addCollisions(
 		const std::vector<CellTypeComponent>& cellTypes, 
 		std::vector<CellCollisionComponent>& cellCollisions
@@ -433,24 +531,6 @@ namespace Levels
 		}
 		sensors[0].setAngle(45.f);
 		sensors[1].setAngle(-45.f);
-	}
-
-	void LevelFactory::addNumbers(
-		const CellTransformComponent& cellTransform, 
-		CellNumbersComponent& cellNumbers)
-	{
-		sf::Text& text = cellNumbers.text;
-		text.setFont(Assets::FontDict::getInstance()->getFont("Tuffy"));
-		text.setCharacterSize(48);
-		text.setOutlineColor(sf::Color::Black);
-		text.setOutlineThickness(2);
-		sf::FloatRect shape = text.getLocalBounds();
-		text.setOrigin(0.5f * shape.width, 0.5f * shape.height);
-
-		sf::RectangleShape& panel = cellNumbers.panelBackground;
-		sf::FloatRect panelShape = panel.getLocalBounds();
-		//panel.setOrigin(0.5f * shape.width, 0.5f * shape.height);
-		panel.setFillColor(sf::Color(0, 0, 0, 200));
 	}
 
 	const std::map<CellColours, std::string> LevelFactory::m_colourFilenames = {

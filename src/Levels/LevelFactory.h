@@ -2,10 +2,15 @@
 #include <map>
 #include <set>
 #include <string>
+#include <list>
+#include <algorithm>
+#include <random>
+#include <sstream>
 #include "math.h"
 #include "Assets/TextureDict.h"
 #include "Levels/CellEntity.h"
 #include "Levels/CellComponents.h"
+#include "Utilities/Primes.h"
 
 #include "Utilities/GridGen.h"
 #include "Levels/CellTypes.h"
@@ -43,11 +48,21 @@ namespace Levels
 	
 		static void addNumbers(const CellTransformComponent& cellTransform, CellNumbersComponent& cellNumbers);
 
-		static int LevelFactory::selectGoalLocation(
+		static void assignNumbers(
+			const std::vector<CellEntity>& entities,
+			const std::vector<CellTrapComponent>& traps,
+			std::vector<CellNumbersComponent>& numbers
+		);
+
+		static int selectGoalLocation(
 			const std::vector<std::vector<int>>& entityGrid,
 			std::vector<CellTypeComponent>& cellTypes
 		);
-		
+
+		static int selectTrappedRooms(
+			const std::vector<CellEntity>& entities,
+			std::vector<CellTrapComponent>& cellTraps
+		);
 
 	private:
 		static void m_addWallCollisions(CellCollisionComponent& collision);

@@ -34,6 +34,7 @@ namespace Levels
 		PANELS,
 		FORCE,
 		MOVE,
+		TRAP
 		};
 	};
 
@@ -140,7 +141,7 @@ namespace Levels
 
 	struct CellNumbersComponent
 	{
-		std::vector<std::string> numbers = {"101", "102", "103"};
+		std::vector<std::string> numbers;
 		sf::RectangleShape panelBackground{sf::Vector2f(1.f, 1.f)};
 		bool isActive = true;
 		int currentIndex = 0;
