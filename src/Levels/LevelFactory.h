@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <set>
 #include <string>
 #include "math.h"
 #include "Assets/TextureDict.h"

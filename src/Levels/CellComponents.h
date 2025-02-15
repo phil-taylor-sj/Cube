@@ -42,6 +42,7 @@ namespace Levels
 		sf::Sprite sprite;
 		bool isVisible = true;
 		bool isBackground = true;
+		bool isReversed = false;
 		float textureRotation = 0.f;
 	};
 

@@ -65,7 +65,7 @@ namespace Levels
 		return m_commonCellWidth;
 	}
 
-
+	// A simple, humble Getter function.
 	vecp::Vec2i LevelEntityManager::getGridSize()
 	{
 		return m_gridSize;
@@ -190,7 +190,7 @@ namespace Levels
 		m_cellGravityComponents.resize(m_totalCells);
 		m_cellNumbersComponents.resize(m_totalCells);
 		m_cellPanelsComponents.resize(m_totalCells);
-		m_cellPanelsComponents.resize(m_totalCells);
+		m_cellTrapComponents.resize(m_totalCells);
 
 		// The maze start off static, so initailly no overlaying panels will be displayed.
 		for (CellGraphicsComponent panels : m_cellPanelsComponents)
@@ -226,7 +226,12 @@ namespace Levels
 		LevelFactory::loadAllLevelTextures();
 		LevelFactory::createBackground(m_backgroundSprite, m_gridSize.x, m_gridSize.y);
 		LevelFactory::addTextures(m_cellTypeComponents, m_cellGraphicsComponents);
-		
+
+		sf::Texture& texture = Assets::TextureDict::getInstance()->getTexture("PanelsGoal");
+		m_cellPanelsComponents[m_goalId].sprite.setTexture(texture);
+		m_cellPanelsComponents[m_goalId].isVisible = true;
+
+
 		// Create and configure the collision components of each cell entity, as determined by 
 		// its type.
 		LevelFactory::addCollisions(m_cellTypeComponents, m_cellCollisionComponents);
@@ -410,6 +415,25 @@ namespace Levels
 			if (!entity.components.test(CellComponentTypes::MOVE))
 			{
 				LevelEntitySystem::scaleCellSprite(m_cellGraphicsComponents[id].sprite, m_commonCellWidth);
+			
+				if (m_cellGraphicsComponents[id].isReversed)
+				{
+					sf::Sprite& sprite = m_cellGraphicsComponents[id].sprite;
+					float cellWidth = m_commonCellWidth;
+					sprite.setOrigin(
+						sprite.getLocalBounds().width * 0.5f,
+						sprite.getLocalBounds().height * 0.5f
+					);
+					sprite.setScale(
+						-1.f * cellWidth / sprite.getLocalBounds().width,
+						cellWidth / sprite.getLocalBounds().height
+					);
+					sprite.setOrigin(
+						sprite.getLocalBounds().width * 0.5f,
+						sprite.getLocalBounds().height * 0.5f
+					);
+	
+				}
 			}
 
 			// Set all cell positions in their respective transform components.

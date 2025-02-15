@@ -126,12 +126,19 @@ namespace Levels
 			{CellSubtypes::LOWER_RIGHT, 270.f},
 			{CellSubtypes::BRIDGE_UPPER_LEFT, 0.f},
 			{CellSubtypes::BRIDGE_UPPER_RIGHT, 180.f},
-			{CellSubtypes::BRIDGE_LEFT_UPPER, 0.f},
-			{CellSubtypes::BRIDGE_LEFT_LOWER, 0.f},
+			{CellSubtypes::BRIDGE_LEFT_UPPER, 90.f},
+			{CellSubtypes::BRIDGE_LEFT_LOWER, 90.f},
 			{CellSubtypes::BRIDGE_LOWER_LEFT, 0.f},
-			{CellSubtypes::BRIDGE_LOWER_RIGHT, 0.f},
-			{CellSubtypes::BRIDGE_RIGHT_UPPER, 180.f},
-			{CellSubtypes::BRIDGE_RIGHT_LOWER, 0.f}
+			{CellSubtypes::BRIDGE_LOWER_RIGHT, 180.f},
+			{CellSubtypes::BRIDGE_RIGHT_UPPER, 90.f},
+			{CellSubtypes::BRIDGE_RIGHT_LOWER, -90.f}
+		};
+
+		std::set<CellSubtypes> typesToReverse {
+			CellSubtypes::BRIDGE_LOWER_LEFT,
+			CellSubtypes::BRIDGE_UPPER_RIGHT,
+			CellSubtypes::BRIDGE_LEFT_LOWER,
+			CellSubtypes::BRIDGE_RIGHT_UPPER
 		};
 
 		for (int i = 0; i < cellTypes.size(); i++)
@@ -162,9 +169,12 @@ namespace Levels
 
 			if (voidConfig.count(cellTypes[i].subtype) > 0)
 			{
+				if (typesToReverse.count(cellTypes[i].subtype) != 0)
+				{
+					graphics[i].isReversed = true;
+				}
 				graphics[i].textureRotation = voidConfig.find(cellTypes[i].subtype)->second;
 				graphics[i].sprite.setRotation(graphics[i].textureRotation);
-
 			}
 		}
 	}
@@ -189,23 +199,23 @@ namespace Levels
 		switch (randomDirection)
 		{
 		case 0: // left
-			yIndex = 2 + rand() % (ySize - 2);
+			yIndex = 2 + rand() % (ySize - 4);
 			goalId = entityGrid[0][yIndex];
 			voidOneId = entityGrid[0][yIndex + 1];
 			voidTwoId = entityGrid[0][yIndex - 1];
-			cellTypes[voidOneId].subtype = CellSubtypes::BRIDGE_LEFT_UPPER;
-			cellTypes[voidTwoId].subtype = CellSubtypes::BRIDGE_LEFT_LOWER;
+			cellTypes[voidOneId].subtype = CellSubtypes::BRIDGE_LEFT_LOWER;
+			cellTypes[voidTwoId].subtype = CellSubtypes::BRIDGE_LEFT_UPPER;
 			break;
 		case 1: // right
-			yIndex = 2 + rand() % (ySize - 2);
+			yIndex = 2 + rand() % (ySize - 4);
 			goalId = entityGrid[xSize - 1][yIndex];
 			voidOneId = entityGrid[xSize -1][yIndex + 1];
 			voidTwoId = entityGrid[xSize - 1][yIndex - 1];
-			cellTypes[voidOneId].subtype = CellSubtypes::BRIDGE_RIGHT_UPPER;
-			cellTypes[voidTwoId].subtype = CellSubtypes::BRIDGE_RIGHT_LOWER;
+			cellTypes[voidOneId].subtype = CellSubtypes::BRIDGE_RIGHT_LOWER;
+			cellTypes[voidTwoId].subtype = CellSubtypes::BRIDGE_RIGHT_UPPER;
 			break;
 		case 2: // top
-			xIndex = 2 + rand() % (xSize - 2);
+			xIndex = 2 + rand() % (xSize - 4);
 			goalId = entityGrid[xIndex][0];
 			voidOneId = entityGrid[xIndex + 1][0];
 			voidTwoId = entityGrid[xIndex - 1][0];
@@ -213,11 +223,11 @@ namespace Levels
 			cellTypes[voidTwoId].subtype = CellSubtypes::BRIDGE_UPPER_LEFT;
 			break;
 		case 3: // bottom
-			xIndex = 2 + rand() % (xSize - 2);
+			xIndex = 2 + rand() % (xSize - 4);
 			goalId = entityGrid[xIndex][ySize - 1];
-			voidOneId = entityGrid[xIndex + 1][ySize - 1];
+			voidOneId = entityGrid[xIndex + 1][ySize + 1];
 			voidTwoId = entityGrid[xIndex - 1][ySize - 1];
-			cellTypes[voidTwoId].subtype = CellSubtypes::BRIDGE_LOWER_RIGHT;
+			cellTypes[voidOneId].subtype = CellSubtypes::BRIDGE_LOWER_RIGHT;
 			cellTypes[voidTwoId].subtype = CellSubtypes::BRIDGE_LOWER_LEFT;
 			break;
 		}
@@ -227,7 +237,7 @@ namespace Levels
 		cellTypes[goalId].colour = CellColours::WHITE;
 
 		cellTypes[voidOneId].type = CellTypes::BRIDGE_VOID;
-		cellTypes[voidOneId].type = CellTypes::BRIDGE_VOID;
+		cellTypes[voidTwoId].type = CellTypes::BRIDGE_VOID;
 		
 		return goalId; 
 	}
