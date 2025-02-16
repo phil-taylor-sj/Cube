@@ -334,10 +334,11 @@ namespace Levels
 		numbers.timer = 0.f;  // TODO: Update to get remainder
 		//numbers.period = 1.5f + 2.f * ((rand() % 9) * 0.1f);
 		CellPanel current = numbers.currentPanel;
-		while (numbers.currentPanel == current)
-		{
+		//while (numbers.currentPanel == current)
+		//{
 			numbers.currentPanel = m_panels[rand() % 9];
-		}
+		//}
+		numbers.currentPanel = m_panels[4];
 		numbers.relativePosition = m_panelPositions[numbers.currentPanel];
 		numbers.currentIndex = (numbers.currentIndex < numbers.numbers.size() - 1)
 			? numbers.currentIndex + 1 
@@ -345,7 +346,27 @@ namespace Levels
 		numbers.text.setString(numbers.numbers[numbers.currentIndex]);
 		sf::FloatRect shape = numbers.text.getLocalBounds();
 		numbers.text.setOrigin(0.5 * shape.width, 0.5f * shape.height);
+
 	}
+
+	void LevelEntitySystem::updateCollisions(
+		const std::vector<CellTransformComponent>& cellTransforms,
+		std::vector<CellCollisionComponent>& cellCollisions)
+	{
+		for (int i = 0; i < cellCollisions.size(); i++)
+		{
+			cellCollisions[i].broadCircle.setPosition(cellTransforms[i].position);
+			for (CellStaticRectangle& wall : cellCollisions[i].staticWalls)
+			{
+				wall.setCellPosition(cellTransforms[i].position);
+			}
+			for (CellStaticRectangle& floor : cellCollisions[i].staticFloors)
+			{
+				floor.setCellPosition(cellTransforms[i].position);
+			}
+		}
+	}
+
 
 	float LevelEntitySystem::m_deltaTime = 0.f;
 

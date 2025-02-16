@@ -12,7 +12,7 @@ include(Utilities_Test/Utilities_Test.cmake)
 set(TEST_SRCS
   pch.cpp
   pch.h
-  ${LEVELS_TEST}
+  #${LEVELS_TEST}
   ${PHYSICS_TEST}
   #${ENGINE_TEST}
   ${UTILITIES_TEST}

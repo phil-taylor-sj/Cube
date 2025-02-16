@@ -15,11 +15,14 @@ namespace Levels
 			activeTypes.set(CellComponentTypes::GRAPHICS);
 			activeTypes.set(CellComponentTypes::COLLISION);
 			activeTypes.set(CellComponentTypes::TRANSFORM);
-			activeTypes.set(CellComponentTypes::MOVE);
 			if (cellTypes[i].type == CellTypes::ROOM)
 			{
 				activeTypes.set(CellComponentTypes::NUMBERS);
 				activeTypes.set(CellComponentTypes::MOVE);
+				if (cellTypes[i].subtype != CellSubtypes::GOAL)
+				{
+					activeTypes.set(CellComponentTypes::TRAP);
+				}
 			}
 
 		}
@@ -124,7 +127,22 @@ namespace Levels
 			{CellSubtypes::UPPER_LEFT, 90.f},
 			{CellSubtypes::UPPER_RIGHT, 180.f},
 			{CellSubtypes::LOWER_LEFT, 0.f},
-			{CellSubtypes::LOWER_RIGHT, 270.f}
+			{CellSubtypes::LOWER_RIGHT, 270.f},
+			{CellSubtypes::BRIDGE_UPPER_LEFT, 0.f},
+			{CellSubtypes::BRIDGE_UPPER_RIGHT, 180.f},
+			{CellSubtypes::BRIDGE_LEFT_UPPER, 90.f},
+			{CellSubtypes::BRIDGE_LEFT_LOWER, 90.f},
+			{CellSubtypes::BRIDGE_LOWER_LEFT, 0.f},
+			{CellSubtypes::BRIDGE_LOWER_RIGHT, 180.f},
+			{CellSubtypes::BRIDGE_RIGHT_UPPER, 90.f},
+			{CellSubtypes::BRIDGE_RIGHT_LOWER, -90.f}
+		};
+
+		std::set<CellSubtypes> typesToReverse {
+			CellSubtypes::BRIDGE_LOWER_LEFT,
+			CellSubtypes::BRIDGE_UPPER_RIGHT,
+			CellSubtypes::BRIDGE_LEFT_LOWER,
+			CellSubtypes::BRIDGE_RIGHT_UPPER
 		};
 
 		for (int i = 0; i < cellTypes.size(); i++)
@@ -155,11 +173,171 @@ namespace Levels
 
 			if (voidConfig.count(cellTypes[i].subtype) > 0)
 			{
+				if (typesToReverse.count(cellTypes[i].subtype) != 0)
+				{
+					graphics[i].isReversed = true;
+				}
 				graphics[i].textureRotation = voidConfig.find(cellTypes[i].subtype)->second;
 				graphics[i].sprite.setRotation(graphics[i].textureRotation);
-
 			}
 		}
+	}
+
+	int LevelFactory::selectGoalLocation(
+		const std::vector<std::vector<int>>& entityGrid,
+		std::vector<CellTypeComponent>& cellTypes
+	)
+	{
+		int xSize = entityGrid.size();
+		int ySize = entityGrid[0].size();
+		
+		int goalId = 0;
+		int voidOneId = 0;
+		int voidTwoId = 0;
+		
+		int xIndex = 0;
+		int yIndex = 0;
+
+		int randomDirection = rand() % 4;
+
+		switch (randomDirection)
+		{
+		case 0: // left
+			yIndex = 2 + rand() % (ySize - 4);
+			goalId = entityGrid[0][yIndex];
+			voidOneId = entityGrid[0][yIndex + 1];
+			voidTwoId = entityGrid[0][yIndex - 1];
+			cellTypes[voidOneId].subtype = CellSubtypes::BRIDGE_LEFT_LOWER;
+			cellTypes[voidTwoId].subtype = CellSubtypes::BRIDGE_LEFT_UPPER;
+			break;
+		case 1: // right
+			yIndex = 2 + rand() % (ySize - 4);
+			goalId = entityGrid[xSize - 1][yIndex];
+			voidOneId = entityGrid[xSize -1][yIndex + 1];
+			voidTwoId = entityGrid[xSize - 1][yIndex - 1];
+			cellTypes[voidOneId].subtype = CellSubtypes::BRIDGE_RIGHT_LOWER;
+			cellTypes[voidTwoId].subtype = CellSubtypes::BRIDGE_RIGHT_UPPER;
+			break;
+		case 2: // top
+			xIndex = 2 + rand() % (xSize - 4);
+			goalId = entityGrid[xIndex][0];
+			voidOneId = entityGrid[xIndex + 1][0];
+			voidTwoId = entityGrid[xIndex - 1][0];
+			cellTypes[voidOneId].subtype = CellSubtypes::BRIDGE_UPPER_RIGHT;
+			cellTypes[voidTwoId].subtype = CellSubtypes::BRIDGE_UPPER_LEFT;
+			break;
+		case 3: // bottom
+			xIndex = 2 + rand() % (xSize - 4);
+			goalId = entityGrid[xIndex][ySize - 1];
+			voidOneId = entityGrid[xIndex + 1][ySize + 1];
+			voidTwoId = entityGrid[xIndex - 1][ySize - 1];
+			cellTypes[voidOneId].subtype = CellSubtypes::BRIDGE_LOWER_RIGHT;
+			cellTypes[voidTwoId].subtype = CellSubtypes::BRIDGE_LOWER_LEFT;
+			break;
+		}
+
+		cellTypes[goalId].type = CellTypes::ROOM;
+		cellTypes[goalId].subtype = CellSubtypes::GOAL;
+		cellTypes[goalId].colour = CellColours::WHITE;
+
+		cellTypes[voidOneId].type = CellTypes::BRIDGE_VOID;
+		cellTypes[voidTwoId].type = CellTypes::BRIDGE_VOID;
+		
+		return goalId; 
+	}
+
+	int LevelFactory::selectTrappedRooms(
+		const std::vector<CellEntity>& entities,
+		std::vector<CellTrapComponent>& cellTraps)
+	{
+		auto isAvailable  = [](const CellEntity& entity) 
+			{
+				return entity.components.test(CellComponentTypes::TRAP);
+			};
+
+		// Identify the total number of rooms with active trap components.
+		int numRooms = std::count_if(entities.begin(), entities.end(), isAvailable);
+
+		// Create a vector of available rooms, and extract cell ids.
+		std::vector<int> rooms(numRooms);
+		int count = 0;
+		for (const CellEntity& entity : entities)
+		{
+			if (isAvailable(entity))
+			{
+				rooms[count++] = entity.cellId;
+			}
+		}
+
+		// Randomly shffulle the ids of available rooms.
+		std::random_device random;
+		std::mt19937 generator(random());
+		std::shuffle(rooms.begin(), rooms.end(), generator);
+
+		// Assign traps to 1/6th of the available rooms.
+		int numTraps = std::floor(numRooms / 6);
+		for (int i = 0; i < numTraps; i++)
+		{
+			cellTraps[rooms[i]].isTrapped = true;
+		}
+
+		return numTraps;
+	}
+
+	void LevelFactory::assignNumbers(
+		const std::vector<CellEntity>& entities,
+		const std::vector<CellTrapComponent>& traps,
+		std::vector<CellNumbersComponent>& numbers
+	)
+	{
+		srand(time(NULL));
+		std::vector<unsigned int> primePowers = Utilities::Primes::getPrimes(true);
+		std::vector<unsigned int> nonPrimePowers = Utilities::Primes::getPrimes(false);
+
+		auto getRandom = [](std::vector<unsigned int>& nums) {
+			std::ostringstream oss;
+			oss << std::setw(3) << std::setfill('0') << nums[rand() % nums.size()];
+			return oss.str();
+			};
+
+		for (const CellEntity& entity : entities)
+		{
+			if (!entity.components.test(CellComponentTypes::NUMBERS))
+			{
+				//continue;
+			}
+
+			numbers[entity.cellId].numbers.resize(3);
+			int numNums = numbers[entity.cellId].numbers.size();
+			for (int i = 0; i < numNums; i++)
+			{
+				numbers[entity.cellId].numbers[i] = getRandom(nonPrimePowers);
+			}
+
+			if (traps[entity.cellId].isActive)
+			{
+				numbers[entity.cellId].numbers[rand() % numNums] = getRandom(primePowers);
+			}
+		}
+
+	}
+
+	void LevelFactory::addNumbers(
+		const CellTransformComponent& cellTransform,
+		CellNumbersComponent& cellNumbers)
+	{
+		sf::Text& text = cellNumbers.text;
+		text.setFont(Assets::FontDict::getInstance()->getFont("Tuffy"));
+		text.setCharacterSize(48);
+		text.setOutlineColor(sf::Color::Black);
+		text.setOutlineThickness(2);
+		sf::FloatRect shape = text.getLocalBounds();
+		text.setOrigin(0.5f * shape.width, 0.5f * shape.height);
+
+		sf::RectangleShape& panel = cellNumbers.panelBackground;
+		sf::FloatRect panelShape = panel.getLocalBounds();
+		//panel.setOrigin(0.5f * shape.width, 0.5f * shape.height);
+		panel.setFillColor(sf::Color(0, 0, 0, 200));
 	}
 
 	void LevelFactory::addCollisions(
@@ -177,8 +355,11 @@ namespace Levels
 		for (int i = 0; i < cellCollisions.size(); i++)
 		{
 			m_addFloorCollisions(cellTypes[i], cellCollisions[i]);
+			if (cellTypes[i].type != CellTypes::ROOM)
+			{
+				m_addSensorCollisions(cellCollisions[i]);
+			}
 		}
-
 	}
 
 	void LevelFactory::m_addWallCollisions(CellCollisionComponent& collision)
@@ -223,6 +404,7 @@ namespace Levels
 				wallPositions[i][0], wallPositions[i][1]
 			);
 		}
+
 	}
 
 	void LevelFactory::m_addFloorCollisions(
@@ -336,42 +518,19 @@ namespace Levels
 		}
 	}
 
-	void LevelFactory::updateCollisions(
-		const std::vector<CellTransformComponent>& cellTransforms,
-		std::vector<CellCollisionComponent>& cellCollisions)
+	void LevelFactory::m_addSensorCollisions(
+		CellCollisionComponent& collision)
 	{
-		for (int i = 0; i < cellCollisions.size(); i++)
-		{
-			cellCollisions[i].broadCircle.setPosition(cellTransforms[i].position);
-			cellCollisions[i].broadCircle.setRadius(
-				cellCollisions[i].relativeBroadRadius *
-				cellTransforms[i].cellWidth
-			);
-			for (CellStaticRectangle& wall : cellCollisions[i].staticWalls)
-			{
-				wall.setCellPosition(cellTransforms[i].position);
-				wall.setCellWidth(cellTransforms[i].cellWidth);
-			}
-			for (CellStaticRectangle& floor : cellCollisions[i].staticFloors)
-			{
-				floor.setCellPosition(cellTransforms[i].position);
-				floor.setCellWidth(cellTransforms[i].cellWidth);
-			}
+		std::vector<CellStaticRectangle>& sensors = collision.sensors;
+		sensors.resize(2);
+		for (int i = 0; i < 2; i++)
+		{	
+			float sqrt2 = 1.41421;
+			sensors[i].setRelativePosition(0.f, 0.f);
+			sensors[i].setRelativeDimensions(0.95f * sqrt2, 0.02f);
 		}
-	}
-
-	void LevelFactory::addNumbers(
-		const CellTransformComponent& cellTransform, 
-		CellNumbersComponent& cellNumbers)
-	{
-		sf::Text& text = cellNumbers.text;
-		text.setFont(Assets::FontDict::getInstance()->getFont("Tuffy"));
-		text.setCharacterSize(48);
-		text.setOutlineColor(sf::Color::Black);
-		text.setOutlineThickness(2);
-		sf::FloatRect shape = text.getLocalBounds();
-		text.setOrigin(0.5 * shape.width, 0.5f * shape.height);
-		
+		sensors[0].setAngle(45.f);
+		sensors[1].setAngle(-45.f);
 	}
 
 	const std::map<CellColours, std::string> LevelFactory::m_colourFilenames = {

@@ -34,6 +34,7 @@ namespace Levels
 		PANELS,
 		FORCE,
 		MOVE,
+		TRAP
 		};
 	};
 
@@ -42,6 +43,7 @@ namespace Levels
 		sf::Sprite sprite;
 		bool isVisible = true;
 		bool isBackground = true;
+		bool isReversed = false;
 		float textureRotation = 0.f;
 	};
 
@@ -81,6 +83,8 @@ namespace Levels
 		std::array<CellStaticRectangle, 8> staticWalls;
 		std::vector<CellStaticRectangle> staticFloors;
 		CellStaticRectangle blocker;
+
+		std::vector<CellStaticRectangle> sensors{2};
 
 		Physics::Circle broadCircle;
 		float relativeBroadRadius;
@@ -137,7 +141,8 @@ namespace Levels
 
 	struct CellNumbersComponent
 	{
-		std::vector<std::string> numbers = {"101", "102", "103"};
+		std::vector<std::string> numbers;
+		sf::RectangleShape panelBackground{sf::Vector2f(1.f, 1.f)};
 		bool isActive = true;
 		int currentIndex = 0;
 		float period = 2.f;
@@ -150,6 +155,12 @@ namespace Levels
 	struct CellPanelsComponent
 	{
 		
+	};
+
+	struct CellTrapComponent
+	{
+		bool isTrapped = false;
+		bool isActive = false;
 	};
 }
 
