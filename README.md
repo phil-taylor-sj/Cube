@@ -6,7 +6,7 @@ Cube is yet another step in the ongoing struggle to turn the 1997 cult classic i
 	<img src="https://raw.githubusercontent.com/phil-taylor-sj/images/main/cube-gameplay.png" alt="Logo" width="950"/>
 </p>
 
-## What Makes Cube Different?
+## What defines Cube as a project?
 
 **THE MAZE ITSELF**. True to the film, the enviornment consists of an expansive network of constantly shifting rooms. The pattern is varied and chaotic, and requires all room to move with tight coordination. Wherever it is, and whatever it is doing, each individual chamber must maintain control over is own self-contained collection of objects, comprising of backgrounds, walls, floors, sensors, panels, traps, and of course; it's vital clues.
 
